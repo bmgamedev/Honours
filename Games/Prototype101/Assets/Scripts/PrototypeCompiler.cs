@@ -4,15 +4,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 
-#region Aliases
-//using MoveCommand = PrototypeProgram.MoveCommand;
-//using MoveDirection = PrototypeProgram.MoveCommand.Direction;
-//using RotateCommand = PrototypeProgram.RotateCommand;
-#endregion
 
-/**
- * Just an implementation of the plain old builder design pattern. 
- */
 public class PrototypeCompiler
 {
     private List<PrototypeProgram.IElement> _elements;
@@ -38,43 +30,13 @@ public class PrototypeCompiler
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         proto101Parser parser = new proto101Parser(tokenStream);
 
-        parser.prog(); // <-- compile actually happens here (see Assets/Grammars/Tortoise/Tortoise.g4
+        parser.prog(); // <-- compile happens here (see .g4 file)
 
         PrototypeCompiler compiler = parser.Compiler;
         PrototypeProgram program = new PrototypeProgram(compiler.Elements);
 
         return program;
     }
-
-
-    /* public PrototypeCompiler AddMoveCommand(string direction, string distance)
-     {
-         MoveDirection dir = MoveDirection.BWD;
-         string fwdString = Enum.GetName(typeof(MoveDirection), MoveDirection.FWD);
-
-         if (direction.ToUpper().Equals(fwdString))
-         {
-             dir = MoveDirection.FWD;
-         }
-
-         float dist = float.Parse(distance);
-
-         MoveCommand moveCommand = new MoveCommand(dir, dist);
-         _elements.Add(moveCommand);
-
-         return this;
-     }
-
-
-     public PrototypeCompiler AddRotateCommand(string angle)
-     {
-         float a = float.Parse(angle);
-         RotateCommand rotateCommand = new RotateCommand(a);
-
-         _elements.Add(rotateCommand);
-
-         return this;
-     }*/
 
     public PrototypeCompiler CreatePlayer(string num)
     {

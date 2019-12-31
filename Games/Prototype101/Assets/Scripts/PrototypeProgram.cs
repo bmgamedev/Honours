@@ -1,76 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PrototypeProgram
 {
 
 	public interface IElement
 	{
-		IEnumerator Execute(GameObject gameObject);
-	}
-
-    /*public class MoveCommand : Element
-    {
-        public enum Direction
-		{
-			FWD, BWD
-		}
-
-		private Direction _direction;
-		private float _distance;
-
-		public MoveCommand(Direction direction, float distance)
-		{
-			_direction = direction;
-			_distance = distance;
-		}
-
-		public IEnumerator Execute(GameObject gameObject)
-		{
-			float d = 0f;
-
-			switch(_direction)
-			{
-				case Direction.FWD: {
-					d = _distance;
-				} break;
-				case Direction.BWD: {
-					d = -_distance;
-				} break;
-			}
-
-			Vector3 v = Vector3.up * d;
-			gameObject.transform.Translate(v);
-
-			#if DEBUG
-			Debug.Log ("Move " + _direction + " " + _distance);
-			#endif
-
-			return null;
-		}
-    }*/
-
-    /*public class RotateCommand : Element
-    {
-        private float _angle;
-
-		public RotateCommand(float angle)
-		{
-			_angle = angle;
-		}
-
-		public IEnumerator Execute(GameObject gameObject)
-		{
-			gameObject.transform.Rotate(new Vector3(0, 0, _angle));
-
-			#if DEBUG
-			Debug.Log ("Rotate " + _angle);
-			#endif
-
-			return null;
-		}
-    }*/
+        //IEnumerator Execute(GameObject gameObject);
+        IEnumerator Execute();
+    }
 
     public class PlayerElement : IElement
     {
@@ -81,7 +22,8 @@ public class PrototypeProgram
             _num = num;
         }
 
-        public IEnumerator Execute(GameObject gameObject) //What it should do when this command gets executed
+        //public IEnumerator Execute(GameObject gameObject)
+        public IEnumerator Execute() //What it should do when this command gets executed
         {
             //TODO: CODE TO CREATE PLAYER(S)
             for (int i = 0; i < _num; i++)
@@ -109,7 +51,8 @@ public class PrototypeProgram
             _size = size;
         }
 
-        public IEnumerator Execute(GameObject gameObject) //What it should do when this command gets executed
+        //public IEnumerator Execute(GameObject gameObject)
+        public IEnumerator Execute() //What it should do when this command gets executed
         {
             //TODO: CODE TO CREATE MAP
 
@@ -142,7 +85,8 @@ public class PrototypeProgram
             _type = type;
         }
 
-        public IEnumerator Execute(GameObject gameObject) //What it should do when this command gets executed - will just be creation because the grammar isn't doing anything with gameplay... for now... 
+        //public IEnumerator Execute(GameObject gameObject)
+        public IEnumerator Execute() //What it should do when this command gets executed - will just be creation because the grammar isn't doing anything with gameplay... for now... 
         {
             //TODO: CODE TO CREATE AND PLACE ENEMIES
 
@@ -163,20 +107,51 @@ public class PrototypeProgram
 		_pc = 0;
 	}
 
-
-	public IEnumerator Run(GameObject gameObject)
+    //public IEnumerator Run(GameObject gameObject)
+    /*public IEnumerator Run()
 	{
 		while(_pc < _elements.Count)
 		{
 			yield return new WaitForSeconds(EXECUTION_DELAY);
 
             IElement nextElement = _elements[_pc++];
-			yield return nextElement.Execute(gameObject);
+            //yield return nextElement.Execute(gameObject);
+            yield return nextElement.Execute();
 		}
-	}
+    }*/
+
+    public IEnumerator Run()
+    {
+        yield return null;
+
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync("Game"); //load the game scene
+        asyncOperation.allowSceneActivation = false; //don't immediately activate scene (wait until objects have been created)
+
+        //When the load is still in progress, output the Text and progress bar
+        while (!asyncOperation.isDone)
+        {
+            if (asyncOperation.progress >= 0.9f)
+            {
+
+                while (_pc < _elements.Count)
+                {
+                    yield return new WaitForSeconds(EXECUTION_DELAY);
+
+                    IElement nextElement = _elements[_pc++];
+
+                    //Debug.Log("next element: " + nextElement.ToString());
+                    nextElement.Execute();
+                }
+
+                asyncOperation.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
+    }
 
 
-	public void Reset()
+    public void Reset()
 	{
 		_pc = 0;
 	}

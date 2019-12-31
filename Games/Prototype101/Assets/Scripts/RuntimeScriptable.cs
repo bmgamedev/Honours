@@ -12,8 +12,9 @@ public class RuntimeScriptable : MonoBehaviour
         string code = text.text;
         StopAllCoroutines();
 		_program = PrototypeCompiler.Compile(code); //.compile() returns a PrototypeProgram object. We give it the text from the input - soon to be seperate screen.
-        StartCoroutine(_program.Run(gameObject));
+        //StartCoroutine(_program.Run(gameObject));
+        StartCoroutine(_program.Run());
         //Debug.Log(code);
-	}
+    }
 
 }
