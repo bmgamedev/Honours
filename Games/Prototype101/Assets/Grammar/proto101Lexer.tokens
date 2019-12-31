@@ -1,0 +1,13 @@
+PC=1
+NUM=2
+SKILL=3
+MAP=4
+SIZE=5
+ENEMY=6
+TYPE=7
+INT=8
+NEWLINE=9
+WS=10
+'player'=1
+'map'=4
+'enemy'=6
