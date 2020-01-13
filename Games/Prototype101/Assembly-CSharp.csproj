@@ -65,10 +65,13 @@
     <Compile Include="Assets\Grammar\proto101Lexer.cs" />
     <Compile Include="Assets\Grammar\proto101Listener.cs" />
     <Compile Include="Assets\Grammar\proto101Parser.cs" />
-    <Compile Include="Assets\Scripts\PrototypeCompiler.cs" />
-    <Compile Include="Assets\Scripts\PrototypeProgram.cs" />
-    <Compile Include="Assets\Scripts\PrototypeSourceCodeEditor.cs" />
-    <Compile Include="Assets\Scripts\RuntimeScriptable.cs" />
+    <Compile Include="Assets\Scripts\Game\CamFollow.cs" />
+    <Compile Include="Assets\Scripts\Game\CreationManager.cs" />
+    <Compile Include="Assets\Scripts\Game\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Grammar\PrototypeCompiler.cs" />
+    <Compile Include="Assets\Scripts\Grammar\PrototypeProgram.cs" />
+    <Compile Include="Assets\Scripts\Grammar\PrototypeSourceCodeEditor.cs" />
+    <Compile Include="Assets\Scripts\Grammar\RuntimeScriptable.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
@@ -275,9 +278,6 @@
     </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>C:/Users/rcmcg/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>C:/Users/rcmcg/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.purchasing@2.0.1/UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>C:/Users/rcmcg/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
