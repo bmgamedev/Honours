@@ -38,6 +38,23 @@ public class PrototypeCompiler
         return program;
     }
 
+    public PrototypeCompiler CreateGame(string type)
+    {
+        PrototypeProgram.GameTypeSetup.GameType gameType = PrototypeProgram.GameTypeSetup.GameType.PLATFORMER; //default to platformer for now
+
+        string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.DUNGEON);
+        //string platformerGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.PLATFORMER);
+
+        if (type.ToUpper().Equals(dungeonGame)) {
+            gameType = PrototypeProgram.GameTypeSetup.GameType.DUNGEON;
+        }
+
+        PrototypeProgram.GameTypeSetup GameTypeSetup = new PrototypeProgram.GameTypeSetup(gameType);
+        _elements.Add(GameTypeSetup);
+
+        return this;
+    }
+
     public PrototypeCompiler CreatePlayer(string num)
     {
         int numPlayers = int.Parse(num);
@@ -48,23 +65,23 @@ public class PrototypeCompiler
         return this;
     }
 
-    public PrototypeCompiler CreateMap(string size)
+    public PrototypeCompiler CreateDungeon(string size)
     {
-        PrototypeProgram.MapElement.Size mapSize = PrototypeProgram.MapElement.Size.SMALL; //Default to small for ease - will only update if user has correctly specified M or L
-        string strMed = Enum.GetName(typeof(PrototypeProgram.MapElement.Size), PrototypeProgram.MapElement.Size.MED);
-        string strLarge = Enum.GetName(typeof(PrototypeProgram.MapElement.Size), PrototypeProgram.MapElement.Size.LARGE);
+        PrototypeProgram.DungeonElement.Size mapSize = PrototypeProgram.DungeonElement.Size.SMALL; //Default to small for ease - will only update if user has correctly specified M or L
+        string strMed = Enum.GetName(typeof(PrototypeProgram.DungeonElement.Size), PrototypeProgram.DungeonElement.Size.MED);
+        string strLarge = Enum.GetName(typeof(PrototypeProgram.DungeonElement.Size), PrototypeProgram.DungeonElement.Size.LARGE);
 
 
         if (size.ToUpper().Equals(strMed))
         {
-            mapSize = PrototypeProgram.MapElement.Size.MED;
+            mapSize = PrototypeProgram.DungeonElement.Size.MED;
         }
         else if (size.ToUpper().Equals(strLarge))
         {
-            mapSize = PrototypeProgram.MapElement.Size.LARGE;
+            mapSize = PrototypeProgram.DungeonElement.Size.LARGE;
         }
 
-        PrototypeProgram.MapElement mapElement = new PrototypeProgram.MapElement(mapSize);
+        PrototypeProgram.DungeonElement mapElement = new PrototypeProgram.DungeonElement(mapSize);
         _elements.Add(mapElement);
 
         return this;
@@ -101,4 +118,51 @@ public class PrototypeCompiler
         return this;
     }
 
+    public PrototypeCompiler CreatePathStart()
+    {
+        PrototypeProgram.StartSegment startSegment = new PrototypeProgram.StartSegment();
+        _elements.Add(startSegment);
+
+        return this;
+    }
+
+    public PrototypeCompiler CreateFlatPath()
+    {
+        PrototypeProgram.FlatSegment flatSegment = new PrototypeProgram.FlatSegment();
+        _elements.Add(flatSegment);
+
+        return this;
+    }
+
+    public PrototypeCompiler CreateLowPlatform()
+    {
+        PrototypeProgram.LowPlatSegment lowPlatSegment = new PrototypeProgram.LowPlatSegment();
+        _elements.Add(lowPlatSegment);
+
+        return this;
+    }
+
+    public PrototypeCompiler CreateHighPlatform()
+    {
+        PrototypeProgram.HighPlatSegment highPlatSegment = new PrototypeProgram.HighPlatSegment();
+        _elements.Add(highPlatSegment);
+
+        return this;
+    }
+
+    public PrototypeCompiler CreatePathGap()
+    {
+        PrototypeProgram.GapSegment gapSegment = new PrototypeProgram.GapSegment();
+        _elements.Add(gapSegment);
+
+        return this;
+    }
+
+    public PrototypeCompiler CreateFinishLine()
+    {
+        PrototypeProgram.FinalSegment finalSegment = new PrototypeProgram.FinalSegment();
+        _elements.Add(finalSegment);
+
+        return this;
+    }
 }

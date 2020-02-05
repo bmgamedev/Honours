@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114424268301702700}
   - component: {fileID: 50327060047251290}
   m_Layer: 0
-  m_Name: PlayerPrefab
+  m_Name: DungeonPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

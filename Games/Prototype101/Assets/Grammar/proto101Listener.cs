@@ -52,6 +52,16 @@ public interface Iproto101Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitElem([NotNull] proto101Parser.ElemContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreateGame([NotNull] proto101Parser.CreateGameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreateGame([NotNull] proto101Parser.CreateGameContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="proto101Parser.createPlayer"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -62,15 +72,15 @@ public interface Iproto101Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCreatePlayer([NotNull] proto101Parser.CreatePlayerContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="proto101Parser.createMap"/>.
+	/// Enter a parse tree produced by <see cref="proto101Parser.createDungeon"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterCreateMap([NotNull] proto101Parser.CreateMapContext context);
+	void EnterCreateDungeon([NotNull] proto101Parser.CreateDungeonContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="proto101Parser.createMap"/>.
+	/// Exit a parse tree produced by <see cref="proto101Parser.createDungeon"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitCreateMap([NotNull] proto101Parser.CreateMapContext context);
+	void ExitCreateDungeon([NotNull] proto101Parser.CreateDungeonContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="proto101Parser.createEnemies"/>.
 	/// </summary>
@@ -81,4 +91,64 @@ public interface Iproto101Listener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCreateEnemies([NotNull] proto101Parser.CreateEnemiesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addStartSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddStartSegment([NotNull] proto101Parser.AddStartSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addStartSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddStartSegment([NotNull] proto101Parser.AddStartSegmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addFlatPathSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddFlatPathSegment([NotNull] proto101Parser.AddFlatPathSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addFlatPathSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddFlatPathSegment([NotNull] proto101Parser.AddFlatPathSegmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addLowPlatformSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddLowPlatformSegment([NotNull] proto101Parser.AddLowPlatformSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addLowPlatformSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddLowPlatformSegment([NotNull] proto101Parser.AddLowPlatformSegmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addHighPlatformSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddHighPlatformSegment([NotNull] proto101Parser.AddHighPlatformSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addHighPlatformSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddHighPlatformSegment([NotNull] proto101Parser.AddHighPlatformSegmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addPathGapSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddPathGapSegment([NotNull] proto101Parser.AddPathGapSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addPathGapSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddPathGapSegment([NotNull] proto101Parser.AddPathGapSegmentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.addFinishLineSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAddFinishLineSegment([NotNull] proto101Parser.AddFinishLineSegmentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.addFinishLineSegment"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAddFinishLineSegment([NotNull] proto101Parser.AddFinishLineSegmentContext context);
 }

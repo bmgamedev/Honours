@@ -65,13 +65,16 @@
     <Compile Include="Assets\Grammar\proto101Lexer.cs" />
     <Compile Include="Assets\Grammar\proto101Listener.cs" />
     <Compile Include="Assets\Grammar\proto101Parser.cs" />
+    <Compile Include="Assets\Scripts\FireLasers.cs" />
     <Compile Include="Assets\Scripts\Game\CamFollow.cs" />
     <Compile Include="Assets\Scripts\Game\CreationManager.cs" />
-    <Compile Include="Assets\Scripts\Game\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Game\TopDownMvmt.cs" />
     <Compile Include="Assets\Scripts\Grammar\PrototypeCompiler.cs" />
     <Compile Include="Assets\Scripts\Grammar\PrototypeProgram.cs" />
     <Compile Include="Assets\Scripts\Grammar\PrototypeSourceCodeEditor.cs" />
     <Compile Include="Assets\Scripts\Grammar\RuntimeScriptable.cs" />
+    <Compile Include="Assets\Scripts\LaserMovement.cs" />
+    <Compile Include="Assets\Scripts\SideScrollerMvmt.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

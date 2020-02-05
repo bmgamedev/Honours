@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class TopDownMvmt : MonoBehaviour {
 
     private float inputDeadzone = 0.1f;
     private float walkSpeed = 2;
