@@ -40,13 +40,15 @@ public class PrototypeCompiler
 
     public PrototypeCompiler CreateGame(string type)
     {
-        PrototypeProgram.GameTypeSetup.GameType gameType = PrototypeProgram.GameTypeSetup.GameType.PLATFORMER; //default to platformer for now
+        //PrototypeProgram.GameTypeSetup.GameType gameType = PrototypeProgram.GameTypeSetup.GameType.PLATFORMER; //default to platformer for now
+        PrototypeProgram.GameType gameType = PrototypeProgram.GameType.Platformer;
 
-        string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.DUNGEON);
-        //string platformerGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.PLATFORMER);
+        //string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.DUNGEON);
+        string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameType), PrototypeProgram.GameType.Dungeon);
 
-        if (type.ToUpper().Equals(dungeonGame)) {
-            gameType = PrototypeProgram.GameTypeSetup.GameType.DUNGEON;
+        if (type.ToUpper().Equals(dungeonGame.ToUpper())) {
+            //gameType = PrototypeProgram.GameTypeSetup.GameType.DUNGEON;
+            gameType = PrototypeProgram.GameType.Dungeon;
         }
 
         PrototypeProgram.GameTypeSetup GameTypeSetup = new PrototypeProgram.GameTypeSetup(gameType);

@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 
 public class PrototypeProgram
 {
-    public enum GameType { dungeon, platformer };
+    public enum GameType { Dungeon, Platformer };
 
     static private Transform _startPos;
     static private Tilemap _wallMap, _groundMap;
@@ -80,20 +80,29 @@ public class PrototypeProgram
             //TODO: CODE TO CREATE PLAYER(S)
             for (int i = 0; i < _num; i++)
             {
-                //create player
-                //Instantiate(Resources.Load("PlayerPrefab"), new Vector2(startPos.x + (i * 4), startPos.y));
-                Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
-                //GameObject Player = new GameObject();
-                //Player.GetComponent<SpriteRenderer>().enabled = false;
-                Player = GameObject.Instantiate(Resources.Load("PlayerPrefab"), startPos, Quaternion.identity) as GameObject;
-                Player.name = "Player"+(i+1);
-                //SceneManager.MoveGameObjectToScene(Player, SceneManager.GetSceneByName("Game"));
-                //Player.GetComponent<SpriteRenderer>().enabled = true;
+                //create player - the details differ between game types
+                if (_gameType == GameType.Dungeon)
+                {
+                    Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
+                    Player = GameObject.Instantiate(Resources.Load("DungeonPC"), startPos, Quaternion.identity) as GameObject;
+                    Player.name = "Player" + (i + 1);
 
-                //CreationManager.CreatePlayer(i);
-                /*if (i == 0) {
-                    CreationManager.UpdateCamera(Player, "SinglePlayer");
-                }*/
+                    //SceneManager.MoveGameObjectToScene(Player, SceneManager.GetSceneByName("Game"));
+                    //Player.GetComponent<SpriteRenderer>().enabled = true;
+
+                    //CreationManager.CreatePlayer(i);
+                    /*if (i == 0) {
+                        CreationManager.UpdateCamera(Player, "SinglePlayer");
+                    }*/
+                }
+                else if (_gameType == GameType.Platformer)
+                {
+                    Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
+                    Player = GameObject.Instantiate(Resources.Load("PlatformerPC"), startPos, Quaternion.identity) as GameObject;
+                    Player.name = "Player" + (i + 1);
+                }
+
+
             }
 
             //1 player pos:

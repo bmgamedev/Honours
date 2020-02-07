@@ -28,8 +28,8 @@ public class RuntimeScriptable : MonoBehaviour
 
     public void CompileAndRun(Text text)
 	{
-        //int maxIterations = 20; a) for debugging, b) should be moved to game scene
-        Debug.Log(text.text);
+        int maxIterations = 20;// a) for debugging, b) should be moved to game scene
+        //Debug.Log(GeneratePath(maxIterations));
         generatorText = text.text;
         //string code = text.text + GeneratePath(maxIterations); //move GeneratePath to game scene
         StopAllCoroutines();
