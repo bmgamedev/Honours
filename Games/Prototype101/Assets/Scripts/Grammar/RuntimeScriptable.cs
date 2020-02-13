@@ -28,24 +28,24 @@ public class RuntimeScriptable : MonoBehaviour
 
     public void CompileAndRun(Text text)
 	{
-        int maxIterations = 20;// a) for debugging, b) should be moved to game scene
-        //Debug.Log(GeneratePath(maxIterations));
-        generatorText = text.text;
-        //string code = text.text + GeneratePath(maxIterations); //move GeneratePath to game scene
+        int maxIterations = 20;// a) for debugging - needs to later be dictated by chosen map size b) should be moved to game scene
+        generatorText = text.text + GeneratePath(maxIterations); //move GeneratePath to game scene
+        Debug.Log(generatorText);
         StopAllCoroutines();
 		_program = PrototypeCompiler.Compile(generatorText); //move this to the game scene and load asyncronously
         StartCoroutine(_program.Run());
     }
 
-    //only public for testing:
-    public void GeneratePath(int maxIterations) {
+    //TO TEST: make public
+    private string GeneratePath(int maxIterations) {
         //if wanting to customise the way the path is generated such as the number of iterations or the probabilities, then what?
 
+        //TODO make the probabilities available for customisation with slider bars??
         var rewriteS = new[]
         {
-            ProportionValue.Create(0.1, "ffF"),
-            ProportionValue.Create(0.45, "ffP"),
-            ProportionValue.Create(0.45, "ffG"),
+            ProportionValue.Create(0.1, "sffF"),
+            ProportionValue.Create(0.45, "sffP"),
+            ProportionValue.Create(0.45, "sffG"),
         };
 
         var rewriteP = new[]
@@ -127,10 +127,8 @@ public class RuntimeScriptable : MonoBehaviour
             curString = "";
         }
 
-
-        //return path;
-        Debug.Log(lastString); //still need to append a finish line segment
-
+        //Debug.Log(lastString += "e"); //still need to append a finish line segment
+        return lastString += "e";
     }
 }
 

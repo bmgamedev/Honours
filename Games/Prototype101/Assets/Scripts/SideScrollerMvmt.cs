@@ -41,6 +41,7 @@ public class SideScrollerMvmt : MonoBehaviour {
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
+        Debug.Log(isGrounded);
     }
 
     void FixedUpdate () 
@@ -49,7 +50,7 @@ public class SideScrollerMvmt : MonoBehaviour {
         //bool isGrounded = Physics2D.Raycast(transform.position, -Vector3.up, distToGround + 0.01f);
         //bool isGrounded = gameObject.GetComponentInChildren<GroundCheck>().isGrounded;
 
-        bool isGrounded = Physics2D.OverlapPoint (groundCheck.position, GroundLayer);
+        //bool isGrounded = Physics2D.OverlapPoint (groundCheck.position, GroundLayer);
 
         if(Input.GetButton("Jump"))
         {
@@ -78,7 +79,7 @@ public class SideScrollerMvmt : MonoBehaviour {
     //NEW JUMP METHOD (20180626)
     void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.layer == 9)
         {
             isGrounded = true;
         }
@@ -86,7 +87,7 @@ public class SideScrollerMvmt : MonoBehaviour {
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.layer == 9)
         {
             if (isGrounded)
             {

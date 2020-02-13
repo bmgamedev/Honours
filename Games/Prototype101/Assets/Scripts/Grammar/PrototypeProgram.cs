@@ -9,10 +9,12 @@ public class PrototypeProgram
 {
     public enum GameType { Dungeon, Platformer };
 
-    static private Transform _startPos;
+    static private Transform _mapConnectionPos;
     static private Tilemap _wallMap, _groundMap;
     static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3;
     static private GameType _gameType;
+    static private List<GameObject> _players = new List<GameObject>();
+    static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
 
     public interface IElement
 	{
@@ -46,7 +48,7 @@ public class PrototypeProgram
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
 
-            _startPos = GameObject.Find("StartPos").GetComponent<Transform>();
+            _mapConnectionPos = GameObject.Find("StartPos").GetComponent<Transform>();
             //TODO just deal with startPos internally. set it to the required position initially based on gametype
 
             _groundTile = Resources.Load("Ground") as Tile;
@@ -73,6 +75,7 @@ public class PrototypeProgram
         public IEnumerator Execute() //What it should do when this command gets executed
         {
             //Vector3 origin = new Vector3(0,0,0); // GameObject.Find("StartPos").transform.position;
+            _players.Clear();
 
             CreationManager.CameraSetup(_num);
             GameObject Player = null;
@@ -86,20 +89,14 @@ public class PrototypeProgram
                     Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
                     Player = GameObject.Instantiate(Resources.Load("DungeonPC"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
-
-                    //SceneManager.MoveGameObjectToScene(Player, SceneManager.GetSceneByName("Game"));
-                    //Player.GetComponent<SpriteRenderer>().enabled = true;
-
-                    //CreationManager.CreatePlayer(i);
-                    /*if (i == 0) {
-                        CreationManager.UpdateCamera(Player, "SinglePlayer");
-                    }*/
+                    _players.Add(Player);
                 }
                 else if (_gameType == GameType.Platformer)
                 {
                     Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
                     Player = GameObject.Instantiate(Resources.Load("PlatformerPC"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
+                    _players.Add(Player);
                 }
 
 
@@ -297,9 +294,9 @@ public class PrototypeProgram
             }
 
             //Make the actual room:
-            Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
 
-            Debug.Log(_startPos);
+            Debug.Log(_mapConnectionPos);
 
             for (int i = 0; i < maxRoomSize; i++)
             {
@@ -438,13 +435,14 @@ public class PrototypeProgram
             //DDD (dirt)
             //DDD (dirt)
 
-            Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
-            _startPos.position = _groundMap.CellToLocal(newFirstCell);
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
 
             Vector3Int tile1, tile2, tile3;
 
+            //dirt
             int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++)
             {
@@ -460,6 +458,7 @@ public class PrototypeProgram
                 }
             }
 
+            //ground
             for (int i = 0; i < 3; i++)
             {
                 tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
@@ -471,11 +470,17 @@ public class PrototypeProgram
                 _wallMap.SetTile(tile3, _brickTile3);
             }
 
+            //wall
             for (int i = 1; i < 11; i++)
             {
                 tile1 = new Vector3Int(currentCell.x, currentCell.y + (maxFillerLayers + i), currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
             }
+
+            //TODO create player pos from this segment and add to _playerPositions
+            Vector3Int startPos = new Vector3Int(currentCell.x + 2, currentCell.y + 4, currentCell.z);
+            _playerPositions.Add(_groundMap.CellToLocal(startPos));
+
 
             return null;
         }
@@ -491,13 +496,14 @@ public class PrototypeProgram
             //DDD (dirt)
             //DDD (dirt)
 
-            Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
-            _startPos.position = _groundMap.CellToLocal(newFirstCell);
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
 
             Vector3Int tile1, tile2, tile3;
 
+            //dirt
             int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++) {
                 for (int j = 0; j < 3; j++) {
@@ -511,6 +517,7 @@ public class PrototypeProgram
                 }
             }
 
+            //ground
             for (int i = 0; i < 3; i++) {
                 tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
@@ -531,7 +538,59 @@ public class PrototypeProgram
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
-            //Place tiles in required format for this path
+            //GGG
+            //
+            //
+            //GGG (ground)
+            //DDD (dirt)
+            //DDD (dirt)
+
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+            Vector3Int newFirstCell = currentCell;
+            newFirstCell.x += 3;
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
+
+            Vector3Int tile1, tile2, tile3;
+
+            //Dirt:
+            int maxFillerLayers = 2;
+            for (int i = 0; i < maxFillerLayers; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    tile1 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile2 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile3 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+
+                    _groundMap.SetTile(tile1, _groundTile);
+                    _groundMap.SetTile(tile2, _groundTile);
+                    _groundMap.SetTile(tile3, _groundTile);
+                }
+            }
+
+            //Ground
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+
+                _wallMap.SetTile(tile1, _brickTile1);
+                _wallMap.SetTile(tile2, _brickTile2);
+                _wallMap.SetTile(tile3, _brickTile3);
+            }
+
+            //Platform
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 3, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 3, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 3, currentCell.z);
+
+                _wallMap.SetTile(tile1, _brickTile1);
+                _wallMap.SetTile(tile2, _brickTile2);
+                _wallMap.SetTile(tile3, _brickTile3);
+            }
 
             return null;
         }
@@ -543,7 +602,62 @@ public class PrototypeProgram
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
-            //Place tiles in required format for this path
+            //GGG
+            //
+            //
+            //
+            //
+            //
+            //GGG (ground)
+            //DDD (dirt)
+            //DDD (dirt)
+
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+            Vector3Int newFirstCell = currentCell;
+            newFirstCell.x += 3;
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
+
+            Vector3Int tile1, tile2, tile3;
+
+            //Dirt:
+            int maxFillerLayers = 2;
+            for (int i = 0; i < maxFillerLayers; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    tile1 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile2 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile3 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+
+                    _groundMap.SetTile(tile1, _groundTile);
+                    _groundMap.SetTile(tile2, _groundTile);
+                    _groundMap.SetTile(tile3, _groundTile);
+                }
+            }
+
+            //Ground
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+
+                _wallMap.SetTile(tile1, _brickTile1);
+                _wallMap.SetTile(tile2, _brickTile2);
+                _wallMap.SetTile(tile3, _brickTile3);
+            }
+
+            //Platform
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 6, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 6, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 6, currentCell.z);
+
+                _wallMap.SetTile(tile1, _brickTile1);
+                _wallMap.SetTile(tile2, _brickTile2);
+                _wallMap.SetTile(tile3, _brickTile3);
+            }
 
             return null;
         }
@@ -555,7 +669,30 @@ public class PrototypeProgram
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
-            //Place tiles in required format for this path
+            //xxx (nothing)
+            //xxx (nothing)
+            //xxx (spikes??)
+
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+            Vector3Int newFirstCell = currentCell;
+            newFirstCell.x += 3;
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
+
+            Vector3Int tile1, tile2, tile3;
+
+            //spikes
+            //TODO: spike layer that has death upon collision, plus spike sprite tiles
+            for (int j = 0; j < 3; j++)
+            {
+                tile1 = new Vector3Int(currentCell.x + j, currentCell.y, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + j, currentCell.y, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + j, currentCell.y, currentCell.z);
+
+                _groundMap.SetTile(tile1, _groundTile);
+                _groundMap.SetTile(tile2, _groundTile);
+                _groundMap.SetTile(tile3, _groundTile);
+            }
+            
 
             return null;
         }
@@ -567,7 +704,70 @@ public class PrototypeProgram
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
-            //Ensure the end point and the composite colliders for all the tiles have been set
+            //  G
+            //  G
+            //  G
+            //  G
+            //  G
+            //  G
+            //GGG (ground)
+            //DDD (dirt)
+            //DDD (dirt)
+
+            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+            Vector3Int newFirstCell = currentCell;
+            newFirstCell.x += 3;
+            _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
+
+            Vector3Int tile1, tile2, tile3;
+
+            //dirt
+            int maxFillerLayers = 2;
+            for (int i = 0; i < maxFillerLayers; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    tile1 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile2 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+                    tile3 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
+
+                    _groundMap.SetTile(tile1, _groundTile);
+                    _groundMap.SetTile(tile2, _groundTile);
+                    _groundMap.SetTile(tile3, _groundTile);
+                }
+            }
+
+            //ground
+            for (int i = 0; i < 5; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
+
+                _wallMap.SetTile(tile1, _brickTile1);
+                _wallMap.SetTile(tile2, _brickTile2);
+                _wallMap.SetTile(tile3, _brickTile3);
+            }
+
+            //wall
+            //TODO: Make this a level end trigger, not just a wall...
+            for (int i = 1; i < 11; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + 4, currentCell.y + (maxFillerLayers + i), currentCell.z);
+                _wallMap.SetTile(tile1, _brickTile1);
+            }
+
+            //make player active now that the full level has been generated
+            foreach(GameObject p in _players)
+            {
+                //set start position to the start piece
+                int index = _players.IndexOf(p);
+                p.GetComponent<Transform>().position = _playerPositions[index];
+                //make visible
+                p.GetComponent<SpriteRenderer>().enabled = true;
+                //change type from kinematic to dynamic
+                p.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            }
 
             return null;
         }

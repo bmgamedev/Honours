@@ -68,6 +68,9 @@
     <Compile Include="Assets\Scripts\FireLasers.cs" />
     <Compile Include="Assets\Scripts\Game\CamFollow.cs" />
     <Compile Include="Assets\Scripts\Game\CreationManager.cs" />
+    <Compile Include="Assets\Scripts\Game\GeneratorDisplay.cs" />
+    <Compile Include="Assets\Scripts\Game\GrammarGenerator.cs" />
+    <Compile Include="Assets\Scripts\Game\ToggleMenu.cs" />
     <Compile Include="Assets\Scripts\Game\TopDownMvmt.cs" />
     <Compile Include="Assets\Scripts\Grammar\PrototypeCompiler.cs" />
     <Compile Include="Assets\Scripts\Grammar\PrototypeProgram.cs" />
@@ -80,6 +83,15 @@
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
       <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEditorBridge.003">
+      <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.003.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VectorGraphics">
+      <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/Unity.VectorGraphics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VectorGraphics.Editor">
+      <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/Unity.VectorGraphics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.1.9f2/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
