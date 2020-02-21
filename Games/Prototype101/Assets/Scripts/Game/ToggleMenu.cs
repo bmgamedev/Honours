@@ -61,10 +61,10 @@ public class ToggleMenu : MonoBehaviour {
         grammarInputDict.Add("GTVerticalScroller", "vertical scroller");
 
         //player setup:
-        grammarInputDict.Add("1P", "1 player");
-        grammarInputDict.Add("2P", "2 player");
-        grammarInputDict.Add("3P", "3 player");
-        grammarInputDict.Add("4P", "4 player");
+        grammarInputDict.Add("1P", "players 1");
+        grammarInputDict.Add("2P", "players 2");
+        grammarInputDict.Add("3P", "players 3");
+        grammarInputDict.Add("4P", "players 4");
 
         //game difficulty
         grammarInputDict.Add("DEasy", "easy difficulty");
@@ -74,7 +74,7 @@ public class ToggleMenu : MonoBehaviour {
         //enemy types
         grammarInputDict.Add("EShooting", "projectile enemy");
         grammarInputDict.Add("EMelee", "melee enemy");
-        grammarInputDict.Add("EBoth", "projectile enemy melee enemy");
+        grammarInputDict.Add("EBoth", "varied enemies");
 
         //map size
         grammarInputDict.Add("MSmall", "small map");

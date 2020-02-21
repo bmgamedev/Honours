@@ -37,28 +37,30 @@ public partial class proto101Parser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		GAMETYPE=1, PC=2, NUM=3, SKILL=4, DUNGEON=5, PLATFORMER=6, SIZE=7, ENEMY=8, 
-		ENEMYTYPE=9, START=10, FLATPATH=11, LOWPLATFORM=12, HIGHPLATFORM=13, PATHGAP=14, 
-		FINISHLINE=15, INT=16, NEWLINE=17, WS=18;
+		INITIALISE=1, GAMETYPE=2, PC=3, NUM=4, DIFFICULTY=5, SKILLLEVEL=6, SKILLSET=7, 
+		DUNGEON=8, PLATFORMER=9, MAP=10, SIZE=11, ENEMY=12, ATTACKSTYLE=13, START=14, 
+		FLATPATH=15, LOWPLATFORM=16, HIGHPLATFORM=17, PATHGAP=18, FINISHLINE=19, 
+		INT=20, NEWLINE=21, WS=22;
 	public const int
-		RULE_prog = 0, RULE_elem = 1, RULE_createGame = 2, RULE_createPlayer = 3, 
-		RULE_createDungeon = 4, RULE_createEnemies = 5, RULE_addStartSegment = 6, 
-		RULE_addFlatPathSegment = 7, RULE_addLowPlatformSegment = 8, RULE_addHighPlatformSegment = 9, 
-		RULE_addPathGapSegment = 10, RULE_addFinishLineSegment = 11;
+		RULE_prog = 0, RULE_elem = 1, RULE_initialiseGame = 2, RULE_defineGame = 3, 
+		RULE_createPlayer = 4, RULE_createDungeon = 5, RULE_createEnemies = 6, 
+		RULE_addStartSegment = 7, RULE_addFlatPathSegment = 8, RULE_addLowPlatformSegment = 9, 
+		RULE_addHighPlatformSegment = 10, RULE_addPathGapSegment = 11, RULE_addFinishLineSegment = 12;
 	public static readonly string[] ruleNames = {
-		"prog", "elem", "createGame", "createPlayer", "createDungeon", "createEnemies", 
-		"addStartSegment", "addFlatPathSegment", "addLowPlatformSegment", "addHighPlatformSegment", 
-		"addPathGapSegment", "addFinishLineSegment"
+		"prog", "elem", "initialiseGame", "defineGame", "createPlayer", "createDungeon", 
+		"createEnemies", "addStartSegment", "addFlatPathSegment", "addLowPlatformSegment", 
+		"addHighPlatformSegment", "addPathGapSegment", "addFinishLineSegment"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, "'player'", null, null, "'dungeon'", "'platformer'", null, 
-		"'enemy'"
+		null, "'initialise'", null, "'players'", null, "'difficulty'", null, null, 
+		"'dungeon'", "'platformer'", "'map'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "GAMETYPE", "PC", "NUM", "SKILL", "DUNGEON", "PLATFORMER", "SIZE", 
-		"ENEMY", "ENEMYTYPE", "START", "FLATPATH", "LOWPLATFORM", "HIGHPLATFORM", 
-		"PATHGAP", "FINISHLINE", "INT", "NEWLINE", "WS"
+		null, "INITIALISE", "GAMETYPE", "PC", "NUM", "DIFFICULTY", "SKILLLEVEL", 
+		"SKILLSET", "DUNGEON", "PLATFORMER", "MAP", "SIZE", "ENEMY", "ATTACKSTYLE", 
+		"START", "FLATPATH", "LOWPLATFORM", "HIGHPLATFORM", "PATHGAP", "FINISHLINE", 
+		"INT", "NEWLINE", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -125,19 +127,19 @@ public partial class proto101Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 25;
+			State = 27;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 24; elem();
+				State = 26; elem();
 				}
 				}
-				State = 27;
+				State = 29;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GAMETYPE) | (1L << PC) | (1L << DUNGEON) | (1L << ENEMY) | (1L << START) | (1L << FLATPATH) | (1L << LOWPLATFORM) | (1L << HIGHPLATFORM) | (1L << PATHGAP) | (1L << FINISHLINE))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITIALISE) | (1L << GAMETYPE) | (1L << PC) | (1L << DUNGEON) | (1L << ATTACKSTYLE) | (1L << START) | (1L << FLATPATH) | (1L << LOWPLATFORM) | (1L << HIGHPLATFORM) | (1L << PATHGAP) | (1L << FINISHLINE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -153,8 +155,11 @@ public partial class proto101Parser : Parser {
 
 	public partial class ElemContext : ParserRuleContext {
 		public ITerminalNode NEWLINE() { return GetToken(proto101Parser.NEWLINE, 0); }
-		public CreateGameContext createGame() {
-			return GetRuleContext<CreateGameContext>(0);
+		public InitialiseGameContext initialiseGame() {
+			return GetRuleContext<InitialiseGameContext>(0);
+		}
+		public DefineGameContext defineGame() {
+			return GetRuleContext<DefineGameContext>(0);
 		}
 		public CreatePlayerContext createPlayer() {
 			return GetRuleContext<CreatePlayerContext>(0);
@@ -205,63 +210,68 @@ public partial class proto101Parser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 39;
+			State = 42;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
+			case INITIALISE:
+				{
+				State = 31; initialiseGame();
+				}
+				break;
 			case GAMETYPE:
 				{
-				State = 29; createGame();
+				State = 32; defineGame();
 				}
 				break;
 			case PC:
 				{
-				State = 30; createPlayer();
+				State = 33; createPlayer();
 				}
 				break;
 			case DUNGEON:
 				{
-				State = 31; createDungeon();
+				State = 34; createDungeon();
 				}
 				break;
-			case ENEMY:
+			case ATTACKSTYLE:
 				{
-				State = 32; createEnemies();
+				State = 35; createEnemies();
 				}
 				break;
 			case START:
 				{
-				State = 33; addStartSegment();
+				State = 36; addStartSegment();
 				}
 				break;
 			case FLATPATH:
 				{
-				State = 34; addFlatPathSegment();
+				State = 37; addFlatPathSegment();
 				}
 				break;
 			case LOWPLATFORM:
 				{
-				State = 35; addLowPlatformSegment();
+				State = 38; addLowPlatformSegment();
 				}
 				break;
 			case HIGHPLATFORM:
 				{
-				State = 36; addHighPlatformSegment();
+				State = 39; addHighPlatformSegment();
 				}
 				break;
 			case PATHGAP:
 				{
-				State = 37; addPathGapSegment();
+				State = 40; addPathGapSegment();
 				}
 				break;
 			case FINISHLINE:
 				{
-				State = 38; addFinishLineSegment();
+				State = 41; addFinishLineSegment();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			State = 41; Match(NEWLINE);
+			State = 44; Match(NEWLINE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -275,33 +285,77 @@ public partial class proto101Parser : Parser {
 		return _localctx;
 	}
 
-	public partial class CreateGameContext : ParserRuleContext {
-		public IToken _GAMETYPE;
-		public ITerminalNode GAMETYPE() { return GetToken(proto101Parser.GAMETYPE, 0); }
-		public CreateGameContext(ParserRuleContext parent, int invokingState)
+	public partial class InitialiseGameContext : ParserRuleContext {
+		public ITerminalNode INITIALISE() { return GetToken(proto101Parser.INITIALISE, 0); }
+		public InitialiseGameContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_createGame; } }
+		public override int RuleIndex { get { return RULE_initialiseGame; } }
 		public override void EnterRule(IParseTreeListener listener) {
 			Iproto101Listener typedListener = listener as Iproto101Listener;
-			if (typedListener != null) typedListener.EnterCreateGame(this);
+			if (typedListener != null) typedListener.EnterInitialiseGame(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			Iproto101Listener typedListener = listener as Iproto101Listener;
-			if (typedListener != null) typedListener.ExitCreateGame(this);
+			if (typedListener != null) typedListener.ExitInitialiseGame(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public CreateGameContext createGame() {
-		CreateGameContext _localctx = new CreateGameContext(Context, State);
-		EnterRule(_localctx, 4, RULE_createGame);
+	public InitialiseGameContext initialiseGame() {
+		InitialiseGameContext _localctx = new InitialiseGameContext(Context, State);
+		EnterRule(_localctx, 4, RULE_initialiseGame);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 43; _localctx._GAMETYPE = Match(GAMETYPE);
-			Compiler.CreateGame((_localctx._GAMETYPE!=null?_localctx._GAMETYPE.Text:null));
+			State = 46; Match(INITIALISE);
+			 Compiler.InitialiseGame(); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class DefineGameContext : ParserRuleContext {
+		public IToken _GAMETYPE;
+		public IToken _SKILLLEVEL;
+		public ITerminalNode GAMETYPE() { return GetToken(proto101Parser.GAMETYPE, 0); }
+		public ITerminalNode SKILLLEVEL() { return GetToken(proto101Parser.SKILLLEVEL, 0); }
+		public ITerminalNode DIFFICULTY() { return GetToken(proto101Parser.DIFFICULTY, 0); }
+		public DefineGameContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_defineGame; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			Iproto101Listener typedListener = listener as Iproto101Listener;
+			if (typedListener != null) typedListener.EnterDefineGame(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			Iproto101Listener typedListener = listener as Iproto101Listener;
+			if (typedListener != null) typedListener.ExitDefineGame(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DefineGameContext defineGame() {
+		DefineGameContext _localctx = new DefineGameContext(Context, State);
+		EnterRule(_localctx, 6, RULE_defineGame);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 49; _localctx._GAMETYPE = Match(GAMETYPE);
+			State = 50; _localctx._SKILLLEVEL = Match(SKILLLEVEL);
+			State = 51; Match(DIFFICULTY);
+			 Compiler.DefineGame((_localctx._GAMETYPE!=null?_localctx._GAMETYPE.Text:null), (_localctx._SKILLLEVEL!=null?_localctx._SKILLLEVEL.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -337,12 +391,12 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public CreatePlayerContext createPlayer() {
 		CreatePlayerContext _localctx = new CreatePlayerContext(Context, State);
-		EnterRule(_localctx, 6, RULE_createPlayer);
+		EnterRule(_localctx, 8, RULE_createPlayer);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 46; Match(PC);
-			State = 47; _localctx._NUM = Match(NUM);
+			State = 54; Match(PC);
+			State = 55; _localctx._NUM = Match(NUM);
 			 Compiler.CreatePlayer((_localctx._NUM!=null?_localctx._NUM.Text:null)); 
 			}
 		}
@@ -379,12 +433,12 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public CreateDungeonContext createDungeon() {
 		CreateDungeonContext _localctx = new CreateDungeonContext(Context, State);
-		EnterRule(_localctx, 8, RULE_createDungeon);
+		EnterRule(_localctx, 10, RULE_createDungeon);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 50; Match(DUNGEON);
-			State = 51; _localctx._SIZE = Match(SIZE);
+			State = 58; Match(DUNGEON);
+			State = 59; _localctx._SIZE = Match(SIZE);
 			 Compiler.CreateDungeon((_localctx._SIZE!=null?_localctx._SIZE.Text:null)); 
 			}
 		}
@@ -400,13 +454,9 @@ public partial class proto101Parser : Parser {
 	}
 
 	public partial class CreateEnemiesContext : ParserRuleContext {
-		public IToken _ENEMYTYPE;
-		public IToken _NUM;
-		public IToken _SKILL;
+		public IToken _ATTACKSTYLE;
+		public ITerminalNode ATTACKSTYLE() { return GetToken(proto101Parser.ATTACKSTYLE, 0); }
 		public ITerminalNode ENEMY() { return GetToken(proto101Parser.ENEMY, 0); }
-		public ITerminalNode ENEMYTYPE() { return GetToken(proto101Parser.ENEMYTYPE, 0); }
-		public ITerminalNode NUM() { return GetToken(proto101Parser.NUM, 0); }
-		public ITerminalNode SKILL() { return GetToken(proto101Parser.SKILL, 0); }
 		public CreateEnemiesContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -425,15 +475,13 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public CreateEnemiesContext createEnemies() {
 		CreateEnemiesContext _localctx = new CreateEnemiesContext(Context, State);
-		EnterRule(_localctx, 10, RULE_createEnemies);
+		EnterRule(_localctx, 12, RULE_createEnemies);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 54; Match(ENEMY);
-			State = 55; _localctx._ENEMYTYPE = Match(ENEMYTYPE);
-			State = 56; _localctx._NUM = Match(NUM);
-			State = 57; _localctx._SKILL = Match(SKILL);
-			 Compiler.CreateEnemy((_localctx._ENEMYTYPE!=null?_localctx._ENEMYTYPE.Text:null), (_localctx._NUM!=null?_localctx._NUM.Text:null), (_localctx._SKILL!=null?_localctx._SKILL.Text:null)); 
+			State = 62; _localctx._ATTACKSTYLE = Match(ATTACKSTYLE);
+			State = 63; Match(ENEMY);
+			 Compiler.CreateEnemy((_localctx._ATTACKSTYLE!=null?_localctx._ATTACKSTYLE.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -467,11 +515,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddStartSegmentContext addStartSegment() {
 		AddStartSegmentContext _localctx = new AddStartSegmentContext(Context, State);
-		EnterRule(_localctx, 12, RULE_addStartSegment);
+		EnterRule(_localctx, 14, RULE_addStartSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 60; Match(START);
+			State = 66; Match(START);
 			 Compiler.CreatePathStart(); 
 			}
 		}
@@ -506,11 +554,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddFlatPathSegmentContext addFlatPathSegment() {
 		AddFlatPathSegmentContext _localctx = new AddFlatPathSegmentContext(Context, State);
-		EnterRule(_localctx, 14, RULE_addFlatPathSegment);
+		EnterRule(_localctx, 16, RULE_addFlatPathSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 63; Match(FLATPATH);
+			State = 69; Match(FLATPATH);
 			 Compiler.CreateFlatPath(); 
 			}
 		}
@@ -545,11 +593,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddLowPlatformSegmentContext addLowPlatformSegment() {
 		AddLowPlatformSegmentContext _localctx = new AddLowPlatformSegmentContext(Context, State);
-		EnterRule(_localctx, 16, RULE_addLowPlatformSegment);
+		EnterRule(_localctx, 18, RULE_addLowPlatformSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 66; Match(LOWPLATFORM);
+			State = 72; Match(LOWPLATFORM);
 			 Compiler.CreateLowPlatform(); 
 			}
 		}
@@ -584,11 +632,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddHighPlatformSegmentContext addHighPlatformSegment() {
 		AddHighPlatformSegmentContext _localctx = new AddHighPlatformSegmentContext(Context, State);
-		EnterRule(_localctx, 18, RULE_addHighPlatformSegment);
+		EnterRule(_localctx, 20, RULE_addHighPlatformSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 69; Match(HIGHPLATFORM);
+			State = 75; Match(HIGHPLATFORM);
 			 Compiler.CreateHighPlatform(); 
 			}
 		}
@@ -623,11 +671,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddPathGapSegmentContext addPathGapSegment() {
 		AddPathGapSegmentContext _localctx = new AddPathGapSegmentContext(Context, State);
-		EnterRule(_localctx, 20, RULE_addPathGapSegment);
+		EnterRule(_localctx, 22, RULE_addPathGapSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 72; Match(PATHGAP);
+			State = 78; Match(PATHGAP);
 			 Compiler.CreatePathGap(); 
 			}
 		}
@@ -662,11 +710,11 @@ public partial class proto101Parser : Parser {
 	[RuleVersion(0)]
 	public AddFinishLineSegmentContext addFinishLineSegment() {
 		AddFinishLineSegmentContext _localctx = new AddFinishLineSegmentContext(Context, State);
-		EnterRule(_localctx, 22, RULE_addFinishLineSegment);
+		EnterRule(_localctx, 24, RULE_addFinishLineSegment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 75; Match(FINISHLINE);
+			State = 81; Match(FINISHLINE);
 			 Compiler.CreateFinishLine(); 
 			}
 		}
@@ -683,66 +731,70 @@ public partial class proto101Parser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x14', 'Q', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\x5964', '\x3', '\x18', 'W', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
 		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
 		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
 		'\x4', '\t', '\t', '\t', '\x4', '\n', '\t', '\n', '\x4', '\v', '\t', '\v', 
-		'\x4', '\f', '\t', '\f', '\x4', '\r', '\t', '\r', '\x3', '\x2', '\x6', 
-		'\x2', '\x1C', '\n', '\x2', '\r', '\x2', '\xE', '\x2', '\x1D', '\x3', 
+		'\x4', '\f', '\t', '\f', '\x4', '\r', '\t', '\r', '\x4', '\xE', '\t', 
+		'\xE', '\x3', '\x2', '\x6', '\x2', '\x1E', '\n', '\x2', '\r', '\x2', '\xE', 
+		'\x2', '\x1F', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
 		'\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x5', 
-		'\x3', '*', '\n', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x4', '\x3', 
-		'\x4', '\x3', '\x4', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', 
-		'\x5', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', 
-		'\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', 
-		'\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', '\t', '\x3', '\t', '\x3', 
-		'\t', '\x3', '\n', '\x3', '\n', '\x3', '\n', '\x3', '\v', '\x3', '\v', 
-		'\x3', '\v', '\x3', '\f', '\x3', '\f', '\x3', '\f', '\x3', '\r', '\x3', 
-		'\r', '\x3', '\r', '\x3', '\r', '\x2', '\x2', '\xE', '\x2', '\x4', '\x6', 
-		'\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', '\x16', '\x18', '\x2', 
-		'\x2', '\x2', 'N', '\x2', '\x1B', '\x3', '\x2', '\x2', '\x2', '\x4', ')', 
-		'\x3', '\x2', '\x2', '\x2', '\x6', '-', '\x3', '\x2', '\x2', '\x2', '\b', 
-		'\x30', '\x3', '\x2', '\x2', '\x2', '\n', '\x34', '\x3', '\x2', '\x2', 
-		'\x2', '\f', '\x38', '\x3', '\x2', '\x2', '\x2', '\xE', '>', '\x3', '\x2', 
-		'\x2', '\x2', '\x10', '\x41', '\x3', '\x2', '\x2', '\x2', '\x12', '\x44', 
-		'\x3', '\x2', '\x2', '\x2', '\x14', 'G', '\x3', '\x2', '\x2', '\x2', '\x16', 
-		'J', '\x3', '\x2', '\x2', '\x2', '\x18', 'M', '\x3', '\x2', '\x2', '\x2', 
-		'\x1A', '\x1C', '\x5', '\x4', '\x3', '\x2', '\x1B', '\x1A', '\x3', '\x2', 
-		'\x2', '\x2', '\x1C', '\x1D', '\x3', '\x2', '\x2', '\x2', '\x1D', '\x1B', 
-		'\x3', '\x2', '\x2', '\x2', '\x1D', '\x1E', '\x3', '\x2', '\x2', '\x2', 
-		'\x1E', '\x3', '\x3', '\x2', '\x2', '\x2', '\x1F', '*', '\x5', '\x6', 
-		'\x4', '\x2', ' ', '*', '\x5', '\b', '\x5', '\x2', '!', '*', '\x5', '\n', 
-		'\x6', '\x2', '\"', '*', '\x5', '\f', '\a', '\x2', '#', '*', '\x5', '\xE', 
-		'\b', '\x2', '$', '*', '\x5', '\x10', '\t', '\x2', '%', '*', '\x5', '\x12', 
-		'\n', '\x2', '&', '*', '\x5', '\x14', '\v', '\x2', '\'', '*', '\x5', '\x16', 
-		'\f', '\x2', '(', '*', '\x5', '\x18', '\r', '\x2', ')', '\x1F', '\x3', 
-		'\x2', '\x2', '\x2', ')', ' ', '\x3', '\x2', '\x2', '\x2', ')', '!', '\x3', 
-		'\x2', '\x2', '\x2', ')', '\"', '\x3', '\x2', '\x2', '\x2', ')', '#', 
-		'\x3', '\x2', '\x2', '\x2', ')', '$', '\x3', '\x2', '\x2', '\x2', ')', 
-		'%', '\x3', '\x2', '\x2', '\x2', ')', '&', '\x3', '\x2', '\x2', '\x2', 
-		')', '\'', '\x3', '\x2', '\x2', '\x2', ')', '(', '\x3', '\x2', '\x2', 
-		'\x2', '*', '+', '\x3', '\x2', '\x2', '\x2', '+', ',', '\a', '\x13', '\x2', 
-		'\x2', ',', '\x5', '\x3', '\x2', '\x2', '\x2', '-', '.', '\a', '\x3', 
-		'\x2', '\x2', '.', '/', '\b', '\x4', '\x1', '\x2', '/', '\a', '\x3', '\x2', 
-		'\x2', '\x2', '\x30', '\x31', '\a', '\x4', '\x2', '\x2', '\x31', '\x32', 
-		'\a', '\x5', '\x2', '\x2', '\x32', '\x33', '\b', '\x5', '\x1', '\x2', 
-		'\x33', '\t', '\x3', '\x2', '\x2', '\x2', '\x34', '\x35', '\a', '\a', 
-		'\x2', '\x2', '\x35', '\x36', '\a', '\t', '\x2', '\x2', '\x36', '\x37', 
-		'\b', '\x6', '\x1', '\x2', '\x37', '\v', '\x3', '\x2', '\x2', '\x2', '\x38', 
-		'\x39', '\a', '\n', '\x2', '\x2', '\x39', ':', '\a', '\v', '\x2', '\x2', 
-		':', ';', '\a', '\x5', '\x2', '\x2', ';', '<', '\a', '\x6', '\x2', '\x2', 
-		'<', '=', '\b', '\a', '\x1', '\x2', '=', '\r', '\x3', '\x2', '\x2', '\x2', 
-		'>', '?', '\a', '\f', '\x2', '\x2', '?', '@', '\b', '\b', '\x1', '\x2', 
-		'@', '\xF', '\x3', '\x2', '\x2', '\x2', '\x41', '\x42', '\a', '\r', '\x2', 
-		'\x2', '\x42', '\x43', '\b', '\t', '\x1', '\x2', '\x43', '\x11', '\x3', 
-		'\x2', '\x2', '\x2', '\x44', '\x45', '\a', '\xE', '\x2', '\x2', '\x45', 
-		'\x46', '\b', '\n', '\x1', '\x2', '\x46', '\x13', '\x3', '\x2', '\x2', 
-		'\x2', 'G', 'H', '\a', '\xF', '\x2', '\x2', 'H', 'I', '\b', '\v', '\x1', 
-		'\x2', 'I', '\x15', '\x3', '\x2', '\x2', '\x2', 'J', 'K', '\a', '\x10', 
-		'\x2', '\x2', 'K', 'L', '\b', '\f', '\x1', '\x2', 'L', '\x17', '\x3', 
-		'\x2', '\x2', '\x2', 'M', 'N', '\a', '\x11', '\x2', '\x2', 'N', 'O', '\b', 
-		'\r', '\x1', '\x2', 'O', '\x19', '\x3', '\x2', '\x2', '\x2', '\x4', '\x1D', 
-		')',
+		'\x3', '\x3', '\x3', '\x3', '\x5', '\x3', '-', '\n', '\x3', '\x3', '\x3', 
+		'\x3', '\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x5', 
+		'\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x6', 
+		'\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\a', '\x3', '\a', '\x3', 
+		'\a', '\x3', '\a', '\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', '\b', 
+		'\x3', '\t', '\x3', '\t', '\x3', '\t', '\x3', '\n', '\x3', '\n', '\x3', 
+		'\n', '\x3', '\v', '\x3', '\v', '\x3', '\v', '\x3', '\f', '\x3', '\f', 
+		'\x3', '\f', '\x3', '\r', '\x3', '\r', '\x3', '\r', '\x3', '\xE', '\x3', 
+		'\xE', '\x3', '\xE', '\x3', '\xE', '\x2', '\x2', '\xF', '\x2', '\x4', 
+		'\x6', '\b', '\n', '\f', '\xE', '\x10', '\x12', '\x14', '\x16', '\x18', 
+		'\x1A', '\x2', '\x2', '\x2', 'T', '\x2', '\x1D', '\x3', '\x2', '\x2', 
+		'\x2', '\x4', ',', '\x3', '\x2', '\x2', '\x2', '\x6', '\x30', '\x3', '\x2', 
+		'\x2', '\x2', '\b', '\x33', '\x3', '\x2', '\x2', '\x2', '\n', '\x38', 
+		'\x3', '\x2', '\x2', '\x2', '\f', '<', '\x3', '\x2', '\x2', '\x2', '\xE', 
+		'@', '\x3', '\x2', '\x2', '\x2', '\x10', '\x44', '\x3', '\x2', '\x2', 
+		'\x2', '\x12', 'G', '\x3', '\x2', '\x2', '\x2', '\x14', 'J', '\x3', '\x2', 
+		'\x2', '\x2', '\x16', 'M', '\x3', '\x2', '\x2', '\x2', '\x18', 'P', '\x3', 
+		'\x2', '\x2', '\x2', '\x1A', 'S', '\x3', '\x2', '\x2', '\x2', '\x1C', 
+		'\x1E', '\x5', '\x4', '\x3', '\x2', '\x1D', '\x1C', '\x3', '\x2', '\x2', 
+		'\x2', '\x1E', '\x1F', '\x3', '\x2', '\x2', '\x2', '\x1F', '\x1D', '\x3', 
+		'\x2', '\x2', '\x2', '\x1F', ' ', '\x3', '\x2', '\x2', '\x2', ' ', '\x3', 
+		'\x3', '\x2', '\x2', '\x2', '!', '-', '\x5', '\x6', '\x4', '\x2', '\"', 
+		'-', '\x5', '\b', '\x5', '\x2', '#', '-', '\x5', '\n', '\x6', '\x2', '$', 
+		'-', '\x5', '\f', '\a', '\x2', '%', '-', '\x5', '\xE', '\b', '\x2', '&', 
+		'-', '\x5', '\x10', '\t', '\x2', '\'', '-', '\x5', '\x12', '\n', '\x2', 
+		'(', '-', '\x5', '\x14', '\v', '\x2', ')', '-', '\x5', '\x16', '\f', '\x2', 
+		'*', '-', '\x5', '\x18', '\r', '\x2', '+', '-', '\x5', '\x1A', '\xE', 
+		'\x2', ',', '!', '\x3', '\x2', '\x2', '\x2', ',', '\"', '\x3', '\x2', 
+		'\x2', '\x2', ',', '#', '\x3', '\x2', '\x2', '\x2', ',', '$', '\x3', '\x2', 
+		'\x2', '\x2', ',', '%', '\x3', '\x2', '\x2', '\x2', ',', '&', '\x3', '\x2', 
+		'\x2', '\x2', ',', '\'', '\x3', '\x2', '\x2', '\x2', ',', '(', '\x3', 
+		'\x2', '\x2', '\x2', ',', ')', '\x3', '\x2', '\x2', '\x2', ',', '*', '\x3', 
+		'\x2', '\x2', '\x2', ',', '+', '\x3', '\x2', '\x2', '\x2', '-', '.', '\x3', 
+		'\x2', '\x2', '\x2', '.', '/', '\a', '\x17', '\x2', '\x2', '/', '\x5', 
+		'\x3', '\x2', '\x2', '\x2', '\x30', '\x31', '\a', '\x3', '\x2', '\x2', 
+		'\x31', '\x32', '\b', '\x4', '\x1', '\x2', '\x32', '\a', '\x3', '\x2', 
+		'\x2', '\x2', '\x33', '\x34', '\a', '\x4', '\x2', '\x2', '\x34', '\x35', 
+		'\a', '\b', '\x2', '\x2', '\x35', '\x36', '\a', '\a', '\x2', '\x2', '\x36', 
+		'\x37', '\b', '\x5', '\x1', '\x2', '\x37', '\t', '\x3', '\x2', '\x2', 
+		'\x2', '\x38', '\x39', '\a', '\x5', '\x2', '\x2', '\x39', ':', '\a', '\x6', 
+		'\x2', '\x2', ':', ';', '\b', '\x6', '\x1', '\x2', ';', '\v', '\x3', '\x2', 
+		'\x2', '\x2', '<', '=', '\a', '\n', '\x2', '\x2', '=', '>', '\a', '\r', 
+		'\x2', '\x2', '>', '?', '\b', '\a', '\x1', '\x2', '?', '\r', '\x3', '\x2', 
+		'\x2', '\x2', '@', '\x41', '\a', '\xF', '\x2', '\x2', '\x41', '\x42', 
+		'\a', '\xE', '\x2', '\x2', '\x42', '\x43', '\b', '\b', '\x1', '\x2', '\x43', 
+		'\xF', '\x3', '\x2', '\x2', '\x2', '\x44', '\x45', '\a', '\x10', '\x2', 
+		'\x2', '\x45', '\x46', '\b', '\t', '\x1', '\x2', '\x46', '\x11', '\x3', 
+		'\x2', '\x2', '\x2', 'G', 'H', '\a', '\x11', '\x2', '\x2', 'H', 'I', '\b', 
+		'\n', '\x1', '\x2', 'I', '\x13', '\x3', '\x2', '\x2', '\x2', 'J', 'K', 
+		'\a', '\x12', '\x2', '\x2', 'K', 'L', '\b', '\v', '\x1', '\x2', 'L', '\x15', 
+		'\x3', '\x2', '\x2', '\x2', 'M', 'N', '\a', '\x13', '\x2', '\x2', 'N', 
+		'O', '\b', '\f', '\x1', '\x2', 'O', '\x17', '\x3', '\x2', '\x2', '\x2', 
+		'P', 'Q', '\a', '\x14', '\x2', '\x2', 'Q', 'R', '\b', '\r', '\x1', '\x2', 
+		'R', '\x19', '\x3', '\x2', '\x2', '\x2', 'S', 'T', '\a', '\x15', '\x2', 
+		'\x2', 'T', 'U', '\b', '\xE', '\x1', '\x2', 'U', '\x1B', '\x3', '\x2', 
+		'\x2', '\x2', '\x4', '\x1F', ',',
 	};
 
 	public static readonly ATN _ATN =

@@ -7,7 +7,7 @@ public class FireLasers : MonoBehaviour {
     public float FireRate = 0;
     //public float Damage = 10;
     public LayerMask Destroyables;
-    public Transform LaserTrailPrefab;
+    //public Transform LaserTrailPrefab;
     public float effectSpawnRate = 10;
 
     private float timeToSpawnEffect = 0;
@@ -73,7 +73,10 @@ public class FireLasers : MonoBehaviour {
 
     void Effect()
     {
-        Instantiate(LaserTrailPrefab, firingPoint.position, firingPoint.rotation);
+        //Instantiate(LaserTrailPrefab, firingPoint.position, firingPoint.rotation);
+        GameObject laser = (GameObject)Instantiate(Resources.Load("Laser"), firingPoint.position, firingPoint.rotation) as GameObject;
+        laser.GetComponent<LaserMovement>().SetPlayer(gameObject);
+
     }
 }
 

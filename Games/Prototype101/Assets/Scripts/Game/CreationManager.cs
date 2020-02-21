@@ -7,6 +7,8 @@ public class CreationManager : MonoBehaviour {
 
     public static CreationManager instance;
 
+    private PrototypeProgram _program;
+
     static Transform startPos;
 
     Camera[] cameras;
@@ -30,7 +32,9 @@ public class CreationManager : MonoBehaviour {
         cameras = FindObjectsOfType<Camera>();
         foreach (Camera camera in cameras)
         {
-            camera.enabled = false;
+            if (camera.name != "LoadingCam") {
+                camera.enabled = false;
+            }
         }
 
         cam1 = GameObject.Find("SinglePlayer").GetComponent<Camera>();
@@ -40,6 +44,9 @@ public class CreationManager : MonoBehaviour {
         cam4B = GameObject.Find("FourPlayerB").GetComponent<Camera>();
         cam4C = GameObject.Find("FourPlayerC").GetComponent<Camera>();
         cam4D = GameObject.Find("FourPlayerD").GetComponent<Camera>();
+
+        //_program = PrototypeCompiler.Compile(GrammarGenerator._FullGameScript);
+        //StartCoroutine(_program.Run());
     }
 
     public static void CreatePlayer(int i) {

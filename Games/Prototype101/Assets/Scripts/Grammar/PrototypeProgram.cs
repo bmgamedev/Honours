@@ -8,13 +8,20 @@ using UnityEngine.Tilemaps;
 public class PrototypeProgram
 {
     public enum GameType { Dungeon, Platformer };
+    public enum SkillLevel { Easy, Regular, Hard };
 
     static private Transform _mapConnectionPos;
-    static private Tilemap _wallMap, _groundMap;
-    static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3;
+    static private Tilemap _wallMap, _groundMap, _deathMap;
+    static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
     static private GameType _gameType;
+    static private SkillLevel _gameDifficulty;
     static private List<GameObject> _players = new List<GameObject>();
     static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
+    static private List<Vector3> _pickupPositions = new List<Vector3>();
+    static private List<Vector3> _enemyPositions = new List<Vector3>();
+    static private float enemyPaceDist;
+
+    static private Text loadingMessage = null;
 
     public interface IElement
 	{
@@ -22,31 +29,16 @@ public class PrototypeProgram
         IEnumerator Execute();
     }
 
-    public class GameTypeSetup : IElement
+    public class GameInitialisation : IElement
     {
-        /*public enum GameType
+        public GameInitialisation() { }
+
+        public IEnumerator Execute()
         {
-            DUNGEON, PLATFORMER
-        }*/
-
-        //private readonly GameType _gametype;
-
-        public GameTypeSetup(GameType gametype)
-        {
-            //_gametype = gametype; //do I even need this??
-            _gameType = gametype;
-        }
-
-        public IEnumerator Execute() 
-        {
-            //TODO
-            //define player prefab to be used
-            //define camera set up to use - how? (overlap with player element)
-            //how to handle the map generation string?? Will need to be different for dungeon and platformer but that needs to be decided before this stage????
-            //do Find calls here to reduce number when generating map etc
-
+            //Find resources etc
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
+            _deathMap = GameObject.Find("DeathMap").GetComponent<Tilemap>(); //collisions
 
             _mapConnectionPos = GameObject.Find("StartPos").GetComponent<Transform>();
             //TODO just deal with startPos internally. set it to the required position initially based on gametype
@@ -55,8 +47,55 @@ public class PrototypeProgram
             _brickTile1 = Resources.Load("Wall") as Tile;
             _brickTile2 = Resources.Load("Wall2") as Tile;
             _brickTile3 = Resources.Load("Wall3") as Tile;
+            _spikeTile = Resources.Load("Spikes") as Tile;
 
-            Debug.Log("game type: " + _gameType.ToString());
+            loadingMessage = GameObject.Find("LoadingText").GetComponent<Text>();
+
+            //send message to loading text to say "Adding enemies"
+            if (loadingMessage != null)
+            {
+                loadingMessage.text = "Creating Game...";
+            }
+
+            return null;
+        }
+    }
+
+    public class GameTypeSetup : IElement
+    {
+        public GameTypeSetup(GameType gametype, SkillLevel gameDifficulty)
+        {
+            _gameType = gametype;
+            _gameDifficulty = gameDifficulty;
+        }
+
+        public IEnumerator Execute()
+        {
+            //TODO
+            //define player prefab to be used
+            //define camera set up to use - but how? there's an overlap with player element...
+            //how to handle the map generation string?? Will need to be different for dungeon and platformer but that needs to be decided before this stage????
+
+            //pick random number between x and y to represent number of pickups to be placed
+            //let's just say 20 initially
+            System.Random random = new System.Random();
+            int rnd;
+
+            GameObject pickup = null;
+
+            int numPickups = Mathf.Min(7, _pickupPositions.Count);
+            for (int i = 0; i < numPickups; i++)
+            {
+                rnd = random.Next(_pickupPositions.Count);
+                Vector3 pickupPos = _pickupPositions[rnd];
+                //Debug.Log(pickupPos.ToString());
+
+                pickup = Object.Instantiate(Resources.Load("Pickup"), pickupPos, Quaternion.identity) as GameObject;
+
+            }
+
+
+            Debug.Log("game type: " + _gameType.ToString() + ", difficulty: " + _gameDifficulty.ToString());
 
             return null;
         }
@@ -74,6 +113,12 @@ public class PrototypeProgram
         //public IEnumerator Execute(GameObject gameObject)
         public IEnumerator Execute() //What it should do when this command gets executed
         {
+            //send message to loading text to say "Adding enemies"
+            if (loadingMessage != null)
+            {
+                loadingMessage.text = "Adding players...";
+            }
+
             //Vector3 origin = new Vector3(0,0,0); // GameObject.Find("StartPos").transform.position;
             _players.Clear();
 
@@ -154,16 +199,58 @@ public class PrototypeProgram
                     break;
                 default:
                     Player = GameObject.Find("Player" + 1);
+                    Player.transform.position = _playerPositions[0];
+                    Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[0]);
                     CreationManager.UpdateCamera(Player, "SinglePlayer");
                     break;
             }
-
+            
 
             Debug.Log("Player x" + _num);
+            Debug.Log("# players: " + _players.Count);
 
             return null;
         }
     }
+
+    /*public class MapElement : IElement
+    {
+        public MapElement() { }
+
+        public IEnumerator Execute()
+        {
+           
+            if (_gameType == GameType.Dungeon)
+            {
+                //BUILD THE STRING USING THE STRING REWRITE FUNCTIONS
+
+                //CALL THE COMPILER AND PASS THE STRING IN
+                string map = GeneratePath(ITERATIONS BASED ON MAP SIZE);
+                //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
+                _program = PrototypeCompiler.Compile(generatorText2); 
+                StartCoroutine(_program.Run());
+
+                //ALL OF THIS INTO DUNGEON SPECIFIC COMPILER SCRIPT
+                AntlrInputStream antlerStream = new AntlrInputStream(source);
+                DungeonMapLexer lexer = new DungeonMapLexer(antlerStream);
+                CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+                DungeonMapParser parser = new DungeonMapParser(tokenStream);
+
+                parser.prog();
+ 
+                PrototypeCompiler compiler = parser.Compiler;
+                PrototypeProgram program = new PrototypeProgram(compiler.Elements);
+
+                return program;
+            }
+            else if (_gameType == GameType.Platformer)
+            {
+                
+            }
+
+            return null;
+        }
+    }*/
 
     public class DungeonElement : IElement
     {
@@ -191,7 +278,7 @@ public class PrototypeProgram
             Tile WallTile2 = Resources.Load("Wall2") as Tile;
             Tile WallTile3 = Resources.Load("Wall3") as Tile;*/
 
-
+            /*
             //TODO: CODE TO CREATE MAP - break these out into functions in creation manager later or this script will be horrific and unwieldy
             int maxRoomSize = 0;
             switch (_size) {
@@ -207,87 +294,7 @@ public class PrototypeProgram
                     //Create large map
                     maxRoomSize = 16;
 
-                    /*Vector3Int currentCell = GroundMap.WorldToCell(startPos.position);
-
-                    Debug.Log(startPos);
-
-                    for (int i = 0; i < 10; i++)
-                    {
-                        Vector3Int centreTile = new Vector3Int(currentCell.x, currentCell.y, currentCell.z);
-                        GroundMap.SetTile(centreTile, _groundTile);
-
-                        for (int j = 0; j < 5; j++)
-                        {
-                            Vector3Int rightTile = new Vector3Int(currentCell.x + (j + 1), currentCell.y, currentCell.z);
-                            Vector3Int leftTile = new Vector3Int(currentCell.x - (j + 1), currentCell.y, currentCell.z);
-
-                            GroundMap.SetTile(rightTile, _groundTile);
-                            GroundMap.SetTile(leftTile, _groundTile);
-                        }
-
-                        currentCell.y += 1;
-
-                    }
-                    //Then add walls....
-                    Debug.Log(GroundMap.localBounds);
-                    float minXbound = GroundMap.localBounds.center.x - GroundMap.localBounds.extents.x;
-                    float maxXbound = GroundMap.localBounds.center.x + GroundMap.localBounds.extents.x;
-                    float minYbound = GroundMap.localBounds.center.y - GroundMap.localBounds.extents.y;
-                    float maxYbound = GroundMap.localBounds.center.y + GroundMap.localBounds.extents.y;
-
-                    Debug.Log("x bounds: " + minXbound + " to " + maxXbound);
-                    Debug.Log("y bounds: " + minYbound + " to " + maxYbound);
-
-                    for (int i = (int)minXbound; i < maxXbound; i++) {
-                        Vector3Int topWall = new Vector3Int(i, (int)maxYbound, -1);
-                        Vector3Int bottomWall = new Vector3Int(i, (int)minYbound, -1);
-
-                        Debug.Log("top tile: " + topWall);
-                        Debug.Log("bottom tile: " + bottomWall);
-
-                        if (i % 3 == 0) {
-                            WallMap.SetTile(topWall, WallTile1);
-                            WallMap.SetTile(bottomWall, WallTile1);
-                        }
-                        else if (i % 3 == 1) {
-                            WallMap.SetTile(topWall, WallTile2);
-                            WallMap.SetTile(bottomWall, WallTile2);
-                        }
-                        else {
-                            WallMap.SetTile(topWall, WallTile3);
-                            WallMap.SetTile(bottomWall, WallTile3);
-                        }
-                        
-                    }
-
-                    for (int i = (int)minYbound; i < maxYbound; i++)
-                    {
-                        Vector3Int leftWall = new Vector3Int((int)minXbound, i, -1);
-                        Vector3Int rightWall = new Vector3Int((int)maxXbound - 1, i, -1);
-
-                        //WallMap.SetTile(leftWall, WallTile1);
-                        //WallMap.SetTile(rightWall, WallTile1);
-
-                        Debug.Log("left tile: " + leftWall);
-                        Debug.Log("right tile: " + rightWall);
-
-                        if (i % 3 == 0)
-                        {
-                            WallMap.SetTile(leftWall, WallTile1);
-                            WallMap.SetTile(rightWall, WallTile1);
-                        }
-                        else if (i % 3 == 1)
-                        {
-                            WallMap.SetTile(leftWall, WallTile2);
-                            WallMap.SetTile(rightWall, WallTile2);
-                        }
-                        else
-                        {
-                            WallMap.SetTile(leftWall, WallTile3);
-                            WallMap.SetTile(rightWall, WallTile3);
-                        }
-                    }*/
-
+                    
                     break;
                 default:
                     break;
@@ -379,6 +386,7 @@ public class PrototypeProgram
                     _wallMap.SetTile(rightWall, _brickTile3);
                 }
             }
+            */
 
             Debug.Log("Map: " + _size.ToString());
 
@@ -388,32 +396,74 @@ public class PrototypeProgram
 
     public class EnemyElement : IElement
     {
-        public enum Skill
-        {
-            BASIC, BALANCED, SKILLED
-        }
-
         public enum Type
         {
-            TYPEA, TYPEB
+            MELEE, PROJECTILE, VARIED
         }
 
-        private readonly Skill _skill;
-        private readonly int _num;
         private readonly Type _type;
 
-        public EnemyElement(Type type, int num, Skill skill)
+        public EnemyElement(Type type)
         {
-            _skill = skill;
-            _num = num;
             _type = type;
         }
 
-        //public IEnumerator Execute(GameObject gameObject)
-        public IEnumerator Execute() //What it should do when this command gets executed - will just be creation because the grammar isn't doing anything with gameplay... for now... 
+        public IEnumerator Execute()
         {
-            //TODO: CODE TO CREATE AND PLACE ENEMIES
-            Debug.Log("Enemy: " + _type.ToString() + ", " + _skill.ToString() + " x" + _num);
+            Debug.Log("Enemy: " + _type.ToString());
+
+            //send message to loading text to say "Adding enemies"
+            if (loadingMessage != null)
+            {
+                loadingMessage.text = "Adding enemies...";
+            }
+
+            //pick random number between x and y to represent number of pickups to be placed
+            //let's just say 20 initially
+            System.Random random = new System.Random();
+            int rnd;
+
+            GameObject enemy = null;
+
+            //TODO determine number of enemies based on difficulty and map size, not just an arbitrary number. Also pick from a range for each combo.
+            int numEnemies = Mathf.Min(7, _enemyPositions.Count);
+            for (int i = 0; i < numEnemies; i++)
+            {
+                rnd = random.Next(_enemyPositions.Count);
+                Vector3 enemyPos = _enemyPositions[rnd];
+                //Debug.Log(pickupPos.ToString());
+
+                if (_type.Equals(Type.MELEE))
+                {
+                    enemy = Object.Instantiate(Resources.Load("EnemyA"), enemyPos, Quaternion.identity) as GameObject;
+                    enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                }
+                else if (_type.Equals(Type.PROJECTILE))
+                {
+                    enemy = Object.Instantiate(Resources.Load("EnemyB"), enemyPos, Quaternion.identity) as GameObject;
+                }
+                else if (_type.Equals(Type.VARIED))
+                {
+                    rnd = random.Next(2);
+                    if (rnd == 0)
+                    {
+                        enemy = Object.Instantiate(Resources.Load("EnemyA"), enemyPos, Quaternion.identity) as GameObject;
+                        enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                    }
+                    else if (rnd == 1)
+                    {
+                        enemy = Object.Instantiate(Resources.Load("EnemyB"), enemyPos, Quaternion.identity) as GameObject;
+                    }
+                    else
+                    {
+                        enemy = Object.Instantiate(Resources.Load("WarSkele"), enemyPos, Quaternion.identity) as GameObject;
+                        enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                    }
+                }
+            }
+
+            //TODO move this to a new thing like FinishGameSetup() that is triggered by a seperate token like "finish"/"end" or whatever
+            GameObject.Find("LoadingCam").SetActive(false);
 
             return null;
         }
@@ -425,6 +475,12 @@ public class PrototypeProgram
 
         public IEnumerator Execute()
         {
+            //send message to loading text to say "Adding enemies"
+            if (loadingMessage != null)
+            {
+                loadingMessage.text = "Creating the level...";
+            }
+
             //G
             //G
             //G
@@ -441,6 +497,19 @@ public class PrototypeProgram
             _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
 
             Vector3Int tile1, tile2, tile3;
+
+            //get start pos for player(s)
+            Vector3Int playerPosCell = currentCell;
+            playerPosCell.x += 2;
+            playerPosCell.y += 4;
+            _playerPositions.Add(_groundMap.CellToLocal(playerPosCell));
+
+            //calculate enemy pace distance before any are actually created
+            Vector3Int pointA = currentCell;
+            Vector3Int pointB = currentCell;
+            pointB.x += 1;
+            enemyPaceDist = Mathf.Abs(_groundMap.CellToLocal(pointA).x - _groundMap.CellToLocal(pointB).x); 
+            //just care about x axis because it's only the horizontal move dist
 
             //dirt
             int maxFillerLayers = 2;
@@ -488,6 +557,7 @@ public class PrototypeProgram
 
     public class FlatSegment : IElement
     {
+    
         public FlatSegment() { }
 
         public IEnumerator Execute()
@@ -496,7 +566,28 @@ public class PrototypeProgram
             //DDD (dirt)
             //DDD (dirt)
 
+            //get pos to start tiled segment
             Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+
+            //calculate potential pick up positions
+            Vector3Int tempCellPos = new Vector3Int();
+            tempCellPos = currentCell;
+
+            tempCellPos.y += 4;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //calculate potential enemy positions
+            tempCellPos = currentCell;
+
+            tempCellPos.y += 3;
+            tempCellPos.x += 1;
+            _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //move the connection pos along by 3 units
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
             _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
@@ -546,6 +637,36 @@ public class PrototypeProgram
             //DDD (dirt)
 
             Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+
+            //calculate potential pick up positions
+            Vector3Int tempCellPos = new Vector3Int();
+
+            tempCellPos = currentCell;
+            tempCellPos.y += 4;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            tempCellPos = currentCell;
+            tempCellPos.y += 7;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //calculate potential enemy positions
+            tempCellPos = currentCell;
+
+            tempCellPos.y += 3;
+            tempCellPos.x += 1;
+            _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.y += 3;
+            _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //move connection pos
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
             _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
@@ -613,6 +734,36 @@ public class PrototypeProgram
             //DDD (dirt)
 
             Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+
+            //calculate potential pick up positions
+            Vector3Int tempCellPos = new Vector3Int();
+
+            tempCellPos = currentCell;
+            tempCellPos.y += 4;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            tempCellPos = currentCell;
+            tempCellPos.y += 10;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //calculate potential enemy positions
+            tempCellPos = currentCell;
+
+            tempCellPos.y += 3;
+            tempCellPos.x += 1;
+            _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            tempCellPos.y += 6;
+            _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //move connection pos
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
             _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
@@ -663,25 +814,34 @@ public class PrototypeProgram
         }
     }
 
-    public class GapSegment : IElement
+    public class GapSegment : IElement //TODO add spikes
     {
         public GapSegment() { }
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
             //xxx (nothing)
-            //xxx (nothing)
-            //xxx (spikes??)
+            //SSS (spikes)
+            //DDD (dirt)
 
             Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
+
+            //calculate potential pick up positions
+            Vector3Int tempCellPos = new Vector3Int();
+
+            tempCellPos = currentCell;
+            tempCellPos.y += 5;
+            tempCellPos.x += 1;
+            _pickupPositions.Add(_groundMap.CellToLocal(tempCellPos));
+
+            //move connection pos
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
             _mapConnectionPos.position = _groundMap.CellToLocal(newFirstCell);
 
             Vector3Int tile1, tile2, tile3;
 
-            //spikes
-            //TODO: spike layer that has death upon collision, plus spike sprite tiles
+            //dirt
             for (int j = 0; j < 3; j++)
             {
                 tile1 = new Vector3Int(currentCell.x + j, currentCell.y, currentCell.z);
@@ -692,13 +852,24 @@ public class PrototypeProgram
                 _groundMap.SetTile(tile2, _groundTile);
                 _groundMap.SetTile(tile3, _groundTile);
             }
-            
+
+            //spikes
+            for (int j = 0; j < 3; j++)
+            {
+                tile1 = new Vector3Int(currentCell.x + j, currentCell.y + 1, currentCell.z);
+                tile2 = new Vector3Int(currentCell.x + j, currentCell.y + 1, currentCell.z);
+                tile3 = new Vector3Int(currentCell.x + j, currentCell.y + 1, currentCell.z);
+
+                _deathMap.SetTile(tile1, _spikeTile);
+                _deathMap.SetTile(tile2, _spikeTile);
+                _deathMap.SetTile(tile3, _spikeTile);
+            }
 
             return null;
         }
     }
 
-    public class FinalSegment : IElement
+    public class FinalSegment : IElement //TODO update to "rest" segment when updated to infinite
     {
         public FinalSegment() { }
 
@@ -757,7 +928,8 @@ public class PrototypeProgram
                 _wallMap.SetTile(tile1, _brickTile1);
             }
 
-            //make player active now that the full level has been generated
+            //Not needed while map is being generated first
+            /*//make player active now that the full level has been generated
             foreach(GameObject p in _players)
             {
                 //set start position to the start piece
@@ -767,7 +939,7 @@ public class PrototypeProgram
                 p.GetComponent<SpriteRenderer>().enabled = true;
                 //change type from kinematic to dynamic
                 p.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-            }
+            }*/
 
             return null;
         }
@@ -784,9 +956,9 @@ public class PrototypeProgram
 		_pc = 0;
     }
 
-    //public IEnumerator Run(GameObject gameObject)
     public IEnumerator Run()
 	{
+        //TODO load scene??
         SceneManager.LoadScene("Game");
 
 		while(_pc < _elements.Count)
@@ -794,7 +966,6 @@ public class PrototypeProgram
 			yield return new WaitForSeconds(EXECUTION_DELAY);
 
             IElement nextElement = _elements[_pc++];
-            //yield return nextElement.Execute(gameObject);
             yield return nextElement.Execute();
 		}
     }

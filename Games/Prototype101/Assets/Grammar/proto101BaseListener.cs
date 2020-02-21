@@ -60,17 +60,29 @@ public partial class proto101BaseListener : Iproto101Listener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElem([NotNull] proto101Parser.ElemContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// Enter a parse tree produced by <see cref="proto101Parser.initialiseGame"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCreateGame([NotNull] proto101Parser.CreateGameContext context) { }
+	public virtual void EnterInitialiseGame([NotNull] proto101Parser.InitialiseGameContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// Exit a parse tree produced by <see cref="proto101Parser.initialiseGame"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCreateGame([NotNull] proto101Parser.CreateGameContext context) { }
+	public virtual void ExitInitialiseGame([NotNull] proto101Parser.InitialiseGameContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.defineGame"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDefineGame([NotNull] proto101Parser.DefineGameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.defineGame"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDefineGame([NotNull] proto101Parser.DefineGameContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="proto101Parser.createPlayer"/>.
 	/// <para>The default implementation does nothing.</para>

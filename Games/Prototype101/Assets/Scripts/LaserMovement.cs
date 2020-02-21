@@ -15,15 +15,18 @@ public class LaserMovement : MonoBehaviour {
 
     void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        endPoint = GameObject.Find("EndPoint");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        //endPoint = GameObject.Find("EndPoint");
+        player = null;
 
         velocity = new Vector3(maxSpeed * Time.deltaTime, 0, 0);
         pos = transform.position;
     }
 
-    void Start()
+    IEnumerator Start()
     {
+        while (player == null) { yield return new WaitForEndOfFrame(); } //delay firing until there's a player? Dunno if this will work 
+
         if (endPoint.transform.position.x > player.transform.position.x)
         {
             velocity = new Vector3(maxSpeed * 1 * Time.deltaTime, 0, 0);
@@ -33,6 +36,14 @@ public class LaserMovement : MonoBehaviour {
             this.transform.localScale = new Vector3(-1, 1, 1);
             velocity = new Vector3(maxSpeed * -1 * Time.deltaTime, 0, 0);
         }
+
+        yield return null;
+    }
+
+    public void SetPlayer(GameObject p)
+    {
+        player = p;
+        endPoint = p.transform.GetChild(0).gameObject;
     }
 
     void Update ()

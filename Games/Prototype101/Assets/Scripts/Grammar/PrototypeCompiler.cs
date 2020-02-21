@@ -16,12 +16,10 @@ public class PrototypeCompiler
         }
     }
 
-
     public PrototypeCompiler()
     {
         _elements = new List<PrototypeProgram.IElement>();
     }
-
 
     public static PrototypeProgram Compile(string source)
     {
@@ -31,28 +29,45 @@ public class PrototypeCompiler
         proto101Parser parser = new proto101Parser(tokenStream);
 
         parser.prog(); // <-- compile happens here (see .g4 file)
-
+ 
         PrototypeCompiler compiler = parser.Compiler;
         PrototypeProgram program = new PrototypeProgram(compiler.Elements);
 
         return program;
     }
 
-    public PrototypeCompiler CreateGame(string type)
+    public PrototypeCompiler InitialiseGame()
     {
-        //PrototypeProgram.GameTypeSetup.GameType gameType = PrototypeProgram.GameTypeSetup.GameType.PLATFORMER; //default to platformer for now
+        PrototypeProgram.GameInitialisation gameInitialisation = new PrototypeProgram.GameInitialisation();
+        _elements.Add(gameInitialisation);
+
+        return this;
+    }
+
+    public PrototypeCompiler DefineGame(string type, string difficulty)
+    {
         PrototypeProgram.GameType gameType = PrototypeProgram.GameType.Platformer;
-
-        //string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameTypeSetup.GameType), PrototypeProgram.GameTypeSetup.GameType.DUNGEON);
         string dungeonGame = Enum.GetName(typeof(PrototypeProgram.GameType), PrototypeProgram.GameType.Dungeon);
-
+ 
         if (type.ToUpper().Equals(dungeonGame.ToUpper())) {
-            //gameType = PrototypeProgram.GameTypeSetup.GameType.DUNGEON;
             gameType = PrototypeProgram.GameType.Dungeon;
         }
 
-        PrototypeProgram.GameTypeSetup GameTypeSetup = new PrototypeProgram.GameTypeSetup(gameType);
-        _elements.Add(GameTypeSetup);
+        PrototypeProgram.SkillLevel gameDifficulty = PrototypeProgram.SkillLevel.Easy;
+        string regDifficulty = Enum.GetName(typeof(PrototypeProgram.SkillLevel), PrototypeProgram.SkillLevel.Regular);
+        string hardDifficulty = Enum.GetName(typeof(PrototypeProgram.SkillLevel), PrototypeProgram.SkillLevel.Hard);
+
+        if (difficulty.ToUpper().Equals(regDifficulty.ToUpper()))
+        {
+            gameDifficulty = PrototypeProgram.SkillLevel.Regular;
+        }
+        else if (difficulty.ToUpper().Equals(hardDifficulty.ToUpper()))
+        {
+            gameDifficulty = PrototypeProgram.SkillLevel.Hard;
+        }
+
+        PrototypeProgram.GameTypeSetup gameTypeSetup = new PrototypeProgram.GameTypeSetup(gameType, gameDifficulty);
+        _elements.Add(gameTypeSetup);
 
         return this;
     }
@@ -89,19 +104,35 @@ public class PrototypeCompiler
         return this;
     }
 
-    public PrototypeCompiler CreateEnemy(string type, string num, string skill)
+    /*
+    public PrototypeCompiler CreateMap()
     {
-        PrototypeProgram.EnemyElement.Type enemyType = PrototypeProgram.EnemyElement.Type.TYPEA; //Default to type A for ease - will only update if user has correctly specified B
-        string strTypeB = Enum.GetName(typeof(PrototypeProgram.EnemyElement.Type), PrototypeProgram.EnemyElement.Type.TYPEB);
+        PrototypeProgram.MapElement mapElement = new PrototypeProgram.MapElement();
+        _elements.Add(mapElement);
 
-        if (type.ToUpper().Equals(strTypeB))
+        return this;
+    }
+    */
+
+    //public PrototypeCompiler CreateEnemy(string type, string num, string skill)
+    public PrototypeCompiler CreateEnemy(string type)
+    {
+        PrototypeProgram.EnemyElement.Type enemyType = PrototypeProgram.EnemyElement.Type.MELEE; //Default to type A for ease - will only update if user has correctly specified B
+        string strProjectile = Enum.GetName(typeof(PrototypeProgram.EnemyElement.Type), PrototypeProgram.EnemyElement.Type.PROJECTILE);
+        string strVaried = Enum.GetName(typeof(PrototypeProgram.EnemyElement.Type), PrototypeProgram.EnemyElement.Type.VARIED);
+
+        if (type.ToUpper().Equals(strProjectile))
         {
-            enemyType = PrototypeProgram.EnemyElement.Type.TYPEB;
+            enemyType = PrototypeProgram.EnemyElement.Type.PROJECTILE;
+        }
+        else if (type.ToUpper().Equals(strVaried))
+        {
+            enemyType = PrototypeProgram.EnemyElement.Type.VARIED;
         }
 
-        int enemyNum = int.Parse(num);
+        //int enemyNum = int.Parse(num);
 
-        PrototypeProgram.EnemyElement.Skill enemySkill = PrototypeProgram.EnemyElement.Skill.BASIC; //Default to basic for ease - will only update if user has correctly specified balanced or skilled
+        /*PrototypeProgram.EnemyElement.Skill enemySkill = PrototypeProgram.EnemyElement.Skill.BASIC; //Default to basic for ease - will only update if user has correctly specified balanced or skilled
         string strBalanced = Enum.GetName(typeof(PrototypeProgram.EnemyElement.Skill), PrototypeProgram.EnemyElement.Skill.BALANCED);
         string strskilled = Enum.GetName(typeof(PrototypeProgram.EnemyElement.Skill), PrototypeProgram.EnemyElement.Skill.SKILLED);
 
@@ -112,9 +143,10 @@ public class PrototypeCompiler
         else if (skill.ToUpper().Equals(strskilled))
         {
             enemySkill = PrototypeProgram.EnemyElement.Skill.SKILLED;
-        }
+        }*/
 
-        PrototypeProgram.EnemyElement enemyElement = new PrototypeProgram.EnemyElement(enemyType, enemyNum, enemySkill);
+        //PrototypeProgram.EnemyElement enemyElement = new PrototypeProgram.EnemyElement(enemyType, enemyNum, enemySkill);
+        PrototypeProgram.EnemyElement enemyElement = new PrototypeProgram.EnemyElement(enemyType);
         _elements.Add(enemyElement);
 
         return this;

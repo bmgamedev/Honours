@@ -52,15 +52,25 @@ public interface Iproto101Listener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitElem([NotNull] proto101Parser.ElemContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// Enter a parse tree produced by <see cref="proto101Parser.initialiseGame"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterCreateGame([NotNull] proto101Parser.CreateGameContext context);
+	void EnterInitialiseGame([NotNull] proto101Parser.InitialiseGameContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="proto101Parser.createGame"/>.
+	/// Exit a parse tree produced by <see cref="proto101Parser.initialiseGame"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitCreateGame([NotNull] proto101Parser.CreateGameContext context);
+	void ExitInitialiseGame([NotNull] proto101Parser.InitialiseGameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="proto101Parser.defineGame"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDefineGame([NotNull] proto101Parser.DefineGameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="proto101Parser.defineGame"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDefineGame([NotNull] proto101Parser.DefineGameContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="proto101Parser.createPlayer"/>.
 	/// </summary>

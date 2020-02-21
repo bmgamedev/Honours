@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 212862048644815500}
   - component: {fileID: 70463560474376702}
   - component: {fileID: 114332665068554828}
-  m_Layer: 22
-  m_Name: LaserSprite
+  m_Layer: 11
+  m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

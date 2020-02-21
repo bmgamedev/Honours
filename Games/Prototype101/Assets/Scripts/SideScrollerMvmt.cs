@@ -41,7 +41,7 @@ public class SideScrollerMvmt : MonoBehaviour {
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
-        Debug.Log(isGrounded);
+        //Debug.Log(isGrounded);
     }
 
     void FixedUpdate () 
