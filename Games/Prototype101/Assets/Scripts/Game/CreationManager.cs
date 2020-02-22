@@ -7,7 +7,7 @@ public class CreationManager : MonoBehaviour {
 
     public static CreationManager instance;
 
-    private PrototypeProgram _program;
+    private GameProgram _program;
 
     static Transform startPos;
 
@@ -45,7 +45,7 @@ public class CreationManager : MonoBehaviour {
         cam4C = GameObject.Find("FourPlayerC").GetComponent<Camera>();
         cam4D = GameObject.Find("FourPlayerD").GetComponent<Camera>();
 
-        //_program = PrototypeCompiler.Compile(GrammarGenerator._FullGameScript);
+        //_program = GameCompiler.Compile(GrammarGenerator._FullGameScript);
         //StartCoroutine(_program.Run());
     }
 

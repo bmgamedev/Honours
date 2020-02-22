@@ -30,7 +30,7 @@ public class ToggleMenu : MonoBehaviour {
 
     public void UpdateGrammarInput()
     {
-        //Debug.Log(CurrentSelection.gameObject.GetComponentInChildren<Text>().text);
+        //Debug.Log(CurrentSelection.gameObject.name);
 
         //DECIDED AGAINST THIS WAY:
         //fieldValue = CurrentSelection.gameObject.name;
@@ -38,13 +38,17 @@ public class ToggleMenu : MonoBehaviour {
         //or the toggle object name CurrentSelection.gameObject.name;
         //currently opting for name so that the display text can be more descriptive if needed
 
-        if (grammarInputDict.ContainsKey(CurrentSelection.gameObject.name))
+        if (CurrentSelection != null)
         {
-            GrammarInput = grammarInputDict[CurrentSelection.gameObject.name];
+            if (grammarInputDict.ContainsKey(CurrentSelection.gameObject.name))
+            {
+                GrammarInput = grammarInputDict[CurrentSelection.gameObject.name];
+            }
+            else { GrammarInput = ""; }
+            GrammarGenerator.PopulateScript(GrammarInput);
         }
-        else { GrammarInput = ""; }
-        GrammarGenerator.PopulateScript(GrammarInput);
     }
+        
 
     //programmatically set a toggle. Not necessary in this instance (toggles index from 0)
     /*public void SelectToggle(int id) {

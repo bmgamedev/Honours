@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class RuntimeScriptable : MonoBehaviour 
 {
-	private PrototypeProgram _program;
+	private GameProgram _program;
 
     static RuntimeScriptable instance = null;
 
@@ -36,7 +36,7 @@ public class RuntimeScriptable : MonoBehaviour
         Debug.Log(generatorText);
         Debug.Log(GrammarGenerator._FullGameScript);
         StopAllCoroutines();
-        _program = PrototypeCompiler.Compile(GrammarGenerator._FullGameScript); //move this to the game scene and load asyncronously
+        _program = GameCompiler.Compile(GrammarGenerator._FullGameScript); //move this to the game scene and load asyncronously
         StartCoroutine(_program.Run());
     }
 
@@ -45,7 +45,7 @@ public class RuntimeScriptable : MonoBehaviour
         string generatorText2 = debugtext.GetComponent<InputField>().text;
         Debug.Log("..." + generatorText2);
         StopAllCoroutines();
-        _program = PrototypeCompiler.Compile(generatorText2); 
+        _program = GameCompiler.Compile(generatorText2); 
         StartCoroutine(_program.Run());
 
         //GrammarGenerator._FullGameScript = text.text;

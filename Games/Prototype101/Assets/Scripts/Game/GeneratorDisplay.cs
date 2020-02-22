@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GeneratorDisplay : MonoBehaviour {
 
-    private PrototypeProgram _program;
+    private GameProgram _program;
 
     private Text scriptDisplay;
     [SerializeField]
@@ -38,12 +38,14 @@ public class GeneratorDisplay : MonoBehaviour {
 	}
 
     public void SubmitScript() {
-        int maxIterations = 30; //TODO what am I doing about this and iterations of the path string creation??
-        //GrammarGenerator._FullGameScript = "initialise " + GeneratePath(maxIterations) + " " + scriptDisplay.text.Replace("\n", " "); //move GeneratePath to game scene
-        GrammarGenerator.SetString("initialise " + GeneratePath(maxIterations) + " " + scriptDisplay.text.Replace("\n", " "));
+        //int maxIterations = 30; //TODO what am I doing about this and iterations of the path string creation??
+        //GrammarGenerator.SetString("initialise " + GeneratePath(maxIterations) + " " + scriptDisplay.text.Replace("\n", " "));
+        GrammarGenerator.SetString("initialise " + scriptDisplay.text.Replace("\n", " "));
+
         //load a loading screen that calls the runtime scriptable method upon awake and loads the game scene asynchronously
     }
 
+    /*
     private string GeneratePath(int maxIterations)
     {
         //if wanting to customise the way the path is generated such as the number of iterations or the probabilities, then what?
@@ -139,8 +141,10 @@ public class GeneratorDisplay : MonoBehaviour {
         //Debug.Log(lastString += "e"); //still need to append a finish line segment
         return lastString += "e";
     }
+    */
 }
 
+/*
 public class ProportionValue<T>
 {
     public double Proportion
@@ -184,3 +188,4 @@ public static class ProportionValue
         throw new InvalidOperationException("The proportions in the collection do not add up to 1.");
     }
 }
+*/

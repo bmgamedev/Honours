@@ -1,16 +1,60 @@
-﻿using System.Collections;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class DungeonCompiler : MonoBehaviour {
+public class DungeonCompiler
+{
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private List<DungeonProgram.IElement> _elements;
+    private List<DungeonProgram.IElement> Elements
+    {
+        get
+        {
+            return _elements;
+        }
+    }
+
+    public DungeonCompiler()
+    {
+        _elements = new List<DungeonProgram.IElement>();
+    }
+
+    public static DungeonProgram Compile(string source)
+    {
+        AntlrInputStream antlerStream = new AntlrInputStream(source);
+        DungeonMapLexer lexer = new DungeonMapLexer(antlerStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        DungeonMapParser parser = new DungeonMapParser(tokenStream);
+
+        parser.prog(); // <-- compile happens here (see .g4 file)
+
+        DungeonCompiler compiler = parser.Compiler;
+        DungeonProgram program = new DungeonProgram(compiler.Elements);
+
+        return program;
+    }
+
+    public DungeonCompiler CreateRoom()
+    {
+        DungeonProgram.RoomSegment roomSegment = new DungeonProgram.RoomSegment();
+        _elements.Add(roomSegment);
+
+        return this;
+    }
+
+    public DungeonCompiler CreateFirstPiece()
+    {
+        DungeonProgram.FirstCorrSegment firstCorrSegment = new DungeonProgram.FirstCorrSegment();
+        _elements.Add(firstCorrSegment); 
+
+        return this;
+    }
+
+    public DungeonCompiler CreateSecondPiece()
+    {
+        DungeonProgram.SecondCorrSegment secondCorrSegment = new DungeonProgram.SecondCorrSegment();
+        _elements.Add(secondCorrSegment);
+
+        return this;
+    }
 }
