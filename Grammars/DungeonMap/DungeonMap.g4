@@ -12,18 +12,20 @@ prog : elem+ ;
 
 /// what constitutes a single creation element. Going to keep them seperated by newlines for ease (for now at least)
 /// e.g. elem : (move | rotate) NEWLINE ;
-elem : ( createFirstCorrSect | createSecondCorrSect | createRoom ) NEWLINE ;
+elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | createRoom ) NEWLINE ;
 
 //build dungeon map
+createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom(); };
 createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece(); };
 createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece(); };
 createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom(); };
 
 //dungeon map generation
+//order: N, S, E , W
 INITROOM : ( 'a' | 'b' | 'c' | 'd' ) ;
 ENTRY : ( 'f' | 'g' | 'h' | 'i' ) ;
 EXIT : ( 'j' | 'k' | 'l' | 'm' ) ;
-DIRECTION : ( 'a' | 'b' | 'c' | 'd' ) ;
+DIRECTION : ( 'n' | 's' | 'e' | 'w' ) ;
 ROOM : 'r' ;
 //SEPERATOR : '.' ; //Needed?
 

@@ -52,6 +52,16 @@ public interface IDungeonMapListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitElem([NotNull] DungeonMapParser.ElemContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="DungeonMapParser.createInitialRoom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreateInitialRoom([NotNull] DungeonMapParser.CreateInitialRoomContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="DungeonMapParser.createInitialRoom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreateInitialRoom([NotNull] DungeonMapParser.CreateInitialRoomContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="DungeonMapParser.createFirstCorrSect"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

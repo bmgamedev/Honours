@@ -80,33 +80,25 @@ public class GameProgram
             //TODO
             //define player prefab to be used
             //define camera set up to use - but how? there's an overlap with player element...
-            //how to handle the map generation string?? Will need to be different for dungeon and platformer but that needs to be decided before this stage????
-
             
-
             //send message to loading text to say "Creating level"
             if (loadingMessage != null)
             {
                 loadingMessage.text = "Creating the level...";
             }
 
+            //Create the map using seperate grammars
             if (_gameType == GameType.Dungeon)
             {
-                //BUILD THE STRING USING THE STRING REWRITE FUNCTIONS
-
-                //CALL THE COMPILER AND PASS THE STRING IN
-                //Pick iterations based on map size
+                //Pick iterations based on map size - do that here or pass in map size and do in mapgeneration?
                 int maxIterations = 20;
                 //MapGeneration mapGenerator = new MapGeneration();
-                mapGenerator.GenerateDungeonMap(maxIterations);
+                yield return mapGenerator.GenerateDungeonMap(maxIterations);
             }
             else if (_gameType == GameType.Platformer)
             {
-                //BUILD THE STRING USING THE STRING REWRITE FUNCTIONS
-                //CALL THE COMPILER AND PASS THE STRING IN
-                //Pick iterations based on map size
+                //Pick iterations based on map size - do that here or pass in map size and do in mapgeneration?
                 int maxIterations = 20;
-                
                 //mapGenerator.GeneratePlatformerMap(maxIterations);
                 yield return mapGenerator.GeneratePlatformerMap(maxIterations);
 

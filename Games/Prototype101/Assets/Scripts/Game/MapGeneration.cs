@@ -15,6 +15,9 @@ public class MapGeneration : MonoBehaviour {
     static public List<Vector3> _enemyPositions = new List<Vector3>();
     static public float enemyPaceDist;
 
+    private enum DominantDirection { NORTH, SOUTH, EAST, WEST }
+    private DominantDirection DomDir;
+
     public List<Vector3> GetPlayerPositions() { return _playerPositions; }
     public List<Vector3> GetPickupPositions() { return _pickupPositions; }
     public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
@@ -51,13 +54,33 @@ public class MapGeneration : MonoBehaviour {
         yield return _pProgram.Run();
     }
 
-    public void GenerateDungeonMap(int iterations) {
-        /*
-         string path = DungeonPathString(iterations);
+    public IEnumerator GenerateDungeonMap(int iterations) {
+
+        //Randomly choose dominant direction
+        DomDir = DominantDirection.NORTH;
+
+        //Randomly choose the number of rooms (from a range, based on size)
+        int maxRooms = 10;
+
+        //Randomly choose the number of iterations required to build the corridor
+        //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)
+        int maxIterations = 10;
+
+        //build a random corridor to connection each room:
+        string path = "";
+
+        for (int i = 0; i < maxRooms; i++)
+        {
+            string firstChar;
+            if(i == 0) { firstChar = "z"; }
+            else { firstChar = "r"; }
+            path += DungeonPathString(maxIterations, firstChar);
+            //path += "r";
+        }
+        
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
         _dProgram = DungeonCompiler.Compile(path);
-        StartCoroutine(_dProgram.Run());
-         */
+        yield return _dProgram.Run();
     }
 
 
@@ -113,6 +136,290 @@ public class MapGeneration : MonoBehaviour {
         //path += ""; //that appends - how to replace...??? Will I need two strings at once? The current finished iteration and the currently being edited one??
 
         string lastString = "S";
+        string curString = "";
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+
+            //curString = lastString;
+
+            foreach (char c in lastString)
+            {
+                //for each char in string:
+                switch (c)
+                {
+                    case 'S':
+                        curString += rewriteS.ChooseByRandom();
+                        break;
+                    case 'F':
+                        curString += rewriteF.ChooseByRandom();
+                        break;
+                    case 'P':
+                        curString += rewriteP.ChooseByRandom();
+                        break;
+                    case 'H':
+                        curString += rewriteH.ChooseByRandom();
+                        break;
+                    case 'G':
+                        curString += rewriteG.ChooseByRandom();
+                        break;
+                    default:
+                        //not a non-terminal symbol
+                        curString += c;
+                        break;
+
+                }
+            }
+
+            //for each iteration, cur string = concatenate the combination of string returns from choosebyrandom and any terminals that aren't changed
+            lastString = curString;
+            curString = "";
+        }
+
+        //Debug.Log(lastString += "e"); //still need to append a finish line segment
+        return lastString += "e";
+    }
+
+    private string DungeonPathString(int maxIterations, string firstChar)
+    {
+        //Remember: Proportions need to total 1
+
+        //Need a different set of rewrite options for each different dominant direction
+        //all chars to be rewritten: z (initial room), fghi, jklm, nsew
+
+        //initial room
+        var rewriteZn = new[]
+        {
+            ProportionValue.Create(0.33, "aj.F"),
+            ProportionValue.Create(0.33, "cl.H"),
+            ProportionValue.Create(0.34, "dm.I"),
+        };
+
+        var rewriteZs = new[]
+        {
+            ProportionValue.Create(0.33, "bk.G"),
+            ProportionValue.Create(0.33, "cl.H"),
+            ProportionValue.Create(0.34, "dm.I"),
+        };
+
+        var rewriteZe = new[]
+        {
+            ProportionValue.Create(0.33, "aj.F"),
+            ProportionValue.Create(0.33, "bk.G"),
+            ProportionValue.Create(0.34, "cl.H"),
+        };
+
+        var rewriteZw = new[]
+        {
+            ProportionValue.Create(0.33, "aj.F"),
+            ProportionValue.Create(0.33, "bk.G"),
+            ProportionValue.Create(0.34, "dm.I"),
+        };
+
+        //subsequent rooms room
+        var rewriteRn = new[]
+        {
+            ProportionValue.Create(0.33, "rj.F"),
+            ProportionValue.Create(0.33, "rl.H"),
+            ProportionValue.Create(0.34, "rm.I"),
+        };
+
+        var rewriteRs = new[]
+        {
+            ProportionValue.Create(0.33, "rk.G"),
+            ProportionValue.Create(0.33, "rl.H"),
+            ProportionValue.Create(0.34, "rm.I"),
+        };
+
+        var rewriteRe = new[]
+        {
+            ProportionValue.Create(0.33, "rj.F"),
+            ProportionValue.Create(0.33, "rk.G"),
+            ProportionValue.Create(0.34, "rl.H"),
+        };
+
+        var rewriteRw = new[]
+        {
+            ProportionValue.Create(0.33, "rj.F"),
+            ProportionValue.Create(0.33, "rk.G"),
+            ProportionValue.Create(0.34, "rm.I"),
+        };
+
+        //entry
+        //Fn - fnN, feE, fwW
+        var rewriteFn = new[]
+        {
+            ProportionValue.Create(0.33, "fnN"),
+            ProportionValue.Create(0.33, "feE"),
+            ProportionValue.Create(0.34, "fwW"),
+        };
+        //Fe - fnN, feE, fsS
+        var rewriteFe = new[]
+        {
+            ProportionValue.Create(0.33, "fnN"),
+            ProportionValue.Create(0.33, "feE"),
+            ProportionValue.Create(0.34, "fsS"),
+        };
+        //Fw - fnN, fsS, fwW
+        var rewriteFw = new[]
+        {
+            ProportionValue.Create(0.33, "fnN"),
+            ProportionValue.Create(0.33, "fwW"),
+            ProportionValue.Create(0.34, "fsS"),
+        };
+        //Hn - hnN, heE, hwW
+        var rewriteHn = new[]
+        {
+            ProportionValue.Create(0.33, "hnN"),
+            ProportionValue.Create(0.33, "heE"),
+            ProportionValue.Create(0.34, "hwW"),
+        };
+        //Hs - hsS, heE, hwW
+        var rewriteHs = new[]
+        {
+            ProportionValue.Create(0.33, "hsS"),
+            ProportionValue.Create(0.33, "heE"),
+            ProportionValue.Create(0.34, "hwW"),
+        };
+        //He - hnN, heE, hsS
+        var rewriteHe = new[]
+        {
+            ProportionValue.Create(0.33, "hnN"),
+            ProportionValue.Create(0.33, "heE"),
+            ProportionValue.Create(0.34, "hsS"),
+        };
+        //Gs - gsS, geE, gwW
+        var rewriteGs = new[]
+        {
+            ProportionValue.Create(0.33, "gsS"),
+            ProportionValue.Create(0.33, "geE"),
+            ProportionValue.Create(0.34, "gwW"),
+        };
+        //Ge - gnN, geE, gsS
+        var rewriteGe = new[]
+        {
+            ProportionValue.Create(0.33, "gnN"),
+            ProportionValue.Create(0.33, "geE"),
+            ProportionValue.Create(0.34, "gsS"),
+        };
+        //Gw - gnN, gsS, gwW
+        var rewriteGw = new[]
+        {
+            ProportionValue.Create(0.33, "gnN"),
+            ProportionValue.Create(0.33, "gsS"),
+            ProportionValue.Create(0.34, "gwW"),
+        };
+        //In - inN, ieE, iwW
+        var rewriteIn = new[]
+        {
+            ProportionValue.Create(0.33, "inN"),
+            ProportionValue.Create(0.33, "ieE"),
+            ProportionValue.Create(0.34, "iwW"),
+        };
+        //Is - isS, ieE, iwW
+        var rewriteIs = new[]
+        {
+            ProportionValue.Create(0.33, "isS"),
+            ProportionValue.Create(0.33, "ieE"),
+            ProportionValue.Create(0.34, "iwW"),
+        };
+        //Iw - inN, isS, iwW
+        var rewriteIw = new[]
+        {
+            ProportionValue.Create(0.33, "isS"),
+            ProportionValue.Create(0.33, "inN"),
+            ProportionValue.Create(0.34, "iwW"),
+        };
+
+        //direction
+        //Nn - nj.F, nl.H, nm.I
+        var rewriteNn = new[]
+        {
+            ProportionValue.Create(0.33, "nj.F"),
+            ProportionValue.Create(0.33, "nl.H"),
+            ProportionValue.Create(0.34, "nm.I"),
+        };
+        //Ne - nj.F, nl.H, nk.G
+        var rewriteNe = new[]
+        {
+            ProportionValue.Create(0.33, "nj.F"),
+            ProportionValue.Create(0.33, "nl.H"),
+            ProportionValue.Create(0.34, "nk.G"),
+        };
+        //Nw - nj.F, nm.I, nk.G
+        var rewriteNw = new[]
+        {
+            ProportionValue.Create(0.33, "nj.F"),
+            ProportionValue.Create(0.33, "nm.I"),
+            ProportionValue.Create(0.34, "nk.G"),
+        };
+        //En - ej.F, el.H, em.I
+        var rewriteEn = new[]
+        {
+            ProportionValue.Create(0.33, "ej.F"),
+            ProportionValue.Create(0.33, "el.H"),
+            ProportionValue.Create(0.34, "em.I"),
+        };
+        //Es - em.I, ek.G, el.H
+        var rewriteEs = new[]
+        {
+            ProportionValue.Create(0.33, "ek.G"),
+            ProportionValue.Create(0.33, "el.H"),
+            ProportionValue.Create(0.34, "em.I"),
+        };
+        //Ee - ej.F, el.H, ek.G
+        var rewriteEe = new[]
+        {
+            ProportionValue.Create(0.33, "ek.G"),
+            ProportionValue.Create(0.33, "el.H"),
+            ProportionValue.Create(0.34, "ej.F"),
+        };
+        //Ss - sm.I, sk.G, sl.H
+        var rewriteSs = new[]
+        {
+            ProportionValue.Create(0.33, "sk.G"),
+            ProportionValue.Create(0.33, "sl.H"),
+            ProportionValue.Create(0.34, "sm.I"),
+        };
+        //Sw - sj.F, sm.I, sk.G
+        var rewriteSw = new[]
+        {
+            ProportionValue.Create(0.33, "sk.G"),
+            ProportionValue.Create(0.33, "sj.F"),
+            ProportionValue.Create(0.34, "sm.I"),
+        };
+        //Se - sj.F, sl.H, sk.G
+        var rewriteSe = new[]
+        {
+            ProportionValue.Create(0.33, "sk.G"),
+            ProportionValue.Create(0.33, "sj.F"),
+            ProportionValue.Create(0.34, "sl.H"),
+        };
+        //Ww - wj.F, wm.I, wk.G
+        var rewriteWw = new[]
+        {
+            ProportionValue.Create(0.33, "wk.G"),
+            ProportionValue.Create(0.33, "wj.F"),
+            ProportionValue.Create(0.34, "wm.I"),
+        };
+        //Wn - wj.F, wl.H, wm.I
+        var rewriteWn = new[]
+        {
+            ProportionValue.Create(0.33, "wl.H"),
+            ProportionValue.Create(0.33, "wj.F"),
+            ProportionValue.Create(0.34, "wm.I"),
+        };
+        //Ws - wm.I, wk.G, wl.H
+        var rewriteWs = new[]
+        {
+            ProportionValue.Create(0.33, "wl.H"),
+            ProportionValue.Create(0.33, "wk.G"),
+            ProportionValue.Create(0.34, "wm.I"),
+        };
+
+
+
+        string lastString = firstChar;
         string curString = "";
 
         for (int i = 0; i < maxIterations; i++)

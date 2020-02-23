@@ -60,6 +60,18 @@ public partial class DungeonMapBaseListener : IDungeonMapListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitElem([NotNull] DungeonMapParser.ElemContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="DungeonMapParser.createInitialRoom"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCreateInitialRoom([NotNull] DungeonMapParser.CreateInitialRoomContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="DungeonMapParser.createInitialRoom"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCreateInitialRoom([NotNull] DungeonMapParser.CreateInitialRoomContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="DungeonMapParser.createFirstCorrSect"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
