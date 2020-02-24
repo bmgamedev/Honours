@@ -96,6 +96,7 @@ public class GameProgram
             //Create the map using seperate grammars
             if (_gameType == GameType.Dungeon)
             {
+                Debug.Log("dungeon");
                 yield return mapGenerator.GenerateDungeonMap(_mapSize);
             }
             else if (_gameType == GameType.Platformer)

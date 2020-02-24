@@ -57,24 +57,25 @@ public class MapGeneration : MonoBehaviour {
         Debug.Log("path: " + path);
 
         _pProgram = PlatformerCompiler.Compile(path);
-        //StartCoroutine(_pProgram.Run());
         yield return _pProgram.Run();
     }
 
-    public IEnumerator GenerateDungeonMap(GameProgram.MapSize mapSize) {
+    public IEnumerator GenerateDungeonMap(GameProgram.MapSize mapSize)
+    {
 
         //Randomly choose dominant direction
-        domDir = DominantDirection.NORTH;
+        domDir = (DominantDirection)(UnityEngine.Random.Range(0, Enum.GetNames(typeof(DominantDirection)).Length));
 
         //Randomly choose the number of rooms (from a range, based on size)
-        int maxRooms = 0;
-        if (mapSize == GameProgram.MapSize.Small) { maxRooms = 10; }
-        else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = 10; }
-        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = 10; }
+        int maxRooms = 10;
+        if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 7); }
+        else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = UnityEngine.Random.Range(8, 12); ; }
+        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(13, 20); }
 
         //Randomly choose the number of iterations required to build the corridor
         //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)
-        int maxIterations = 10;
+        int completedCorrSegments = 5;
+        int maxIterations = (completedCorrSegments * 4) - 1;
 
         //build a random corridor to connection each room:
         string path = "";
@@ -82,19 +83,25 @@ public class MapGeneration : MonoBehaviour {
         for (int i = 0; i < maxRooms; i++)
         {
             string firstChar;
-            if(i == 0) { firstChar = "z"; }
-            else { firstChar = "r"; }
+
+            if(i == 0)
+            {
+                firstChar = "Z";
+            }
+            else
+            {
+                firstChar = "R";
+            }
+
             path += DungeonPathString(maxIterations, firstChar);
             //path += "r";
         }
 
-        //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
-        //_dProgram = DungeonCompiler.Compile(path);
-        //yield return _dProgram.Run();
-
-        //debugging:
         Debug.Log(path);
-        yield return null;
+
+        //StopAllCoroutines(); //feel like keeping this will cause problems because gamesetup is a coroutine
+        _dProgram = DungeonCompiler.Compile(path);
+        yield return _dProgram.Run();
     }
 
 
@@ -196,10 +203,7 @@ public class MapGeneration : MonoBehaviour {
 
     private string DungeonPathString(int maxIterations, string firstChar)
     {
-        //Remember: Proportions need to total 1
-
         //Need a different set of rewrite options for each different dominant direction
-        //all chars to be rewritten: z (initial room), fghi, jklm, nsew
 
         //initial room
         var rewriteZn = new[]
