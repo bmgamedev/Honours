@@ -13,12 +13,12 @@ prog : elem+ ;
 /// what constitutes a single creation element. Going to keep them seperated by newlines for ease (for now at least)
 /// e.g. elem : (move | rotate) NEWLINE ;
 //elem : ( initialiseGame | defineGame | createPlayer | createDungeon | createEnemies | addStartSegment | addFlatPathSegment | addLowPlatformSegment | addHighPlatformSegment | addPathGapSegment | addFinishLineSegment | finishGameSetup ) NEWLINE ;
-elem : ( initialiseGame | defineGame | createPlayer | createDungeon | createEnemies | finishGameSetup ) NEWLINE ;
+elem : ( initialiseGame | defineGame | createPlayer | createEnemies | finishGameSetup ) NEWLINE ;
 
 initialiseGame : INITIALISE { Compiler.InitialiseGame(); };
 
 //want to add in createGame which basically allows for different types of games to be made - could intitially prototype with text vs whatever 2D version I decide on
-defineGame : GAMETYPE SKILLLEVEL DIFFICULTY { Compiler.DefineGame($GAMETYPE.text, $SKILLLEVEL.text); };
+defineGame : GAMETYPE SKILLLEVEL DIFFICULTY SIZE { Compiler.DefineGame($GAMETYPE.text, $SKILLLEVEL.text, $SIZE.text); };
 
 /// all the required game creation commands and the related compiler functions:
 /// e.g. move : MOV DIR VAL { Compiler.AddMoveCommand($DIR.text, $VAL.text); };
@@ -26,7 +26,7 @@ defineGame : GAMETYPE SKILLLEVEL DIFFICULTY { Compiler.DefineGame($GAMETYPE.text
 createPlayer : PC NUM { Compiler.CreatePlayer($NUM.text); }; //how many players, to add: what skill level
 
 //create map
-createDungeon : DUNGEON SIZE { Compiler.CreateDungeon($SIZE.text); }; //pcg what each size generates - can expand later to perhaps generate based on some sort of dungeon generation approach for a whole map?
+//createDungeon : DUNGEON SIZE { Compiler.CreateDungeon($SIZE.text); }; //pcg what each size generates - can expand later to perhaps generate based on some sort of dungeon generation approach for a whole map?
 
 //create enemies - what, how many, how difficult?? PCG the placement?
 //createEnemies : ENEMY ENEMYTYPE NUM SKILL { Compiler.CreateEnemy($ENEMYTYPE.text, $NUM.text, $SKILL.text); }; //how many of each type of enemy at a particular skill level

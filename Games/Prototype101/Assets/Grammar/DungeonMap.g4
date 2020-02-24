@@ -15,10 +15,10 @@ prog : elem+ ;
 elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | createRoom ) NEWLINE ;
 
 //build dungeon map
-createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom(); };
-createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece(); };
-createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece(); };
-createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom(); };
+createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom($EXIT.text); };
+createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece($ENTRY.text, $DIRECTION.text); };
+createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($EXIT.text, $DIRECTION.text); };
+createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom($EXIT.text, $ENTRY.text); };
 
 //dungeon map generation
 //order: N, S, E , W

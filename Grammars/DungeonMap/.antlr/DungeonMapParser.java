@@ -204,6 +204,7 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static class CreateInitialRoomContext extends ParserRuleContext {
+		public Token EXIT;
 		public TerminalNode INITROOM() { return getToken(DungeonMapParser.INITROOM, 0); }
 		public TerminalNode EXIT() { return getToken(DungeonMapParser.EXIT, 0); }
 		public CreateInitialRoomContext(ParserRuleContext parent, int invokingState) {
@@ -221,8 +222,8 @@ public class DungeonMapParser extends Parser {
 			setState(25);
 			match(INITROOM);
 			setState(26);
-			match(EXIT);
-			 Compiler.CreateInitialRoom(); 
+			((CreateInitialRoomContext)_localctx).EXIT = match(EXIT);
+			 Compiler.CreateInitialRoom((((CreateInitialRoomContext)_localctx).EXIT!=null?((CreateInitialRoomContext)_localctx).EXIT.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -237,6 +238,8 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static class CreateFirstCorrSectContext extends ParserRuleContext {
+		public Token ENTRY;
+		public Token DIRECTION;
 		public TerminalNode ENTRY() { return getToken(DungeonMapParser.ENTRY, 0); }
 		public TerminalNode DIRECTION() { return getToken(DungeonMapParser.DIRECTION, 0); }
 		public CreateFirstCorrSectContext(ParserRuleContext parent, int invokingState) {
@@ -252,10 +255,10 @@ public class DungeonMapParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(29);
-			match(ENTRY);
+			((CreateFirstCorrSectContext)_localctx).ENTRY = match(ENTRY);
 			setState(30);
-			match(DIRECTION);
-			 Compiler.CreateFirstPiece(); 
+			((CreateFirstCorrSectContext)_localctx).DIRECTION = match(DIRECTION);
+			 Compiler.CreateFirstPiece((((CreateFirstCorrSectContext)_localctx).ENTRY!=null?((CreateFirstCorrSectContext)_localctx).ENTRY.getText():null), (((CreateFirstCorrSectContext)_localctx).DIRECTION!=null?((CreateFirstCorrSectContext)_localctx).DIRECTION.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -270,6 +273,8 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static class CreateSecondCorrSectContext extends ParserRuleContext {
+		public Token DIRECTION;
+		public Token EXIT;
 		public TerminalNode DIRECTION() { return getToken(DungeonMapParser.DIRECTION, 0); }
 		public TerminalNode EXIT() { return getToken(DungeonMapParser.EXIT, 0); }
 		public CreateSecondCorrSectContext(ParserRuleContext parent, int invokingState) {
@@ -285,10 +290,10 @@ public class DungeonMapParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(33);
-			match(DIRECTION);
+			((CreateSecondCorrSectContext)_localctx).DIRECTION = match(DIRECTION);
 			setState(34);
-			match(EXIT);
-			 Compiler.CreateSecondPiece(); 
+			((CreateSecondCorrSectContext)_localctx).EXIT = match(EXIT);
+			 Compiler.CreateSecondPiece((((CreateSecondCorrSectContext)_localctx).EXIT!=null?((CreateSecondCorrSectContext)_localctx).EXIT.getText():null), (((CreateSecondCorrSectContext)_localctx).DIRECTION!=null?((CreateSecondCorrSectContext)_localctx).DIRECTION.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -303,6 +308,8 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static class CreateRoomContext extends ParserRuleContext {
+		public Token EXIT;
+		public Token ENTRY;
 		public TerminalNode EXIT() { return getToken(DungeonMapParser.EXIT, 0); }
 		public TerminalNode ROOM() { return getToken(DungeonMapParser.ROOM, 0); }
 		public TerminalNode ENTRY() { return getToken(DungeonMapParser.ENTRY, 0); }
@@ -319,12 +326,12 @@ public class DungeonMapParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(37);
-			match(EXIT);
+			((CreateRoomContext)_localctx).EXIT = match(EXIT);
 			setState(38);
 			match(ROOM);
 			setState(39);
-			match(ENTRY);
-			 Compiler.CreateRoom(); 
+			((CreateRoomContext)_localctx).ENTRY = match(ENTRY);
+			 Compiler.CreateRoom((((CreateRoomContext)_localctx).EXIT!=null?((CreateRoomContext)_localctx).EXIT.getText():null), (((CreateRoomContext)_localctx).ENTRY!=null?((CreateRoomContext)_localctx).ENTRY.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {

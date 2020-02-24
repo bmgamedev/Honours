@@ -82,16 +82,6 @@ public interface IGameSetupListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCreatePlayer([NotNull] GameSetupParser.CreatePlayerContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GameSetupParser.createDungeon"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCreateDungeon([NotNull] GameSetupParser.CreateDungeonContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GameSetupParser.createDungeon"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCreateDungeon([NotNull] GameSetupParser.CreateDungeonContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="GameSetupParser.createEnemies"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

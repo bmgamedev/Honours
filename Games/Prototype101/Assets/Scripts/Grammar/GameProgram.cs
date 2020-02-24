@@ -9,12 +9,15 @@ public class GameProgram
 {
     public enum GameType { Dungeon, Platformer };
     public enum SkillLevel { Easy, Regular, Hard };
+    public enum MapSize { Small, Medium, Large };
+
+    static private GameType _gameType;
+    static private SkillLevel _gameDifficulty;
 
     static private Transform _mapConnectionPos;
     static private Tilemap _wallMap, _groundMap, _deathMap;
     static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
-    static private GameType _gameType;
-    static private SkillLevel _gameDifficulty;
+    
     static private List<GameObject> _players = new List<GameObject>();
     static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static private List<Vector3> _pickupPositions = new List<Vector3>();
@@ -69,10 +72,13 @@ public class GameProgram
 
     public class GameTypeSetup : IElement
     {
-        public GameTypeSetup(GameType gametype, SkillLevel gameDifficulty)
+        private MapSize _mapSize;
+
+        public GameTypeSetup(GameType gametype, SkillLevel gameDifficulty, MapSize size)
         {
             _gameType = gametype;
             _gameDifficulty = gameDifficulty;
+            _mapSize = size;
         }
 
         public IEnumerator Execute()
@@ -90,18 +96,11 @@ public class GameProgram
             //Create the map using seperate grammars
             if (_gameType == GameType.Dungeon)
             {
-                //Pick iterations based on map size - do that here or pass in map size and do in mapgeneration?
-                int maxIterations = 20;
-                //MapGeneration mapGenerator = new MapGeneration();
-                yield return mapGenerator.GenerateDungeonMap(maxIterations);
+                yield return mapGenerator.GenerateDungeonMap(_mapSize);
             }
             else if (_gameType == GameType.Platformer)
             {
-                //Pick iterations based on map size - do that here or pass in map size and do in mapgeneration?
-                int maxIterations = 20;
-                //mapGenerator.GeneratePlatformerMap(maxIterations);
-                yield return mapGenerator.GeneratePlatformerMap(maxIterations);
-
+                yield return mapGenerator.GeneratePlatformerMap(_mapSize);
             }
 
             //get position arrays
@@ -279,7 +278,7 @@ public class GameProgram
         }
     }*/
 
-    
+    /*
     public class DungeonElement : IElement
     {
         public enum Size
@@ -297,131 +296,13 @@ public class GameProgram
         //public IEnumerator Execute(GameObject gameObject)
         public IEnumerator Execute() //What it should do when this command gets executed
         {
-            //Tilemap StartMap = GameObject.Find("StartMap").GetComponent<Tilemap>();
-            /*Tilemap GroundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>();
-            Tilemap WallMap = GameObject.Find("WallMap").GetComponent<Tilemap>();
-            Transform startPos = GameObject.Find("StartPos").GetComponent<Transform>(); //(-0.53, -5.47)
-            Tile GroundTile = Resources.Load("Ground") as Tile;
-            Tile WallTile1 = Resources.Load("Wall") as Tile;
-            Tile WallTile2 = Resources.Load("Wall2") as Tile;
-            Tile WallTile3 = Resources.Load("Wall3") as Tile;*/
-
-            /*
-            //TODO: CODE TO CREATE MAP - break these out into functions in creation manager later or this script will be horrific and unwieldy
-            int maxRoomSize = 0;
-            switch (_size) {
-                case Size.SMALL:
-                    //Create small map
-                    maxRoomSize = 10;
-                    break;
-                case Size.MED:
-                    //create med map
-                    maxRoomSize = 13;
-                    break;
-                case Size.LARGE:
-                    //Create large map
-                    maxRoomSize = 16;
-
-                    
-                    break;
-                default:
-                    break;
-            }
-
-            //Make the actual room:
-            Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
-
-            Debug.Log(_mapConnectionPos);
-
-            for (int i = 0; i < maxRoomSize; i++)
-            {
-                Vector3Int centreTile = new Vector3Int(currentCell.x, currentCell.y, currentCell.z);
-                _groundMap.SetTile(centreTile, _groundTile);
-
-                for (int j = 0; j < (Mathf.Round(maxRoomSize/2)); j++)
-                {
-                    Vector3Int rightTile = new Vector3Int(currentCell.x + (j + 1), currentCell.y, currentCell.z);
-                    Vector3Int leftTile = new Vector3Int(currentCell.x - (j + 1), currentCell.y, currentCell.z);
-
-                    _groundMap.SetTile(rightTile, _groundTile);
-                    _groundMap.SetTile(leftTile, _groundTile);
-                }
-
-                currentCell.y += 1;
-
-            }
-
-            //Then add walls....
-            Debug.Log(_groundMap.localBounds);
-            float minXbound = _groundMap.localBounds.center.x - _groundMap.localBounds.extents.x;
-            float maxXbound = _groundMap.localBounds.center.x + _groundMap.localBounds.extents.x;
-            float minYbound = _groundMap.localBounds.center.y - _groundMap.localBounds.extents.y;
-            float maxYbound = _groundMap.localBounds.center.y + _groundMap.localBounds.extents.y;
-
-            Debug.Log("x bounds: " + minXbound + " to " + maxXbound);
-            Debug.Log("y bounds: " + minYbound + " to " + maxYbound);
-
-            for (int i = (int)minXbound; i < maxXbound; i++)
-            {
-                Vector3Int topWall = new Vector3Int(i, (int)maxYbound, -1);
-                Vector3Int bottomWall = new Vector3Int(i, (int)minYbound, -1);
-
-                Debug.Log("top tile: " + topWall);
-                Debug.Log("bottom tile: " + bottomWall);
-
-                if (i % 3 == 0)
-                {
-                    _wallMap.SetTile(topWall, _brickTile1);
-                    _wallMap.SetTile(bottomWall, _brickTile1);
-                }
-                else if (i % 3 == 1)
-                {
-                    _wallMap.SetTile(topWall, _brickTile2);
-                    _wallMap.SetTile(bottomWall, _brickTile2);
-                }
-                else
-                {
-                    _wallMap.SetTile(topWall, _brickTile3);
-                    _wallMap.SetTile(bottomWall, _brickTile3);
-                }
-
-            }
-
-            for (int i = (int)minYbound; i < maxYbound; i++)
-            {
-                Vector3Int leftWall = new Vector3Int((int)minXbound, i, -1);
-                Vector3Int rightWall = new Vector3Int((int)maxXbound - 1, i, -1);
-
-                //WallMap.SetTile(leftWall, _brickTile1);
-                //WallMap.SetTile(rightWall, _brickTile1);
-
-                Debug.Log("left tile: " + leftWall);
-                Debug.Log("right tile: " + rightWall);
-
-                if (i % 3 == 0)
-                {
-                    _wallMap.SetTile(leftWall, _brickTile1);
-                    _wallMap.SetTile(rightWall, _brickTile1);
-                }
-                else if (i % 3 == 1)
-                {
-                    _wallMap.SetTile(leftWall, _brickTile2);
-                    _wallMap.SetTile(rightWall, _brickTile2);
-                }
-                else
-                {
-                    _wallMap.SetTile(leftWall, _brickTile3);
-                    _wallMap.SetTile(rightWall, _brickTile3);
-                }
-            }
-            */
 
             Debug.Log("Map: " + _size.ToString());
 
             return null;
         }
     }
-    
+   */ 
 
     public class EnemyElement : IElement
     {

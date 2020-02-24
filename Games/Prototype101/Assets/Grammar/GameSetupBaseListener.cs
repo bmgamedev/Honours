@@ -96,18 +96,6 @@ public partial class GameSetupBaseListener : IGameSetupListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCreatePlayer([NotNull] GameSetupParser.CreatePlayerContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="GameSetupParser.createDungeon"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCreateDungeon([NotNull] GameSetupParser.CreateDungeonContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="GameSetupParser.createDungeon"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCreateDungeon([NotNull] GameSetupParser.CreateDungeonContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="GameSetupParser.createEnemies"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

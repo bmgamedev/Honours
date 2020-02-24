@@ -22,11 +22,10 @@ public class GameSetupParser extends Parser {
 		INT=15, NEWLINE=16, WS=17;
 	public static final int
 		RULE_prog = 0, RULE_elem = 1, RULE_initialiseGame = 2, RULE_defineGame = 3, 
-		RULE_createPlayer = 4, RULE_createDungeon = 5, RULE_createEnemies = 6, 
-		RULE_finishGameSetup = 7;
+		RULE_createPlayer = 4, RULE_createEnemies = 5, RULE_finishGameSetup = 6;
 	public static final String[] ruleNames = {
-		"prog", "elem", "initialiseGame", "defineGame", "createPlayer", "createDungeon", 
-		"createEnemies", "finishGameSetup"
+		"prog", "elem", "initialiseGame", "defineGame", "createPlayer", "createEnemies", 
+		"finishGameSetup"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -110,20 +109,20 @@ public class GameSetupParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(17); 
+			setState(15); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(16);
+				setState(14);
 				elem();
 				}
 				}
-				setState(19); 
+				setState(17); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITIALISE) | (1L << FINALISE) | (1L << GAMETYPE) | (1L << PC) | (1L << DUNGEON) | (1L << ATTACKSTYLE))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITIALISE) | (1L << FINALISE) | (1L << GAMETYPE) | (1L << PC) | (1L << ATTACKSTYLE))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -148,9 +147,6 @@ public class GameSetupParser extends Parser {
 		public CreatePlayerContext createPlayer() {
 			return getRuleContext(CreatePlayerContext.class,0);
 		}
-		public CreateDungeonContext createDungeon() {
-			return getRuleContext(CreateDungeonContext.class,0);
-		}
 		public CreateEnemiesContext createEnemies() {
 			return getRuleContext(CreateEnemiesContext.class,0);
 		}
@@ -169,49 +165,43 @@ public class GameSetupParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
+			setState(24);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INITIALISE:
 				{
-				setState(21);
+				setState(19);
 				initialiseGame();
 				}
 				break;
 			case GAMETYPE:
 				{
-				setState(22);
+				setState(20);
 				defineGame();
 				}
 				break;
 			case PC:
 				{
-				setState(23);
+				setState(21);
 				createPlayer();
-				}
-				break;
-			case DUNGEON:
-				{
-				setState(24);
-				createDungeon();
 				}
 				break;
 			case ATTACKSTYLE:
 				{
-				setState(25);
+				setState(22);
 				createEnemies();
 				}
 				break;
 			case FINALISE:
 				{
-				setState(26);
+				setState(23);
 				finishGameSetup();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(29);
+			setState(26);
 			match(NEWLINE);
 			}
 		}
@@ -240,7 +230,7 @@ public class GameSetupParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
+			setState(28);
 			match(INITIALISE);
 			 Compiler.InitialiseGame(); 
 			}
@@ -259,9 +249,11 @@ public class GameSetupParser extends Parser {
 	public static class DefineGameContext extends ParserRuleContext {
 		public Token GAMETYPE;
 		public Token SKILLLEVEL;
+		public Token SIZE;
 		public TerminalNode GAMETYPE() { return getToken(GameSetupParser.GAMETYPE, 0); }
 		public TerminalNode SKILLLEVEL() { return getToken(GameSetupParser.SKILLLEVEL, 0); }
 		public TerminalNode DIFFICULTY() { return getToken(GameSetupParser.DIFFICULTY, 0); }
+		public TerminalNode SIZE() { return getToken(GameSetupParser.SIZE, 0); }
 		public DefineGameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -274,13 +266,15 @@ public class GameSetupParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(34);
+			setState(31);
 			((DefineGameContext)_localctx).GAMETYPE = match(GAMETYPE);
-			setState(35);
+			setState(32);
 			((DefineGameContext)_localctx).SKILLLEVEL = match(SKILLLEVEL);
-			setState(36);
+			setState(33);
 			match(DIFFICULTY);
-			 Compiler.DefineGame((((DefineGameContext)_localctx).GAMETYPE!=null?((DefineGameContext)_localctx).GAMETYPE.getText():null), (((DefineGameContext)_localctx).SKILLLEVEL!=null?((DefineGameContext)_localctx).SKILLLEVEL.getText():null)); 
+			setState(34);
+			((DefineGameContext)_localctx).SIZE = match(SIZE);
+			 Compiler.DefineGame((((DefineGameContext)_localctx).GAMETYPE!=null?((DefineGameContext)_localctx).GAMETYPE.getText():null), (((DefineGameContext)_localctx).SKILLLEVEL!=null?((DefineGameContext)_localctx).SKILLLEVEL.getText():null), (((DefineGameContext)_localctx).SIZE!=null?((DefineGameContext)_localctx).SIZE.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -310,45 +304,11 @@ public class GameSetupParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(39);
+			setState(37);
 			match(PC);
-			setState(40);
+			setState(38);
 			((CreatePlayerContext)_localctx).NUM = match(NUM);
 			 Compiler.CreatePlayer((((CreatePlayerContext)_localctx).NUM!=null?((CreatePlayerContext)_localctx).NUM.getText():null)); 
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class CreateDungeonContext extends ParserRuleContext {
-		public Token SIZE;
-		public TerminalNode DUNGEON() { return getToken(GameSetupParser.DUNGEON, 0); }
-		public TerminalNode SIZE() { return getToken(GameSetupParser.SIZE, 0); }
-		public CreateDungeonContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_createDungeon; }
-	}
-
-	public final CreateDungeonContext createDungeon() throws RecognitionException {
-		CreateDungeonContext _localctx = new CreateDungeonContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_createDungeon);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(43);
-			match(DUNGEON);
-			setState(44);
-			((CreateDungeonContext)_localctx).SIZE = match(SIZE);
-			 Compiler.CreateDungeon((((CreateDungeonContext)_localctx).SIZE!=null?((CreateDungeonContext)_localctx).SIZE.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -374,13 +334,13 @@ public class GameSetupParser extends Parser {
 
 	public final CreateEnemiesContext createEnemies() throws RecognitionException {
 		CreateEnemiesContext _localctx = new CreateEnemiesContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_createEnemies);
+		enterRule(_localctx, 10, RULE_createEnemies);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47);
+			setState(41);
 			((CreateEnemiesContext)_localctx).ATTACKSTYLE = match(ATTACKSTYLE);
-			setState(48);
+			setState(42);
 			match(ENEMY);
 			 Compiler.CreateEnemy((((CreateEnemiesContext)_localctx).ATTACKSTYLE!=null?((CreateEnemiesContext)_localctx).ATTACKSTYLE.getText():null)); 
 			}
@@ -406,11 +366,11 @@ public class GameSetupParser extends Parser {
 
 	public final FinishGameSetupContext finishGameSetup() throws RecognitionException {
 		FinishGameSetupContext _localctx = new FinishGameSetupContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_finishGameSetup);
+		enterRule(_localctx, 12, RULE_finishGameSetup);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(45);
 			match(FINALISE);
 			 Compiler.FinishSetup(); 
 			}
@@ -427,21 +387,19 @@ public class GameSetupParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\239\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\6\2\24\n\2\r\2"+
-		"\16\2\25\3\3\3\3\3\3\3\3\3\3\3\3\5\3\36\n\3\3\3\3\3\3\4\3\4\3\4\3\5\3"+
-		"\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\t\3\t"+
-		"\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2\66\2\23\3\2\2\2\4\35\3\2\2\2\6"+
-		"!\3\2\2\2\b$\3\2\2\2\n)\3\2\2\2\f-\3\2\2\2\16\61\3\2\2\2\20\65\3\2\2\2"+
-		"\22\24\5\4\3\2\23\22\3\2\2\2\24\25\3\2\2\2\25\23\3\2\2\2\25\26\3\2\2\2"+
-		"\26\3\3\2\2\2\27\36\5\6\4\2\30\36\5\b\5\2\31\36\5\n\6\2\32\36\5\f\7\2"+
-		"\33\36\5\16\b\2\34\36\5\20\t\2\35\27\3\2\2\2\35\30\3\2\2\2\35\31\3\2\2"+
-		"\2\35\32\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\37\3\2\2\2\37 \7\22\2"+
-		"\2 \5\3\2\2\2!\"\7\3\2\2\"#\b\4\1\2#\7\3\2\2\2$%\7\5\2\2%&\7\t\2\2&\'"+
-		"\7\b\2\2\'(\b\5\1\2(\t\3\2\2\2)*\7\6\2\2*+\7\7\2\2+,\b\6\1\2,\13\3\2\2"+
-		"\2-.\7\13\2\2./\7\16\2\2/\60\b\7\1\2\60\r\3\2\2\2\61\62\7\20\2\2\62\63"+
-		"\7\17\2\2\63\64\b\b\1\2\64\17\3\2\2\2\65\66\7\4\2\2\66\67\b\t\1\2\67\21"+
-		"\3\2\2\2\4\25\35";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\23\63\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23"+
+		"\3\3\3\3\3\3\3\3\3\3\5\3\33\n\3\3\3\3\3\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3"+
+		"\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\2\2\t\2\4\6\b\n"+
+		"\f\16\2\2\2\60\2\21\3\2\2\2\4\32\3\2\2\2\6\36\3\2\2\2\b!\3\2\2\2\n\'\3"+
+		"\2\2\2\f+\3\2\2\2\16/\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2\2\22\23\3\2\2"+
+		"\2\23\21\3\2\2\2\23\24\3\2\2\2\24\3\3\2\2\2\25\33\5\6\4\2\26\33\5\b\5"+
+		"\2\27\33\5\n\6\2\30\33\5\f\7\2\31\33\5\16\b\2\32\25\3\2\2\2\32\26\3\2"+
+		"\2\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31\3\2\2\2\33\34\3\2\2\2\34\35\7\22"+
+		"\2\2\35\5\3\2\2\2\36\37\7\3\2\2\37 \b\4\1\2 \7\3\2\2\2!\"\7\5\2\2\"#\7"+
+		"\t\2\2#$\7\b\2\2$%\7\16\2\2%&\b\5\1\2&\t\3\2\2\2\'(\7\6\2\2()\7\7\2\2"+
+		")*\b\6\1\2*\13\3\2\2\2+,\7\20\2\2,-\7\17\2\2-.\b\7\1\2.\r\3\2\2\2/\60"+
+		"\7\4\2\2\60\61\b\b\1\2\61\17\3\2\2\2\4\23\32";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

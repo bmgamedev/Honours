@@ -16,7 +16,8 @@ public class MapGeneration : MonoBehaviour {
     static public float enemyPaceDist;
 
     private enum DominantDirection { NORTH, SOUTH, EAST, WEST }
-    private DominantDirection DomDir;
+    private DominantDirection domDir;
+    //private GameProgram.SkillLevel difficulty;
 
     public List<Vector3> GetPlayerPositions() { return _playerPositions; }
     public List<Vector3> GetPickupPositions() { return _pickupPositions; }
@@ -42,8 +43,14 @@ public class MapGeneration : MonoBehaviour {
     }
 
     //public void GeneratePlatformerMap(int iterations)
-    public IEnumerator GeneratePlatformerMap(int iterations)
+    public IEnumerator GeneratePlatformerMap(GameProgram.MapSize mapSize)
     {
+        //Randomly choose the number of rooms (from a range, based on size)
+        int iterations = 0;
+        if (mapSize == GameProgram.MapSize.Small) { iterations = 20; }
+        else if (mapSize == GameProgram.MapSize.Medium) { iterations = 30; }
+        else if (mapSize == GameProgram.MapSize.Large) { iterations = 40; }
+
         string path = PlatformerPathString(iterations);
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
 
@@ -54,13 +61,16 @@ public class MapGeneration : MonoBehaviour {
         yield return _pProgram.Run();
     }
 
-    public IEnumerator GenerateDungeonMap(int iterations) {
+    public IEnumerator GenerateDungeonMap(GameProgram.MapSize mapSize) {
 
         //Randomly choose dominant direction
-        DomDir = DominantDirection.NORTH;
+        domDir = DominantDirection.NORTH;
 
         //Randomly choose the number of rooms (from a range, based on size)
-        int maxRooms = 10;
+        int maxRooms = 0;
+        if (mapSize == GameProgram.MapSize.Small) { maxRooms = 10; }
+        else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = 10; }
+        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = 10; }
 
         //Randomly choose the number of iterations required to build the corridor
         //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)
@@ -77,10 +87,14 @@ public class MapGeneration : MonoBehaviour {
             path += DungeonPathString(maxIterations, firstChar);
             //path += "r";
         }
-        
+
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
-        _dProgram = DungeonCompiler.Compile(path);
-        yield return _dProgram.Run();
+        //_dProgram = DungeonCompiler.Compile(path);
+        //yield return _dProgram.Run();
+
+        //debugging:
+        Debug.Log(path);
+        yield return null;
     }
 
 
@@ -429,29 +443,137 @@ public class MapGeneration : MonoBehaviour {
 
             foreach (char c in lastString)
             {
-                //for each char in string:
-                switch (c)
+                if (domDir == DominantDirection.NORTH)
                 {
-                    case 'S':
-                        curString += rewriteS.ChooseByRandom();
-                        break;
-                    case 'F':
-                        curString += rewriteF.ChooseByRandom();
-                        break;
-                    case 'P':
-                        curString += rewriteP.ChooseByRandom();
-                        break;
-                    case 'H':
-                        curString += rewriteH.ChooseByRandom();
-                        break;
-                    case 'G':
-                        curString += rewriteG.ChooseByRandom();
-                        break;
-                    default:
-                        //not a non-terminal symbol
-                        curString += c;
-                        break;
-
+                    switch (c)
+                    {
+                        case 'I':
+                            curString += rewriteIn.ChooseByRandom();
+                            break;
+                        case 'R':
+                            curString += rewriteRn.ChooseByRandom();
+                            break;
+                        case 'F':
+                            curString += rewriteFn.ChooseByRandom();
+                            break;
+                        case 'Z':
+                            curString += rewriteZn.ChooseByRandom();
+                            break;
+                        case 'W':
+                            curString += rewriteWn.ChooseByRandom();
+                            break;
+                        case 'E':
+                            curString += rewriteEn.ChooseByRandom();
+                            break;
+                        case 'N':
+                            curString += rewriteNn.ChooseByRandom();
+                            break;
+                        case 'H':
+                            curString += rewriteHn.ChooseByRandom();
+                            break;
+                        default: //not a non-terminal symbol
+                            curString += c;
+                            break;
+                    }
+                }
+                else if (domDir == DominantDirection.SOUTH)
+                {
+                    switch (c)
+                    {
+                        case 'I':
+                            curString += rewriteIs.ChooseByRandom();
+                            break;
+                        case 'R':
+                            curString += rewriteRs.ChooseByRandom();
+                            break;
+                        case 'G':
+                            curString += rewriteGs.ChooseByRandom();
+                            break;
+                        case 'Z':
+                            curString += rewriteZs.ChooseByRandom();
+                            break;
+                        case 'W':
+                            curString += rewriteWs.ChooseByRandom();
+                            break;
+                        case 'E':
+                            curString += rewriteEs.ChooseByRandom();
+                            break;
+                        case 'S':
+                            curString += rewriteSs.ChooseByRandom();
+                            break;
+                        case 'H':
+                            curString += rewriteHs.ChooseByRandom();
+                            break;
+                        default: //not a non-terminal symbol
+                            curString += c;
+                            break;
+                    }
+                }
+                else if (domDir == DominantDirection.EAST)
+                {
+                    switch (c)
+                    {
+                        case 'F':
+                            curString += rewriteFe.ChooseByRandom();
+                            break;
+                        case 'R':
+                            curString += rewriteRe.ChooseByRandom();
+                            break;
+                        case 'G':
+                            curString += rewriteGe.ChooseByRandom();
+                            break;
+                        case 'Z':
+                            curString += rewriteZe.ChooseByRandom();
+                            break;
+                        case 'N':
+                            curString += rewriteNe.ChooseByRandom();
+                            break;
+                        case 'E':
+                            curString += rewriteEe.ChooseByRandom();
+                            break;
+                        case 'S':
+                            curString += rewriteSe.ChooseByRandom();
+                            break;
+                        case 'H':
+                            curString += rewriteHe.ChooseByRandom();
+                            break;
+                        default: //not a non-terminal symbol
+                            curString += c;
+                            break;
+                    }
+                }
+                else if (domDir == DominantDirection.WEST)
+                {
+                    switch (c)
+                    {
+                        case 'F':
+                            curString += rewriteFw.ChooseByRandom();
+                            break;
+                        case 'R':
+                            curString += rewriteRw.ChooseByRandom();
+                            break;
+                        case 'G':
+                            curString += rewriteGw.ChooseByRandom();
+                            break;
+                        case 'Z':
+                            curString += rewriteZw.ChooseByRandom();
+                            break;
+                        case 'N':
+                            curString += rewriteNw.ChooseByRandom();
+                            break;
+                        case 'W':
+                            curString += rewriteWw.ChooseByRandom();
+                            break;
+                        case 'S':
+                            curString += rewriteSw.ChooseByRandom();
+                            break;
+                        case 'I':
+                            curString += rewriteIw.ChooseByRandom();
+                            break;
+                        default: //not a non-terminal symbol
+                            curString += c;
+                            break;
+                    }
                 }
             }
 
@@ -460,8 +582,7 @@ public class MapGeneration : MonoBehaviour {
             curString = "";
         }
 
-        //Debug.Log(lastString += "e"); //still need to append a finish line segment
-        return lastString += "e";
+        return lastString;
     }
 }
 

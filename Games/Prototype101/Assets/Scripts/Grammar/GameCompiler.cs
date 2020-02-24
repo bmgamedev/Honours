@@ -44,7 +44,7 @@ public class GameCompiler
         return this;
     }
 
-    public GameCompiler DefineGame(string type, string difficulty)
+    public GameCompiler DefineGame(string type, string difficulty, string size)
     {
         GameProgram.GameType gameType = GameProgram.GameType.Platformer;
         string dungeonGame = Enum.GetName(typeof(GameProgram.GameType), GameProgram.GameType.Dungeon);
@@ -66,7 +66,20 @@ public class GameCompiler
             gameDifficulty = GameProgram.SkillLevel.Hard;
         }
 
-        GameProgram.GameTypeSetup gameTypeSetup = new GameProgram.GameTypeSetup(gameType, gameDifficulty);
+        GameProgram.MapSize mapSize = GameProgram.MapSize.Small;
+        string medMap = Enum.GetName(typeof(GameProgram.MapSize), GameProgram.MapSize.Medium);
+        string largeMap = Enum.GetName(typeof(GameProgram.MapSize), GameProgram.MapSize.Large);
+
+        if (size.ToUpper().Equals(medMap.ToUpper()))
+        {
+            mapSize = GameProgram.MapSize.Medium;
+        }
+        else if (size.ToUpper().Equals(largeMap.ToUpper()))
+        {
+            mapSize = GameProgram.MapSize.Large;
+        }
+
+        GameProgram.GameTypeSetup gameTypeSetup = new GameProgram.GameTypeSetup(gameType, gameDifficulty, mapSize);
         _elements.Add(gameTypeSetup);
 
         return this;
@@ -82,7 +95,7 @@ public class GameCompiler
         return this;
     }
 
-    public GameCompiler CreateDungeon(string size)
+    /*public GameCompiler CreateDungeon(string size)
     {
         GameProgram.DungeonElement.Size mapSize = GameProgram.DungeonElement.Size.SMALL; //Default to small for ease - will only update if user has correctly specified M or L
         string strMed = Enum.GetName(typeof(GameProgram.DungeonElement.Size), GameProgram.DungeonElement.Size.MED);
@@ -102,7 +115,7 @@ public class GameCompiler
         _elements.Add(mapElement);
 
         return this;
-    }
+    }*/
 
     /*
     public GameCompiler CreateMap()

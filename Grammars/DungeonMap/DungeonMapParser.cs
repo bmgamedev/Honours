@@ -221,6 +221,7 @@ public partial class DungeonMapParser : Parser {
 	}
 
 	public partial class CreateInitialRoomContext : ParserRuleContext {
+		public IToken _EXIT;
 		public ITerminalNode INITROOM() { return GetToken(DungeonMapParser.INITROOM, 0); }
 		public ITerminalNode EXIT() { return GetToken(DungeonMapParser.EXIT, 0); }
 		public CreateInitialRoomContext(ParserRuleContext parent, int invokingState)
@@ -246,8 +247,8 @@ public partial class DungeonMapParser : Parser {
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 25; Match(INITROOM);
-			State = 26; Match(EXIT);
-			 Compiler.CreateInitialRoom(); 
+			State = 26; _localctx._EXIT = Match(EXIT);
+			 Compiler.CreateInitialRoom((_localctx._EXIT!=null?_localctx._EXIT.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -262,6 +263,8 @@ public partial class DungeonMapParser : Parser {
 	}
 
 	public partial class CreateFirstCorrSectContext : ParserRuleContext {
+		public IToken _ENTRY;
+		public IToken _DIRECTION;
 		public ITerminalNode ENTRY() { return GetToken(DungeonMapParser.ENTRY, 0); }
 		public ITerminalNode DIRECTION() { return GetToken(DungeonMapParser.DIRECTION, 0); }
 		public CreateFirstCorrSectContext(ParserRuleContext parent, int invokingState)
@@ -286,9 +289,9 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 29; Match(ENTRY);
-			State = 30; Match(DIRECTION);
-			 Compiler.CreateFirstPiece(); 
+			State = 29; _localctx._ENTRY = Match(ENTRY);
+			State = 30; _localctx._DIRECTION = Match(DIRECTION);
+			 Compiler.CreateFirstPiece((_localctx._ENTRY!=null?_localctx._ENTRY.Text:null), (_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -303,6 +306,8 @@ public partial class DungeonMapParser : Parser {
 	}
 
 	public partial class CreateSecondCorrSectContext : ParserRuleContext {
+		public IToken _DIRECTION;
+		public IToken _EXIT;
 		public ITerminalNode DIRECTION() { return GetToken(DungeonMapParser.DIRECTION, 0); }
 		public ITerminalNode EXIT() { return GetToken(DungeonMapParser.EXIT, 0); }
 		public CreateSecondCorrSectContext(ParserRuleContext parent, int invokingState)
@@ -327,9 +332,9 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 33; Match(DIRECTION);
-			State = 34; Match(EXIT);
-			 Compiler.CreateSecondPiece(); 
+			State = 33; _localctx._DIRECTION = Match(DIRECTION);
+			State = 34; _localctx._EXIT = Match(EXIT);
+			 Compiler.CreateSecondPiece((_localctx._EXIT!=null?_localctx._EXIT.Text:null), (_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -344,6 +349,8 @@ public partial class DungeonMapParser : Parser {
 	}
 
 	public partial class CreateRoomContext : ParserRuleContext {
+		public IToken _EXIT;
+		public IToken _ENTRY;
 		public ITerminalNode EXIT() { return GetToken(DungeonMapParser.EXIT, 0); }
 		public ITerminalNode ROOM() { return GetToken(DungeonMapParser.ROOM, 0); }
 		public ITerminalNode ENTRY() { return GetToken(DungeonMapParser.ENTRY, 0); }
@@ -369,10 +376,10 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 37; Match(EXIT);
+			State = 37; _localctx._EXIT = Match(EXIT);
 			State = 38; Match(ROOM);
-			State = 39; Match(ENTRY);
-			 Compiler.CreateRoom(); 
+			State = 39; _localctx._ENTRY = Match(ENTRY);
+			 Compiler.CreateRoom((_localctx._EXIT!=null?_localctx._EXIT.Text:null), (_localctx._ENTRY!=null?_localctx._ENTRY.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {

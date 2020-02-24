@@ -16,35 +16,42 @@ public class DungeonProgram
     static public List<Vector3> _enemyPositions = new List<Vector3>();
     static public float enemyPaceDist;
 
-    public List<Vector3> GetPlayerPositions()
-    {
-        return _playerPositions;
-    }
+    public enum Direction { North, South, East, West };
+    static private Direction _corrDirection;
+    static private Direction _entryDirection;
+    static private Direction _exitDirection;
 
-    public List<Vector3> GetPickupPositions()
-    {
-        return _pickupPositions;
-    }
-
-    public List<Vector3> GetEnemyPositions()
-    {
-        return _enemyPositions;
-    }
-
-    public float GetEnemyPaceDist()
-    {
-        return enemyPaceDist;
-    }
+    public List<Vector3> GetPlayerPositions() { return _playerPositions; }
+    public List<Vector3> GetPickupPositions() { return _pickupPositions; }
+    public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
+    public float GetEnemyPaceDist() { return enemyPaceDist; }
 
     public interface IElement
     {
         IEnumerator Execute();
     }
 
+    public class InitialRoom : IElement
+    {
+        public InitialRoom(Direction exitDir)
+        {
+            _exitDirection = exitDir;
+        }
+
+        public IEnumerator Execute() //What it should do when this command gets executed
+        {
+            return null;
+        }
+    }
+
     //RoomSegment
     public class RoomSegment : IElement
     {
-        public RoomSegment() { }
+        public RoomSegment(Direction entryDir, Direction exitDir)
+        {
+            _entryDirection = entryDir;
+            _exitDirection = exitDir;
+        }
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
@@ -55,7 +62,11 @@ public class DungeonProgram
     //FirstCorrSegment
     public class FirstCorrSegment : IElement
     {
-        public FirstCorrSegment() { }
+        public FirstCorrSegment(Direction entryDir, Direction corrDir)
+        {
+            _corrDirection = corrDir;
+            _entryDirection = entryDir;
+        }
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
@@ -66,7 +77,11 @@ public class DungeonProgram
     //SecondCorrSegment
     public class SecondCorrSegment : IElement
     {
-        public SecondCorrSegment() { }
+        public SecondCorrSegment(Direction corrDir, Direction exitDir)
+        {
+            _corrDirection = corrDir;
+            _exitDirection = exitDir;
+        }
 
         public IEnumerator Execute() //What it should do when this command gets executed
         {
