@@ -5,13 +5,12 @@ grammar PlatformerMap;
 
 @members
 {
-	public PlatformerCompiler Compiler = new PlatformerCompiler(); //this will be the compiler file in the Unity project
+	public PlatformerCompiler Compiler = new PlatformerCompiler(); //specific compiler file in the Unity project
 }
 
 prog : elem+ ;
 
-/// what constitutes a single creation element. Going to keep them seperated by newlines for ease (for now at least)
-/// e.g. elem : (move | rotate) NEWLINE ;
+/// what constitutes a single creation element
 elem : ( addStartSegment | addFlatPathSegment | addLowPlatformSegment | addHighPlatformSegment | addPathGapSegment | addFinishLineSegment ) NEWLINE ;
 
 //build platformer path from segments
