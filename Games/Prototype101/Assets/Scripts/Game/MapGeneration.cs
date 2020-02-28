@@ -97,8 +97,20 @@ public class MapGeneration : MonoBehaviour {
             //path += "r";
         }
 
+        path = path.ToLower();
+
+        Debug.Log(domDir);
         Debug.Log(path);
 
+        //TESTING:
+        //path = "aj.fnnj.fnnl.hnnm.innl.hnnj.fnnm.innj"; //Testing all DD:North connections
+        //path = "bk.gssk.gssl.hssm.issl.hssk.jssm.issj"; //Testing all DD:South connections
+        //path = "cl.heel.heek.geej.feek.geel.heej.feel"; //Testing all DD:East connections
+        //path = "dm.iwwm.iwwk.gwwj.fwwk.gwwm.iwwj.fwwm"; //Testing all DD:West connections
+
+        
+        //path = "aj.fnnj.fnnj.frj.fnnj";
+        
         //StopAllCoroutines(); //feel like keeping this will cause problems because gamesetup is a coroutine
         _dProgram = DungeonCompiler.Compile(path);
         yield return _dProgram.Run();
@@ -208,30 +220,30 @@ public class MapGeneration : MonoBehaviour {
         //initial room
         var rewriteZn = new[]
         {
-            ProportionValue.Create(0.33, "aj.F"),
-            ProportionValue.Create(0.33, "cl.H"),
-            ProportionValue.Create(0.34, "dm.I"),
+            ProportionValue.Create(1, "aj.fnnj.F"),
+            //ProportionValue.Create(0.33, "cl.heel.H"),
+            //ProportionValue.Create(0.34, "dm.iwwm.I"),
         };
 
         var rewriteZs = new[]
         {
-            ProportionValue.Create(0.33, "bk.G"),
-            ProportionValue.Create(0.33, "cl.H"),
-            ProportionValue.Create(0.34, "dm.I"),
+            ProportionValue.Create(1, "bk.gssk.G"),
+            //ProportionValue.Create(0.33, "cl.heel.H"),
+            //ProportionValue.Create(0.34, "dm.iwwm.I"),
         };
 
         var rewriteZe = new[]
         {
-            ProportionValue.Create(0.33, "aj.F"),
-            ProportionValue.Create(0.33, "bk.G"),
-            ProportionValue.Create(0.34, "cl.H"),
+            //ProportionValue.Create(0.33, "aj.fnnj.F"),
+            //ProportionValue.Create(0.33, "bk.gssk.G"),
+            ProportionValue.Create(1, "cl.heel.H"),
         };
 
         var rewriteZw = new[]
         {
-            ProportionValue.Create(0.33, "aj.F"),
-            ProportionValue.Create(0.33, "bk.G"),
-            ProportionValue.Create(0.34, "dm.I"),
+            //ProportionValue.Create(0.33, "aj.fnnj.F"),
+            //ProportionValue.Create(0.33, "bk.gssk.G"),
+            ProportionValue.Create(1, "dm.iwwm.I"),
         };
 
         //subsequent rooms room
@@ -444,6 +456,7 @@ public class MapGeneration : MonoBehaviour {
         {
 
             //curString = lastString;
+            Debug.Log(lastString);
 
             foreach (char c in lastString)
             {

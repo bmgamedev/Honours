@@ -83,7 +83,7 @@ public class GameSetupParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-		public GameCompiler Compiler = new GameCompiler(); //this will be the compiler file in the Unity project
+		public GameCompiler Compiler = new GameCompiler(); //the specific compiler file in the Unity project
 
 	public GameSetupParser(TokenStream input) {
 		super(input);

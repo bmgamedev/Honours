@@ -42,8 +42,9 @@ public class RuntimeScriptable : MonoBehaviour
 
     public void DebugRun(GameObject debugtext)
     {
-        string generatorText2 = debugtext.GetComponent<InputField>().text;
-        Debug.Log("..." + generatorText2);
+        //string generatorText2 = debugtext.GetComponent<InputField>().text;
+        string generatorText2 = "initialise dungeon easy difficulty small players 1 finalise";
+        //Debug.Log("..." + generatorText2);
         StopAllCoroutines();
         _program = GameCompiler.Compile(generatorText2); 
         StartCoroutine(_program.Run());

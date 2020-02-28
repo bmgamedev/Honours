@@ -71,7 +71,7 @@ public class DungeonMapLexer extends Lexer {
 	}
 
 
-		public DungeonCompiler Compiler = new DungeonCompiler(); //this will be the compiler file in the Unity project
+		public DungeonCompiler Compiler = new DungeonCompiler(); //specific compiler file in the Unity project
 
 
 	public DungeonMapLexer(CharStream input) {

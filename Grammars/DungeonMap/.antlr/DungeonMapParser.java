@@ -79,7 +79,7 @@ public class DungeonMapParser extends Parser {
 	public ATN getATN() { return _ATN; }
 
 
-		public DungeonCompiler Compiler = new DungeonCompiler(); //this will be the compiler file in the Unity project
+		public DungeonCompiler Compiler = new DungeonCompiler(); //specific compiler file in the Unity project
 
 	public DungeonMapParser(TokenStream input) {
 		super(input);
@@ -293,7 +293,7 @@ public class DungeonMapParser extends Parser {
 			((CreateSecondCorrSectContext)_localctx).DIRECTION = match(DIRECTION);
 			setState(34);
 			((CreateSecondCorrSectContext)_localctx).EXIT = match(EXIT);
-			 Compiler.CreateSecondPiece((((CreateSecondCorrSectContext)_localctx).EXIT!=null?((CreateSecondCorrSectContext)_localctx).EXIT.getText():null), (((CreateSecondCorrSectContext)_localctx).DIRECTION!=null?((CreateSecondCorrSectContext)_localctx).DIRECTION.getText():null)); 
+			 Compiler.CreateSecondPiece((((CreateSecondCorrSectContext)_localctx).DIRECTION!=null?((CreateSecondCorrSectContext)_localctx).DIRECTION.getText():null), (((CreateSecondCorrSectContext)_localctx).EXIT!=null?((CreateSecondCorrSectContext)_localctx).EXIT.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {

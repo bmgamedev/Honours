@@ -5,19 +5,18 @@ grammar DungeonMap;
 
 @members
 {
-	public DungeonCompiler Compiler = new DungeonCompiler(); //this will be the compiler file in the Unity project
+	public DungeonCompiler Compiler = new DungeonCompiler(); //specific compiler file in the Unity project
 }
 
 prog : elem+ ;
 
-/// what constitutes a single creation element. Going to keep them seperated by newlines for ease (for now at least)
-/// e.g. elem : (move | rotate) NEWLINE ;
+/// what constitutes a single creation element
 elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | createRoom ) NEWLINE ;
 
 //build dungeon map
 createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom($EXIT.text); };
 createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece($ENTRY.text, $DIRECTION.text); };
-createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($EXIT.text, $DIRECTION.text); };
+createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($DIRECTION.text, $EXIT.text); };
 createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom($EXIT.text, $ENTRY.text); };
 
 //dungeon map generation

@@ -18,10 +18,7 @@ public class PlatformerProgram {
     static public List<Vector3> _enemyPositions = new List<Vector3>();
     static public float enemyPaceDist;
 
-    public interface IElement
-    {
-        IEnumerator Execute();
-    }
+    public interface IElement { IEnumerator Execute(); }
 
     public class StartSegment : IElement
     {

@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 61333251118252746}
   - component: {fileID: 114424268301702700}
   - component: {fileID: 50327060047251290}
+  - component: {fileID: 114737673282396030}
   m_Layer: 0
   m_Name: DungeonPC
   m_TagString: Untagged
@@ -38,7 +39,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1976184264436696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.09517012, y: -3.4734676, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.6344109, y: 1.6344109, z: 1.6344109}
   m_Children: []
   m_Father: {fileID: 0}
@@ -116,6 +117,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c95927f8a88a4c41bc814ef8692b9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114737673282396030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1976184264436696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ff41ec85b00a94dad0a5888bc4baaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212684961814307608

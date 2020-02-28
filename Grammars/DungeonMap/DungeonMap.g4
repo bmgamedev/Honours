@@ -16,14 +16,14 @@ elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | create
 //build dungeon map
 createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom($EXIT.text); };
 createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece($ENTRY.text, $DIRECTION.text); };
-createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($EXIT.text, $DIRECTION.text); };
+createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($DIRECTION.text, $EXIT.text); };
 createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom($EXIT.text, $ENTRY.text); };
 
 //dungeon map generation
 //order: N, S, E , W
-INITROOM : ( 'a' | 'b' | 'c' | 'd' ) ;
-ENTRY : ( 'f' | 'g' | 'h' | 'i' ) ;
-EXIT : ( 'j' | 'k' | 'l' | 'm' ) ;
+INITROOM :	( 'a' | 'b' | 'c' | 'd' ) ;
+ENTRY :		( 'f' | 'g' | 'h' | 'i' ) ;
+EXIT :		( 'j' | 'k' | 'l' | 'm' ) ;
 DIRECTION : ( 'n' | 's' | 'e' | 'w' ) ;
 ROOM : 'r' ;
 //SEPERATOR : '.' ; //Needed?

@@ -78,7 +78,7 @@ public partial class DungeonMapParser : Parser {
 	}
 
 
-		public DungeonCompiler Compiler = new DungeonCompiler(); //this will be the compiler file in the Unity project
+		public DungeonCompiler Compiler = new DungeonCompiler(); //specific compiler file in the Unity project
 
 		public DungeonMapParser(ITokenStream input) : this(input, Console.Out, Console.Error) { }
 
@@ -334,7 +334,7 @@ public partial class DungeonMapParser : Parser {
 			{
 			State = 33; _localctx._DIRECTION = Match(DIRECTION);
 			State = 34; _localctx._EXIT = Match(EXIT);
-			 Compiler.CreateSecondPiece((_localctx._EXIT!=null?_localctx._EXIT.Text:null), (_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null)); 
+			 Compiler.CreateSecondPiece((_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null), (_localctx._EXIT!=null?_localctx._EXIT.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {

@@ -72,7 +72,7 @@ public class PlatformerMapLexer extends Lexer {
 	}
 
 
-		public PlatformerCompiler Compiler = new PlatformerCompiler(); //this will be the compiler file in the Unity project
+		public PlatformerCompiler Compiler = new PlatformerCompiler(); //specific compiler file in the Unity project
 
 
 	public PlatformerMapLexer(CharStream input) {

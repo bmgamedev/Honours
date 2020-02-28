@@ -77,7 +77,7 @@ public class GameSetupLexer extends Lexer {
 	}
 
 
-		public GameCompiler Compiler = new GameCompiler(); //this will be the compiler file in the Unity project
+		public GameCompiler Compiler = new GameCompiler(); //the specific compiler file in the Unity project
 
 
 	public GameSetupLexer(CharStream input) {
