@@ -107,6 +107,18 @@ public partial class DungeonMapBaseListener : IDungeonMapListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCreateRoom([NotNull] DungeonMapParser.CreateRoomContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="DungeonMapParser.createFinalRoom"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCreateFinalRoom([NotNull] DungeonMapParser.CreateFinalRoomContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="DungeonMapParser.createFinalRoom"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCreateFinalRoom([NotNull] DungeonMapParser.CreateFinalRoomContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

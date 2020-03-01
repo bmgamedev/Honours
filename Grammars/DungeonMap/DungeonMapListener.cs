@@ -91,4 +91,14 @@ public interface IDungeonMapListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCreateRoom([NotNull] DungeonMapParser.CreateRoomContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="DungeonMapParser.createFinalRoom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreateFinalRoom([NotNull] DungeonMapParser.CreateFinalRoomContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="DungeonMapParser.createFinalRoom"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreateFinalRoom([NotNull] DungeonMapParser.CreateFinalRoomContext context);
 }

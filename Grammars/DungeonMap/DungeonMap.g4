@@ -11,21 +11,23 @@ grammar DungeonMap;
 prog : elem+ ;
 
 /// what constitutes a single creation element
-elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | createRoom ) NEWLINE ;
+elem : ( createInitialRoom | createFirstCorrSect | createSecondCorrSect | createRoom | createFinalRoom ) NEWLINE ;
 
 //build dungeon map
 createInitialRoom : INITROOM EXIT { Compiler.CreateInitialRoom($EXIT.text); };
 createFirstCorrSect : ENTRY DIRECTION { Compiler.CreateFirstPiece($ENTRY.text, $DIRECTION.text); };
 createSecondCorrSect : DIRECTION EXIT { Compiler.CreateSecondPiece($DIRECTION.text, $EXIT.text); };
-createRoom : EXIT ROOM ENTRY { Compiler.CreateRoom($EXIT.text, $ENTRY.text); };
+createRoom : ENTRY ROOM EXIT { Compiler.CreateRoom($ENTRY.text, $EXIT.text); };
+createFinalRoom : ENTRY FINALROOM { Compiler.CreateFinalRoom($ENTRY.text); } ;
 
 //dungeon map generation
-//order: N, S, E , W
+//order: 	   N, 	 S,    E,	 W
 INITROOM :	( 'a' | 'b' | 'c' | 'd' ) ;
 ENTRY :		( 'f' | 'g' | 'h' | 'i' ) ;
 EXIT :		( 'j' | 'k' | 'l' | 'm' ) ;
 DIRECTION : ( 'n' | 's' | 'e' | 'w' ) ;
 ROOM : 'r' ;
+FINALROOM : 'z' ;
 //SEPERATOR : '.' ; //Needed?
 
 /// some basic definitions

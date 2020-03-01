@@ -37,21 +37,22 @@ public partial class DungeonMapParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		INITROOM=1, ENTRY=2, EXIT=3, DIRECTION=4, ROOM=5, INT=6, NEWLINE=7, WS=8;
+		INITROOM=1, ENTRY=2, EXIT=3, DIRECTION=4, ROOM=5, FINALROOM=6, INT=7, 
+		NEWLINE=8, WS=9;
 	public const int
 		RULE_prog = 0, RULE_elem = 1, RULE_createInitialRoom = 2, RULE_createFirstCorrSect = 3, 
-		RULE_createSecondCorrSect = 4, RULE_createRoom = 5;
+		RULE_createSecondCorrSect = 4, RULE_createRoom = 5, RULE_createFinalRoom = 6;
 	public static readonly string[] ruleNames = {
 		"prog", "elem", "createInitialRoom", "createFirstCorrSect", "createSecondCorrSect", 
-		"createRoom"
+		"createRoom", "createFinalRoom"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, null, null, null, null, "'r'"
+		null, null, null, null, null, "'r'", "'z'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "INITROOM", "ENTRY", "EXIT", "DIRECTION", "ROOM", "INT", "NEWLINE", 
-		"WS"
+		null, "INITROOM", "ENTRY", "EXIT", "DIRECTION", "ROOM", "FINALROOM", "INT", 
+		"NEWLINE", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -118,19 +119,19 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 13;
+			State = 15;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			do {
 				{
 				{
-				State = 12; elem();
+				State = 14; elem();
 				}
 				}
-				State = 15;
+				State = 17;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITROOM) | (1L << ENTRY) | (1L << EXIT) | (1L << DIRECTION))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITROOM) | (1L << ENTRY) | (1L << DIRECTION))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -158,6 +159,9 @@ public partial class DungeonMapParser : Parser {
 		public CreateRoomContext createRoom() {
 			return GetRuleContext<CreateRoomContext>(0);
 		}
+		public CreateFinalRoomContext createFinalRoom() {
+			return GetRuleContext<CreateFinalRoomContext>(0);
+		}
 		public ElemContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -180,33 +184,36 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 21;
+			State = 24;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case INITROOM:
+			switch ( Interpreter.AdaptivePredict(TokenStream,1,Context) ) {
+			case 1:
 				{
-				State = 17; createInitialRoom();
+				State = 19; createInitialRoom();
 				}
 				break;
-			case ENTRY:
+			case 2:
 				{
-				State = 18; createFirstCorrSect();
+				State = 20; createFirstCorrSect();
 				}
 				break;
-			case DIRECTION:
+			case 3:
 				{
-				State = 19; createSecondCorrSect();
+				State = 21; createSecondCorrSect();
 				}
 				break;
-			case EXIT:
+			case 4:
 				{
-				State = 20; createRoom();
+				State = 22; createRoom();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 5:
+				{
+				State = 23; createFinalRoom();
+				}
+				break;
 			}
-			State = 23; Match(NEWLINE);
+			State = 26; Match(NEWLINE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -246,8 +253,8 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 25; Match(INITROOM);
-			State = 26; _localctx._EXIT = Match(EXIT);
+			State = 28; Match(INITROOM);
+			State = 29; _localctx._EXIT = Match(EXIT);
 			 Compiler.CreateInitialRoom((_localctx._EXIT!=null?_localctx._EXIT.Text:null)); 
 			}
 		}
@@ -289,8 +296,8 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 29; _localctx._ENTRY = Match(ENTRY);
-			State = 30; _localctx._DIRECTION = Match(DIRECTION);
+			State = 32; _localctx._ENTRY = Match(ENTRY);
+			State = 33; _localctx._DIRECTION = Match(DIRECTION);
 			 Compiler.CreateFirstPiece((_localctx._ENTRY!=null?_localctx._ENTRY.Text:null), (_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null)); 
 			}
 		}
@@ -332,8 +339,8 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 33; _localctx._DIRECTION = Match(DIRECTION);
-			State = 34; _localctx._EXIT = Match(EXIT);
+			State = 36; _localctx._DIRECTION = Match(DIRECTION);
+			State = 37; _localctx._EXIT = Match(EXIT);
 			 Compiler.CreateSecondPiece((_localctx._DIRECTION!=null?_localctx._DIRECTION.Text:null), (_localctx._EXIT!=null?_localctx._EXIT.Text:null)); 
 			}
 		}
@@ -349,11 +356,11 @@ public partial class DungeonMapParser : Parser {
 	}
 
 	public partial class CreateRoomContext : ParserRuleContext {
-		public IToken _EXIT;
 		public IToken _ENTRY;
-		public ITerminalNode EXIT() { return GetToken(DungeonMapParser.EXIT, 0); }
-		public ITerminalNode ROOM() { return GetToken(DungeonMapParser.ROOM, 0); }
+		public IToken _EXIT;
 		public ITerminalNode ENTRY() { return GetToken(DungeonMapParser.ENTRY, 0); }
+		public ITerminalNode ROOM() { return GetToken(DungeonMapParser.ROOM, 0); }
+		public ITerminalNode EXIT() { return GetToken(DungeonMapParser.EXIT, 0); }
 		public CreateRoomContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -376,10 +383,52 @@ public partial class DungeonMapParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 37; _localctx._EXIT = Match(EXIT);
-			State = 38; Match(ROOM);
-			State = 39; _localctx._ENTRY = Match(ENTRY);
-			 Compiler.CreateRoom((_localctx._EXIT!=null?_localctx._EXIT.Text:null), (_localctx._ENTRY!=null?_localctx._ENTRY.Text:null)); 
+			State = 40; _localctx._ENTRY = Match(ENTRY);
+			State = 41; Match(ROOM);
+			State = 42; _localctx._EXIT = Match(EXIT);
+			 Compiler.CreateRoom((_localctx._ENTRY!=null?_localctx._ENTRY.Text:null), (_localctx._EXIT!=null?_localctx._EXIT.Text:null)); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class CreateFinalRoomContext : ParserRuleContext {
+		public IToken _ENTRY;
+		public ITerminalNode ENTRY() { return GetToken(DungeonMapParser.ENTRY, 0); }
+		public ITerminalNode FINALROOM() { return GetToken(DungeonMapParser.FINALROOM, 0); }
+		public CreateFinalRoomContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_createFinalRoom; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IDungeonMapListener typedListener = listener as IDungeonMapListener;
+			if (typedListener != null) typedListener.EnterCreateFinalRoom(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IDungeonMapListener typedListener = listener as IDungeonMapListener;
+			if (typedListener != null) typedListener.ExitCreateFinalRoom(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public CreateFinalRoomContext createFinalRoom() {
+		CreateFinalRoomContext _localctx = new CreateFinalRoomContext(Context, State);
+		EnterRule(_localctx, 12, RULE_createFinalRoom);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 45; _localctx._ENTRY = Match(ENTRY);
+			State = 46; Match(FINALROOM);
+			 Compiler.CreateFinalRoom((_localctx._ENTRY!=null?_localctx._ENTRY.Text:null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -395,39 +444,45 @@ public partial class DungeonMapParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\n', '-', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', '\t', 
-		'\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', '\x6', 
-		'\t', '\x6', '\x4', '\a', '\t', '\a', '\x3', '\x2', '\x6', '\x2', '\x10', 
-		'\n', '\x2', '\r', '\x2', '\xE', '\x2', '\x11', '\x3', '\x3', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x3', '\x5', '\x3', '\x18', '\n', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', 
-		'\x4', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', 
-		'\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\x6', '\x3', '\a', '\x3', '\a', 
-		'\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x2', '\x2', '\b', 
-		'\x2', '\x4', '\x6', '\b', '\n', '\f', '\x2', '\x2', '\x2', '*', '\x2', 
-		'\xF', '\x3', '\x2', '\x2', '\x2', '\x4', '\x17', '\x3', '\x2', '\x2', 
-		'\x2', '\x6', '\x1B', '\x3', '\x2', '\x2', '\x2', '\b', '\x1F', '\x3', 
-		'\x2', '\x2', '\x2', '\n', '#', '\x3', '\x2', '\x2', '\x2', '\f', '\'', 
-		'\x3', '\x2', '\x2', '\x2', '\xE', '\x10', '\x5', '\x4', '\x3', '\x2', 
-		'\xF', '\xE', '\x3', '\x2', '\x2', '\x2', '\x10', '\x11', '\x3', '\x2', 
-		'\x2', '\x2', '\x11', '\xF', '\x3', '\x2', '\x2', '\x2', '\x11', '\x12', 
-		'\x3', '\x2', '\x2', '\x2', '\x12', '\x3', '\x3', '\x2', '\x2', '\x2', 
-		'\x13', '\x18', '\x5', '\x6', '\x4', '\x2', '\x14', '\x18', '\x5', '\b', 
-		'\x5', '\x2', '\x15', '\x18', '\x5', '\n', '\x6', '\x2', '\x16', '\x18', 
-		'\x5', '\f', '\a', '\x2', '\x17', '\x13', '\x3', '\x2', '\x2', '\x2', 
-		'\x17', '\x14', '\x3', '\x2', '\x2', '\x2', '\x17', '\x15', '\x3', '\x2', 
-		'\x2', '\x2', '\x17', '\x16', '\x3', '\x2', '\x2', '\x2', '\x18', '\x19', 
-		'\x3', '\x2', '\x2', '\x2', '\x19', '\x1A', '\a', '\t', '\x2', '\x2', 
-		'\x1A', '\x5', '\x3', '\x2', '\x2', '\x2', '\x1B', '\x1C', '\a', '\x3', 
-		'\x2', '\x2', '\x1C', '\x1D', '\a', '\x5', '\x2', '\x2', '\x1D', '\x1E', 
-		'\b', '\x4', '\x1', '\x2', '\x1E', '\a', '\x3', '\x2', '\x2', '\x2', '\x1F', 
-		' ', '\a', '\x4', '\x2', '\x2', ' ', '!', '\a', '\x6', '\x2', '\x2', '!', 
-		'\"', '\b', '\x5', '\x1', '\x2', '\"', '\t', '\x3', '\x2', '\x2', '\x2', 
-		'#', '$', '\a', '\x6', '\x2', '\x2', '$', '%', '\a', '\x5', '\x2', '\x2', 
-		'%', '&', '\b', '\x6', '\x1', '\x2', '&', '\v', '\x3', '\x2', '\x2', '\x2', 
-		'\'', '(', '\a', '\x5', '\x2', '\x2', '(', ')', '\a', '\a', '\x2', '\x2', 
-		')', '*', '\a', '\x4', '\x2', '\x2', '*', '+', '\b', '\a', '\x1', '\x2', 
-		'+', '\r', '\x3', '\x2', '\x2', '\x2', '\x4', '\x11', '\x17',
+		'\x5964', '\x3', '\v', '\x34', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
+		'\x6', '\t', '\x6', '\x4', '\a', '\t', '\a', '\x4', '\b', '\t', '\b', 
+		'\x3', '\x2', '\x6', '\x2', '\x12', '\n', '\x2', '\r', '\x2', '\xE', '\x2', 
+		'\x13', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
+		'\x3', '\x5', '\x3', '\x1B', '\n', '\x3', '\x3', '\x3', '\x3', '\x3', 
+		'\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x5', 
+		'\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x6', '\x3', '\x6', 
+		'\x3', '\x6', '\x3', '\x6', '\x3', '\a', '\x3', '\a', '\x3', '\a', '\x3', 
+		'\a', '\x3', '\a', '\x3', '\b', '\x3', '\b', '\x3', '\b', '\x3', '\b', 
+		'\x3', '\b', '\x2', '\x2', '\t', '\x2', '\x4', '\x6', '\b', '\n', '\f', 
+		'\xE', '\x2', '\x2', '\x2', '\x31', '\x2', '\x11', '\x3', '\x2', '\x2', 
+		'\x2', '\x4', '\x1A', '\x3', '\x2', '\x2', '\x2', '\x6', '\x1E', '\x3', 
+		'\x2', '\x2', '\x2', '\b', '\"', '\x3', '\x2', '\x2', '\x2', '\n', '&', 
+		'\x3', '\x2', '\x2', '\x2', '\f', '*', '\x3', '\x2', '\x2', '\x2', '\xE', 
+		'/', '\x3', '\x2', '\x2', '\x2', '\x10', '\x12', '\x5', '\x4', '\x3', 
+		'\x2', '\x11', '\x10', '\x3', '\x2', '\x2', '\x2', '\x12', '\x13', '\x3', 
+		'\x2', '\x2', '\x2', '\x13', '\x11', '\x3', '\x2', '\x2', '\x2', '\x13', 
+		'\x14', '\x3', '\x2', '\x2', '\x2', '\x14', '\x3', '\x3', '\x2', '\x2', 
+		'\x2', '\x15', '\x1B', '\x5', '\x6', '\x4', '\x2', '\x16', '\x1B', '\x5', 
+		'\b', '\x5', '\x2', '\x17', '\x1B', '\x5', '\n', '\x6', '\x2', '\x18', 
+		'\x1B', '\x5', '\f', '\a', '\x2', '\x19', '\x1B', '\x5', '\xE', '\b', 
+		'\x2', '\x1A', '\x15', '\x3', '\x2', '\x2', '\x2', '\x1A', '\x16', '\x3', 
+		'\x2', '\x2', '\x2', '\x1A', '\x17', '\x3', '\x2', '\x2', '\x2', '\x1A', 
+		'\x18', '\x3', '\x2', '\x2', '\x2', '\x1A', '\x19', '\x3', '\x2', '\x2', 
+		'\x2', '\x1B', '\x1C', '\x3', '\x2', '\x2', '\x2', '\x1C', '\x1D', '\a', 
+		'\n', '\x2', '\x2', '\x1D', '\x5', '\x3', '\x2', '\x2', '\x2', '\x1E', 
+		'\x1F', '\a', '\x3', '\x2', '\x2', '\x1F', ' ', '\a', '\x5', '\x2', '\x2', 
+		' ', '!', '\b', '\x4', '\x1', '\x2', '!', '\a', '\x3', '\x2', '\x2', '\x2', 
+		'\"', '#', '\a', '\x4', '\x2', '\x2', '#', '$', '\a', '\x6', '\x2', '\x2', 
+		'$', '%', '\b', '\x5', '\x1', '\x2', '%', '\t', '\x3', '\x2', '\x2', '\x2', 
+		'&', '\'', '\a', '\x6', '\x2', '\x2', '\'', '(', '\a', '\x5', '\x2', '\x2', 
+		'(', ')', '\b', '\x6', '\x1', '\x2', ')', '\v', '\x3', '\x2', '\x2', '\x2', 
+		'*', '+', '\a', '\x4', '\x2', '\x2', '+', ',', '\a', '\a', '\x2', '\x2', 
+		',', '-', '\a', '\x5', '\x2', '\x2', '-', '.', '\b', '\a', '\x1', '\x2', 
+		'.', '\r', '\x3', '\x2', '\x2', '\x2', '/', '\x30', '\a', '\x4', '\x2', 
+		'\x2', '\x30', '\x31', '\a', '\b', '\x2', '\x2', '\x31', '\x32', '\b', 
+		'\b', '\x1', '\x2', '\x32', '\xF', '\x3', '\x2', '\x2', '\x2', '\x4', 
+		'\x13', '\x1A',
 	};
 
 	public static readonly ATN _ATN =

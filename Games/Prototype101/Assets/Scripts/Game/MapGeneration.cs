@@ -29,6 +29,14 @@ public class MapGeneration : MonoBehaviour {
     public void SetEnemyPositions(List<Vector3> enemyPos) { _enemyPositions = enemyPos; }
     public void SetEnemyPaceDist(float paceDist) { enemyPaceDist = paceDist; }
 
+    public string GetDominantDirection()
+    {
+        if (domDir == DominantDirection.NORTH) { return "North"; }
+        else if (domDir == DominantDirection.SOUTH) { return "South"; }
+        else if (domDir == DominantDirection.EAST) { return "East"; }
+        else { return "West"; }
+    }
+
     void Awake()
     {
         if (instance != null)
@@ -84,19 +92,14 @@ public class MapGeneration : MonoBehaviour {
         {
             string firstChar;
 
-            if(i == 0)
-            {
-                firstChar = "Z";
-            }
-            else
-            {
-                firstChar = "R";
-            }
+            if (i == 0) { firstChar = "X"; }
+            else { firstChar = "R"; }
 
             path += DungeonPathString(maxIterations, firstChar);
             //path += "r";
         }
 
+        path += DungeonPathString(maxIterations, "Z");
         path = path.ToLower();
 
         Debug.Log(domDir);
@@ -108,9 +111,12 @@ public class MapGeneration : MonoBehaviour {
         //path = "cl.heel.heek.geej.feek.geel.heej.feel"; //Testing all DD:East connections
         //path = "dm.iwwm.iwwk.gwwj.fwwk.gwwm.iwwj.fwwm"; //Testing all DD:West connections
 
-        
-        //path = "aj.fnnj.fnnj.frj.fnnj";
-        
+        //path = "aj.fnnj.feej.fnnj.frm.iwwj.feel.hnnm.innj.frm.iwwm.innj.frm.innl.heej.frl.heej.fnnj.frm.iwwm.innj.fz"; //testing rooms going north
+        //path = "bk.gssk.gssl.hssm.iwwk.grl.heel.hssk.grm.issl.heek.gwwm.iwwk.grl.hssm.issk.grl.heel.hssk.grm.issl.hssk.gz"; //testing rooms going south
+        //path = "cl.heel.heel.hrj.fnnl.heel.hrk.gssl.hssl.hrj.feej.feel.hrj.feej.feek.geel.hz"; //testing rooms going east
+        //path = "dm.iwwm.iwwm.issm.irk.gssm.issm.iwwm.iwwm.irk.gssm.innj.fwwm.irj.fwwk.gwwk.gwwm.irj.fnnm.iwwm.iz"; //testing rooms going west
+
+
         //StopAllCoroutines(); //feel like keeping this will cause problems because gamesetup is a coroutine
         _dProgram = DungeonCompiler.Compile(path);
         yield return _dProgram.Run();
@@ -218,61 +224,70 @@ public class MapGeneration : MonoBehaviour {
         //Need a different set of rewrite options for each different dominant direction
 
         //initial room
-        var rewriteZn = new[]
+        var rewriteXn = new[]
         {
             ProportionValue.Create(1, "aj.fnnj.F"),
-            //ProportionValue.Create(0.33, "cl.heel.H"),
-            //ProportionValue.Create(0.34, "dm.iwwm.I"),
+        };
+
+        var rewriteXs = new[]
+        {
+            ProportionValue.Create(1, "bk.gssk.G"),
+        };
+
+        var rewriteXe = new[]
+        {
+            ProportionValue.Create(1, "cl.heel.H"),
+        };
+
+        var rewriteXw = new[]
+        {
+            ProportionValue.Create(1, "dm.iwwm.I"),
+        };
+
+        //final room
+        var rewriteZn = new[]
+        {
+            ProportionValue.Create(1.0, "nnj.fz"),
         };
 
         var rewriteZs = new[]
         {
-            ProportionValue.Create(1, "bk.gssk.G"),
-            //ProportionValue.Create(0.33, "cl.heel.H"),
-            //ProportionValue.Create(0.34, "dm.iwwm.I"),
+            ProportionValue.Create(1.0, "ssk.gz"),
         };
 
         var rewriteZe = new[]
         {
-            //ProportionValue.Create(0.33, "aj.fnnj.F"),
-            //ProportionValue.Create(0.33, "bk.gssk.G"),
-            ProportionValue.Create(1, "cl.heel.H"),
+            ProportionValue.Create(1.0, "eel.hz"),
         };
 
         var rewriteZw = new[]
         {
-            //ProportionValue.Create(0.33, "aj.fnnj.F"),
-            //ProportionValue.Create(0.33, "bk.gssk.G"),
-            ProportionValue.Create(1, "dm.iwwm.I"),
+            ProportionValue.Create(1.0, "wwm.iz"),
         };
 
         //subsequent rooms room
         var rewriteRn = new[]
         {
-            ProportionValue.Create(0.33, "rj.F"),
-            ProportionValue.Create(0.33, "rl.H"),
-            ProportionValue.Create(0.34, "rm.I"),
+            ProportionValue.Create(0.5, "nnj.frl.H"), //exit room east
+            ProportionValue.Create(0.5, "nnj.frm.I"), //exit room west
         };
 
         var rewriteRs = new[]
         {
-            ProportionValue.Create(0.33, "rk.G"),
-            ProportionValue.Create(0.33, "rl.H"),
-            ProportionValue.Create(0.34, "rm.I"),
+            ProportionValue.Create(0.5, "ssk.grl.H"), //exit room east
+            ProportionValue.Create(0.5, "ssk.grm.I"), //exit room west
         };
 
         var rewriteRe = new[]
         {
-            ProportionValue.Create(0.33, "rj.F"),
-            ProportionValue.Create(0.33, "rk.G"),
-            ProportionValue.Create(0.34, "rl.H"),
+            ProportionValue.Create(0.5, "eel.hrj.F"), //exit room north
+            ProportionValue.Create(0.5, "eel.hrk.G"), //exit room south
         };
 
         var rewriteRw = new[]
         {
-            ProportionValue.Create(0.33, "rj.F"),
-            ProportionValue.Create(0.33, "rk.G"),
-            ProportionValue.Create(0.34, "rm.I"),
+            ProportionValue.Create(0.5, "wwm.irj.F"), //exit room north
+            ProportionValue.Create(0.5, "wwm.irk.G"), //exit room south
         };
 
         //entry
@@ -286,30 +301,30 @@ public class MapGeneration : MonoBehaviour {
         //Fe - fnN, feE, fsS
         var rewriteFe = new[]
         {
-            ProportionValue.Create(0.33, "fnN"),
-            ProportionValue.Create(0.33, "feE"),
-            ProportionValue.Create(0.34, "fsS"),
+            ProportionValue.Create(0.5, "fnN"),
+            ProportionValue.Create(0.5, "feE"),
+            //ProportionValue.Create(0.34, "fsS"),
         };
         //Fw - fnN, fsS, fwW
         var rewriteFw = new[]
         {
-            ProportionValue.Create(0.33, "fnN"),
-            ProportionValue.Create(0.33, "fwW"),
-            ProportionValue.Create(0.34, "fsS"),
+            ProportionValue.Create(0.5, "fnN"),
+            ProportionValue.Create(0.5, "fwW"),
+            //ProportionValue.Create(0.34, "fsS"),
         };
         //Hn - hnN, heE, hwW
         var rewriteHn = new[]
         {
-            ProportionValue.Create(0.33, "hnN"),
-            ProportionValue.Create(0.33, "heE"),
-            ProportionValue.Create(0.34, "hwW"),
+            ProportionValue.Create(0.5, "hnN"),
+            ProportionValue.Create(0.5, "heE"),
+            //ProportionValue.Create(0.34, "hwW"),
         };
         //Hs - hsS, heE, hwW
         var rewriteHs = new[]
         {
-            ProportionValue.Create(0.33, "hsS"),
-            ProportionValue.Create(0.33, "heE"),
-            ProportionValue.Create(0.34, "hwW"),
+            ProportionValue.Create(0.5, "hsS"),
+            ProportionValue.Create(0.5, "heE"),
+            //ProportionValue.Create(0.34, "hwW"),
         };
         //He - hnN, heE, hsS
         var rewriteHe = new[]
@@ -328,30 +343,30 @@ public class MapGeneration : MonoBehaviour {
         //Ge - gnN, geE, gsS
         var rewriteGe = new[]
         {
-            ProportionValue.Create(0.33, "gnN"),
-            ProportionValue.Create(0.33, "geE"),
-            ProportionValue.Create(0.34, "gsS"),
+            //ProportionValue.Create(0.33, "gnN"),
+            ProportionValue.Create(0.5, "geE"),
+            ProportionValue.Create(0.5, "gsS"),
         };
         //Gw - gnN, gsS, gwW
         var rewriteGw = new[]
         {
-            ProportionValue.Create(0.33, "gnN"),
-            ProportionValue.Create(0.33, "gsS"),
-            ProportionValue.Create(0.34, "gwW"),
+            //ProportionValue.Create(0.33, "gnN"),
+            ProportionValue.Create(0.5, "gsS"),
+            ProportionValue.Create(0.5, "gwW"),
         };
         //In - inN, ieE, iwW
         var rewriteIn = new[]
         {
-            ProportionValue.Create(0.33, "inN"),
-            ProportionValue.Create(0.33, "ieE"),
-            ProportionValue.Create(0.34, "iwW"),
+            ProportionValue.Create(0.5, "inN"),
+            //ProportionValue.Create(0.33, "ieE"),
+            ProportionValue.Create(0.5, "iwW"),
         };
         //Is - isS, ieE, iwW
         var rewriteIs = new[]
         {
-            ProportionValue.Create(0.33, "isS"),
-            ProportionValue.Create(0.33, "ieE"),
-            ProportionValue.Create(0.34, "iwW"),
+            ProportionValue.Create(0.5, "isS"),
+            //ProportionValue.Create(0.33, "ieE"),
+            ProportionValue.Create(0.5, "iwW"),
         };
         //Iw - inN, isS, iwW
         var rewriteIw = new[]
@@ -372,30 +387,30 @@ public class MapGeneration : MonoBehaviour {
         //Ne - nj.F, nl.H, nk.G
         var rewriteNe = new[]
         {
-            ProportionValue.Create(0.33, "nj.F"),
-            ProportionValue.Create(0.33, "nl.H"),
-            ProportionValue.Create(0.34, "nk.G"),
+            ProportionValue.Create(0.5, "nj.F"),
+            ProportionValue.Create(0.5, "nl.H"),
+            //ProportionValue.Create(0.34, "nk.G"),
         };
         //Nw - nj.F, nm.I, nk.G
         var rewriteNw = new[]
         {
-            ProportionValue.Create(0.33, "nj.F"),
-            ProportionValue.Create(0.33, "nm.I"),
-            ProportionValue.Create(0.34, "nk.G"),
+            ProportionValue.Create(0.5, "nj.F"),
+            ProportionValue.Create(0.5, "nm.I"),
+            //ProportionValue.Create(0.34, "nk.G"),
         };
         //En - ej.F, el.H, em.I
         var rewriteEn = new[]
         {
-            ProportionValue.Create(0.33, "ej.F"),
-            ProportionValue.Create(0.33, "el.H"),
-            ProportionValue.Create(0.34, "em.I"),
+            ProportionValue.Create(0.5, "ej.F"),
+            ProportionValue.Create(0.5, "el.H"),
+            //ProportionValue.Create(0.34, "em.I"),
         };
         //Es - em.I, ek.G, el.H
         var rewriteEs = new[]
         {
-            ProportionValue.Create(0.33, "ek.G"),
-            ProportionValue.Create(0.33, "el.H"),
-            ProportionValue.Create(0.34, "em.I"),
+            ProportionValue.Create(0.5, "ek.G"),
+            ProportionValue.Create(0.5, "el.H"),
+            //ProportionValue.Create(0.34, "em.I"),
         };
         //Ee - ej.F, el.H, ek.G
         var rewriteEe = new[]
@@ -414,16 +429,16 @@ public class MapGeneration : MonoBehaviour {
         //Sw - sj.F, sm.I, sk.G
         var rewriteSw = new[]
         {
-            ProportionValue.Create(0.33, "sk.G"),
-            ProportionValue.Create(0.33, "sj.F"),
-            ProportionValue.Create(0.34, "sm.I"),
+            ProportionValue.Create(0.5, "sk.G"),
+            //ProportionValue.Create(0.33, "sj.F"),
+            ProportionValue.Create(0.5, "sm.I"),
         };
         //Se - sj.F, sl.H, sk.G
         var rewriteSe = new[]
         {
-            ProportionValue.Create(0.33, "sk.G"),
-            ProportionValue.Create(0.33, "sj.F"),
-            ProportionValue.Create(0.34, "sl.H"),
+            ProportionValue.Create(0.5, "sk.G"),
+            //ProportionValue.Create(0.33, "sj.F"),
+            ProportionValue.Create(0.5, "sl.H"),
         };
         //Ww - wj.F, wm.I, wk.G
         var rewriteWw = new[]
@@ -435,16 +450,16 @@ public class MapGeneration : MonoBehaviour {
         //Wn - wj.F, wl.H, wm.I
         var rewriteWn = new[]
         {
-            ProportionValue.Create(0.33, "wl.H"),
-            ProportionValue.Create(0.33, "wj.F"),
-            ProportionValue.Create(0.34, "wm.I"),
+            //ProportionValue.Create(0.33, "wl.H"),
+            ProportionValue.Create(0.5, "wj.F"),
+            ProportionValue.Create(0.5, "wm.I"),
         };
         //Ws - wm.I, wk.G, wl.H
         var rewriteWs = new[]
         {
-            ProportionValue.Create(0.33, "wl.H"),
-            ProportionValue.Create(0.33, "wk.G"),
-            ProportionValue.Create(0.34, "wm.I"),
+            //ProportionValue.Create(0.33, "wl.H"),
+            ProportionValue.Create(0.5, "wk.G"),
+            ProportionValue.Create(0.5, "wm.I"),
         };
 
 
@@ -472,6 +487,9 @@ public class MapGeneration : MonoBehaviour {
                             break;
                         case 'F':
                             curString += rewriteFn.ChooseByRandom();
+                            break;
+                        case 'X':
+                            curString += rewriteXn.ChooseByRandom();
                             break;
                         case 'Z':
                             curString += rewriteZn.ChooseByRandom();
@@ -506,6 +524,9 @@ public class MapGeneration : MonoBehaviour {
                         case 'G':
                             curString += rewriteGs.ChooseByRandom();
                             break;
+                        case 'X':
+                            curString += rewriteXs.ChooseByRandom();
+                            break;
                         case 'Z':
                             curString += rewriteZs.ChooseByRandom();
                             break;
@@ -539,6 +560,9 @@ public class MapGeneration : MonoBehaviour {
                         case 'G':
                             curString += rewriteGe.ChooseByRandom();
                             break;
+                        case 'X':
+                            curString += rewriteXe.ChooseByRandom();
+                            break;
                         case 'Z':
                             curString += rewriteZe.ChooseByRandom();
                             break;
@@ -571,6 +595,9 @@ public class MapGeneration : MonoBehaviour {
                             break;
                         case 'G':
                             curString += rewriteGw.ChooseByRandom();
+                            break;
+                        case 'X':
+                            curString += rewriteXw.ChooseByRandom();
                             break;
                         case 'Z':
                             curString += rewriteZw.ChooseByRandom();

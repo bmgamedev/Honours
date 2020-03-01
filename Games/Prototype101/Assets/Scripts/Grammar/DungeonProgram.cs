@@ -12,7 +12,7 @@ public class DungeonProgram
     static private Vector3Int _innerConnection, _outerConnection; //TODO change to transform if cell positions aren't working
     static private Transform _startPos;
 
-    static private int corridorWidth = 5;
+    static private int corridorWidth = 6;
 
     static private Tilemap _wallMap, _groundMap, _deathMap;
     static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
@@ -23,6 +23,7 @@ public class DungeonProgram
     static public float enemyPaceDist;
 
     public enum Direction { North, South, East, West };
+    static private Direction dominantDir;
     //static private Direction _corrDirection;
     //static private Direction _entryDirection;
     //static private Direction _exitDirection;
@@ -34,6 +35,7 @@ public class DungeonProgram
 
     public interface IElement { IEnumerator Execute(); }
 
+    //initial room 
     public class InitialRoom : IElement
     {
         private Direction exitDirection;
@@ -45,6 +47,8 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
+            
+
             //get the tiles - TODO move to a type of "initialisation" function
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
@@ -63,6 +67,15 @@ public class DungeonProgram
             mapGenerator = GameObject.Find("MapGeneration").GetComponent<MapGeneration>();
 
             int maxRoomSize = 12; //TODO some sort of logic here?
+
+            //string direction = mapGenerator.GetDominantDirection();
+            if (exitDirection.Equals(Direction.North)) { dominantDir = Direction.North; }
+            else if (exitDirection.Equals(Direction.South)) { dominantDir = Direction.South; }
+            else if(exitDirection.Equals(Direction.East)) { dominantDir = Direction.East; }
+            else if (exitDirection.Equals(Direction.West)) { dominantDir = Direction.West; }
+
+            Debug.Log(exitDirection);
+            Debug.Log(dominantDir);
 
             //Make the actual room:
             Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
@@ -198,7 +211,7 @@ public class DungeonProgram
                     _wallMap.SetTile(tilePos, null);
 
                     //set the outerconnection pos
-                    if (i == 3) { _outerConnection = tilePos; _outerConnection.x += 1; }
+                    if (i == 3) { _outerConnection = tilePos; _outerConnection.x += 2; }
                 }
 
             }
@@ -214,7 +227,7 @@ public class DungeonProgram
                     _wallMap.SetTile(tilePos, null);
 
                     //set the outerconnection pos
-                    if (i == 3) { _outerConnection = tilePos; _outerConnection.y += 1; }
+                    if (i == 3) { _outerConnection = tilePos; _outerConnection.y += 2; }
                 }
             }
             else if (exitDirection == Direction.West)
@@ -261,7 +274,10 @@ public class DungeonProgram
 
             Vector3Int mapfillStart = _outerConnection;
 
-            if (entryDirection == Direction.South) { mapfillStart.x -= roomWidth; mapfillStart.y -= roomHeight; }
+            if (entryDirection == Direction.South)
+            {
+                mapfillStart.x -= roomWidth; mapfillStart.y -= roomHeight;
+            }
             else if (entryDirection == Direction.East) { mapfillStart.y -= roomHeight; }
             else if (entryDirection == Direction.West) { mapfillStart.x -= roomWidth; }
 
@@ -269,7 +285,7 @@ public class DungeonProgram
             Vector3Int tile = mapfillStart;
             for (int i = 0; i < roomHeight; i++) {
 
-                tile.x = mapfillStart.x;
+                tile.x = mapfillStart.x - 1;
 
                 for (int j = 0; j < roomWidth; j++) {
                     
@@ -282,20 +298,20 @@ public class DungeonProgram
 
             //Left/Right
             tile = mapfillStart;
-            for (int i = 0; i <= roomHeight + 1; i++)
+            for (int i = 0; i <= roomHeight; i++)
             {
                 tile.x = mapfillStart.x;
                 _wallMap.SetTile(tile, _brickTile1);
-                tile.x = mapfillStart.x + roomWidth + 1;
+                tile.x = mapfillStart.x + roomWidth;
                 _wallMap.SetTile(tile, _brickTile1);
                 tile.y++;
             }
 
             //Top/Bottom
             tile = mapfillStart;
-            for (int i = 0; i <= roomWidth + 1; i++)
+            for (int i = 0; i <= roomWidth; i++)
             {
-                tile.y = mapfillStart.y - 1;
+                tile.y = mapfillStart.y;// - 1;
                 _wallMap.SetTile(tile, _brickTile1);
                 tile.y = mapfillStart.y + roomHeight;
                 _wallMap.SetTile(tile, _brickTile1);
@@ -303,31 +319,60 @@ public class DungeonProgram
             }
 
             //remove entry
-            if (entryDirection == Direction.North || entryDirection == Direction.South)
+            if (entryDirection == Direction.North)
             {
                 tile = _outerConnection;
-                tile.y--;
-                for (int i = 0; i < corridorWidth; i++)
+                //tile.y--;
+                tile.x++;
+                for (int i = 0; i < (corridorWidth - 1); i++)
                 {
                     _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
                     tile.x++;
                 }
                 
             }
-            else if (entryDirection == Direction.West || entryDirection == Direction.East)
+            else if (entryDirection == Direction.South)
             {
                 tile = _outerConnection;
-                //tile.x--; //needed?
+                //tile.y--;
+                tile.x -= corridorWidth;
                 for (int i = 0; i < corridorWidth; i++)
                 {
                     _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if ( entryDirection == Direction.East)
+            {
+                tile = _outerConnection;
+                tile.y -= 1;
+                //tile.x -= 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y--;
+                }
+            }
+            else if (entryDirection == Direction.West)
+            {
+                tile = _outerConnection;
+                tile.y += corridorWidth - 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
                     tile.y--;
                 }
             }
 
             //set new outerconnection point
-            //exitDirection == Direction.North && entryDirection == Direction.North
-            if ((exitDirection == Direction.North && entryDirection == Direction.North) ||
+            /*if ((exitDirection == Direction.North && entryDirection == Direction.North) ||
                 (exitDirection == Direction.East && entryDirection == Direction.West)) {
                 _outerConnection.y += roomHeight; }
             else if ((exitDirection == Direction.North && entryDirection == Direction.South) ||
@@ -337,7 +382,8 @@ public class DungeonProgram
                 (exitDirection == Direction.West && entryDirection == Direction.North) ||
                 (exitDirection == Direction.North && entryDirection == Direction.East) ||
                 (exitDirection == Direction.South && entryDirection == Direction.West)) { 
-                /*outerconnection stays as is*/ }
+                //outerconnection stays as is
+            }
             else if ((exitDirection == Direction.South && entryDirection == Direction.South) ||
                 (exitDirection == Direction.West && entryDirection == Direction.East)) {
                 _outerConnection.y -= roomHeight; }
@@ -351,27 +397,131 @@ public class DungeonProgram
             else if (exitDirection == Direction.South && entryDirection == Direction.East) {
                 _outerConnection.y -= roomHeight; _outerConnection.x += roomWidth; }
             else if (exitDirection == Direction.North && entryDirection == Direction.West) {
-                _outerConnection.y += roomHeight; _outerConnection.x -= roomWidth; }
+                _outerConnection.y += roomHeight; _outerConnection.x -= roomWidth; }*/
+
+            _outerConnection = mapfillStart;
+            if (exitDirection == Direction.North)
+            {
+                Debug.Log(dominantDir);
+
+                _outerConnection.y += roomHeight;
+
+                if (dominantDir == Direction.East)
+                {
+                    //keep outconnection to the top right
+                    _outerConnection.x += (roomWidth - corridorWidth);
+                    Debug.Log("should be top right");
+                }
+                // else keep connection to top left i.e. do nothing more
+            }
+            else if(exitDirection == Direction.South)
+            {
+                if (dominantDir == Direction.East)
+                {
+                    //keep outconnection to the bottom right
+                    _outerConnection.x += roomWidth;
+                }
+                else
+                {
+                    _outerConnection.x += corridorWidth;
+                }
+                //else keep connection to bottom left i.e. do nothing
+            }
+            else if (exitDirection == Direction.East)
+            {
+                _outerConnection.x += roomWidth;
+
+                if (dominantDir == Direction.North)
+                {
+                    //keep connection to bottom of the right wall
+                    _outerConnection.y += roomHeight;
+                }
+                else
+                {
+                    //keep outconnection to the top of the right wall
+                    _outerConnection.y += corridorWidth;
+                }
+            }
+            else if (exitDirection == Direction.West)
+            {
+                if (dominantDir == Direction.North)
+                {
+                    //keep outconnection to the top of the left wall
+                    _outerConnection.y += (roomHeight - corridorWidth);
+                }
+                //else keep connection to bottom of the left wall i.e. do nothing
+            }
+
+
+            /*if (exitDirection == Direction.East && entryDirection == Direction.North)
+            {
+                _outerConnection.y += roomHeight; _outerConnection.x += roomWidth;
+            }
+            else if (exitDirection == Direction.West && entryDirection == Direction.South)
+            {
+                _outerConnection.y -= roomHeight; _outerConnection.x -= roomWidth;
+            }
+            else if (exitDirection == Direction.South && entryDirection == Direction.East)
+            {
+                _outerConnection.y -= roomHeight; _outerConnection.x += roomWidth;
+            }
+            else if (exitDirection == Direction.North && entryDirection == Direction.West)
+            {
+                _outerConnection.y += roomHeight; _outerConnection.x -= roomWidth;
+            }*/
+            /*if ((exitDirection == Direction.East && entryDirection == Direction.South) ||
+                (exitDirection == Direction.West && entryDirection == Direction.North) ||
+                (exitDirection == Direction.North && entryDirection == Direction.East) ||
+                (exitDirection == Direction.South && entryDirection == Direction.West))
+            {
+                //outerconnection stays as is
+            }*/
 
             //remove exit
-            if (entryDirection == Direction.North || entryDirection == Direction.South)
+            if (exitDirection == Direction.North)
             {
                 tile = _outerConnection;
                 //tile.y--; //needed?
                 for (int i = 0; i < corridorWidth; i++)
                 {
                     _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if (exitDirection == Direction.South)
+            {
+                tile = _outerConnection;
+                //tile.y--; //needed?
+                for (int i = 0; i < corridorWidth; i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
                     tile.x--;
                 }
 
             }
-            else if (entryDirection == Direction.West || entryDirection == Direction.East)
+            else if (exitDirection == Direction.East)
+            {
+                tile = _outerConnection;
+                tile.y -= corridorWidth;
+                //tile.x--; //needed?
+                for (int i = 0; i < corridorWidth; i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y++;
+                }
+            }
+            else if (exitDirection == Direction.West)
             {
                 tile = _outerConnection;
                 //tile.x--; //needed?
                 for (int i = 0; i < corridorWidth; i++)
                 {
                     _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
                     tile.y++;
                 }
             }
@@ -380,6 +530,133 @@ public class DungeonProgram
             return null;
         }
     }
+
+    //final room
+    public class FinalRoomSegment : IElement
+    {
+        private Direction entryDirection;
+
+        public FinalRoomSegment(Direction entryDir)
+        {
+            entryDirection = entryDir;
+        }
+
+        public IEnumerator Execute()
+        {
+            int roomWidth = 18;
+            int roomHeight = 18;
+
+            System.Random random = new System.Random();
+            int offset = random.Next(10);
+
+            Vector3Int mapfillStart = _outerConnection;
+
+            if (entryDirection == Direction.South)
+            {
+                mapfillStart.x -= roomWidth; mapfillStart.y -= roomHeight;
+            }
+            else if (entryDirection == Direction.East) { mapfillStart.y -= roomHeight; }
+            else if (entryDirection == Direction.West) { mapfillStart.x -= roomWidth; }
+
+            //build a walled room
+            Vector3Int tile = mapfillStart;
+            for (int i = 0; i < roomHeight; i++)
+            {
+
+                tile.x = mapfillStart.x - 1;
+
+                for (int j = 0; j < roomWidth; j++)
+                {
+
+                    tile.x++;
+                    _groundMap.SetTile(tile, _groundTile);
+
+                }
+                tile.y++;
+            }
+
+            //Left/Right
+            tile = mapfillStart;
+            for (int i = 0; i <= roomHeight; i++)
+            {
+                tile.x = mapfillStart.x;
+                _wallMap.SetTile(tile, _brickTile1);
+                tile.x = mapfillStart.x + roomWidth;
+                _wallMap.SetTile(tile, _brickTile1);
+                tile.y++;
+            }
+
+            //Top/Bottom
+            tile = mapfillStart;
+            for (int i = 0; i <= roomWidth; i++)
+            {
+                tile.y = mapfillStart.y;// - 1;
+                _wallMap.SetTile(tile, _brickTile1);
+                tile.y = mapfillStart.y + roomHeight;
+                _wallMap.SetTile(tile, _brickTile1);
+                tile.x++;
+            }
+
+            //remove entry
+            if (entryDirection == Direction.North)
+            {
+                tile = _outerConnection;
+                //tile.y--;
+                tile.x++;
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if (entryDirection == Direction.South)
+            {
+                tile = _outerConnection;
+                //tile.y--;
+                tile.x -= corridorWidth;
+                for (int i = 0; i < corridorWidth; i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if (entryDirection == Direction.East)
+            {
+                tile = _outerConnection;
+                tile.y -= 1;
+                //tile.x -= 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y--;
+                }
+            }
+            else if (entryDirection == Direction.West)
+            {
+                tile = _outerConnection;
+                tile.y += corridorWidth - 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _wallMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y--;
+                }
+            }
+
+            
+
+
+            return null;
+        }
+    }
+
 
     //FirstCorrSegment
     public class FirstCorrSegment : IElement
@@ -432,6 +709,9 @@ public class DungeonProgram
             //add walls
             Vector3Int wallCell1, wallCell2;
             curCell = _outerConnection;
+
+            int wallWidth = corridorWidth + 1;
+            //int wallWidth = corridorWidth;
             if (entryDirection == Direction.East) { curCell.y -= corridorWidth; }
             else if (entryDirection == Direction.West) { curCell.x -= corridorWidth; }
             else if (entryDirection == Direction.South) { curCell.y -= corridorWidth; curCell.x -= corridorWidth; }
@@ -442,7 +722,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -456,7 +736,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.y += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -470,7 +750,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.y += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -485,7 +765,7 @@ public class DungeonProgram
                 wallCell2 = curCell;
                 wallCell1.y += corridorWidth;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -498,7 +778,7 @@ public class DungeonProgram
             {
                 wallCell1 = curCell;
                 wallCell2 = curCell;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -512,7 +792,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -636,6 +916,8 @@ public class DungeonProgram
             //add walls
             Vector3Int wallCell1, wallCell2;
             curCell = _innerConnection;
+
+            int wallWidth = corridorWidth + 1;
             if (corrDirection == Direction.East) { curCell.y -= corridorWidth; }
             else if (corrDirection == Direction.West) { curCell.x -= corridorWidth; }
             else if (corrDirection == Direction.South) { curCell.y -= corridorWidth; curCell.x -= corridorWidth; }
@@ -646,7 +928,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -660,7 +942,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.y += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -674,7 +956,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.y += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -689,7 +971,7 @@ public class DungeonProgram
                 wallCell2 = curCell;
                 wallCell1.y += corridorWidth;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -702,7 +984,7 @@ public class DungeonProgram
             {
                 wallCell1 = curCell;
                 wallCell2 = curCell;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);
@@ -716,7 +998,7 @@ public class DungeonProgram
                 wallCell1 = curCell;
                 wallCell2 = curCell;
                 wallCell2.x += corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
+                for (int i = 0; i < wallWidth; i++)
                 {
                     _wallMap.SetTile(wallCell1, _brickTile1);
                     _wallMap.SetTile(wallCell2, _brickTile1);

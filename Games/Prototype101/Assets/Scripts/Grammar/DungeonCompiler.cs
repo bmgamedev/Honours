@@ -68,27 +68,11 @@ public class DungeonCompiler
 
     public DungeonCompiler CreateRoom(string entryDir, string exitDir)
     {
-        DungeonProgram.Direction exitDirection;// = DungeonProgram.Direction.North;
+        DungeonProgram.Direction exitDirection;
+        // = DungeonProgram.Direction.North;
         /*string dirSouth = Enum.GetName(typeof(DungeonProgram.Direction), DungeonProgram.Direction.South);
         string dirEast = Enum.GetName(typeof(DungeonProgram.Direction), DungeonProgram.Direction.East);
         string dirWest = Enum.GetName(typeof(DungeonProgram.Direction), DungeonProgram.Direction.West);*/
-
-        if (exitDir.Equals("k"))
-        {
-            exitDirection = DungeonProgram.Direction.South;
-        }
-        else if (exitDir.Equals("l"))
-        {
-            exitDirection = DungeonProgram.Direction.East;
-        }
-        else if (exitDir.Equals("m"))
-        {
-            exitDirection = DungeonProgram.Direction.West;
-        }
-        else
-        {
-            exitDirection = DungeonProgram.Direction.North;
-        }
 
         DungeonProgram.Direction entryDirection;
         if (entryDir.Equals("g"))
@@ -108,8 +92,51 @@ public class DungeonCompiler
             entryDirection = DungeonProgram.Direction.North;
         }
 
+        if (exitDir.Equals("k"))
+        {
+            exitDirection = DungeonProgram.Direction.South;
+        }
+        else if (exitDir.Equals("l"))
+        {
+            exitDirection = DungeonProgram.Direction.East;
+        }
+        else if (exitDir.Equals("m"))
+        {
+            exitDirection = DungeonProgram.Direction.West;
+        }
+        else
+        {
+            exitDirection = DungeonProgram.Direction.North;
+        }
+
         DungeonProgram.RoomSegment roomSegment = new DungeonProgram.RoomSegment(entryDirection, exitDirection);
         _elements.Add(roomSegment);
+
+        return this;
+    }
+
+    public DungeonCompiler CreateFinalRoom(string entryDir)
+    {
+        DungeonProgram.Direction entryDirection;
+        if (entryDir.Equals("g"))
+        {
+            entryDirection = DungeonProgram.Direction.South;
+        }
+        else if (entryDir.Equals("h"))
+        {
+            entryDirection = DungeonProgram.Direction.East;
+        }
+        else if (entryDir.Equals("i"))
+        {
+            entryDirection = DungeonProgram.Direction.West;
+        }
+        else
+        {
+            entryDirection = DungeonProgram.Direction.North;
+        }
+
+        DungeonProgram.FinalRoomSegment finalRoomSegment = new DungeonProgram.FinalRoomSegment(entryDirection);
+        _elements.Add(finalRoomSegment);
 
         return this;
     }
