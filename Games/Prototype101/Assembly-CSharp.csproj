@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GameMgmt.cs" />
     <Compile Include="Assets\Grammar\DungeonMapBaseListener.cs" />
     <Compile Include="Assets\Grammar\DungeonMapLexer.cs" />
     <Compile Include="Assets\Grammar\DungeonMapListener.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets\Grammar\PlatformerMapLexer.cs" />
     <Compile Include="Assets\Grammar\PlatformerMapListener.cs" />
     <Compile Include="Assets\Grammar\PlatformerMapParser.cs" />
+    <Compile Include="Assets\Scripts\AccessCompile.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\FireLasers.cs" />
     <Compile Include="Assets\Scripts\Game\CamFollow.cs" />
@@ -95,10 +97,10 @@
     <Compile Include="Assets\Scripts\Grammar\GameProgram.cs" />
     <Compile Include="Assets\Scripts\Grammar\PlatformerCompiler.cs" />
     <Compile Include="Assets\Scripts\Grammar\PlatformerProgram.cs" />
-    <Compile Include="Assets\Scripts\Grammar\PrototypeSourceCodeEditor.cs" />
     <Compile Include="Assets\Scripts\Grammar\RuntimeScriptable.cs" />
     <Compile Include="Assets\Scripts\LaserMovement.cs" />
     <Compile Include="Assets\Scripts\SideScrollerMvmt.cs" />
+    <Compile Include="Assets\Scripts\SideScrollerMvmt1.cs" />
     <Reference Include="Unity.VectorGraphics">
       <HintPath>C:/Users/rcmcg/Documents/University/Year4/Honours/PracticalWork/Games/Prototype101/Library/ScriptAssemblies/Unity.VectorGraphics.dll</HintPath>
     </Reference>

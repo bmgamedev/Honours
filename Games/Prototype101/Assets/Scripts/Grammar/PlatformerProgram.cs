@@ -9,14 +9,18 @@ public class PlatformerProgram {
 
     static private MapGeneration mapGenerator;
 
+    static private GameObject _exitDoor;
     static private Transform _mapConnectionPos;
-    static private Tilemap _wallMap, _groundMap, _deathMap;
+    static private Tilemap _wallMap, _groundMap, _deathMap, _floorMap;
     static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
     //static private List<GameObject> _players = new List<GameObject>();
     static public List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
     static public float enemyPaceDist;
+
+    static private int maxFillerLayers = 2;
+    static private int wallHeight = 11;
 
     public interface IElement { IEnumerator Execute(); }
 
@@ -29,7 +33,10 @@ public class PlatformerProgram {
             //Find resources etc
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
+            _floorMap = GameObject.Find("FloorMap").GetComponent<Tilemap>(); //collisions
             _deathMap = GameObject.Find("DeathMap").GetComponent<Tilemap>(); //collisions
+            _exitDoor = GameObject.Find("EndPosPlatformer");
+
 
             _mapConnectionPos = GameObject.Find("StartPos").GetComponent<Transform>();
             //TODO just deal with startPos internally. set it to the required position initially based on gametype
@@ -73,7 +80,7 @@ public class PlatformerProgram {
             //just care about x axis because it's only the horizontal move dist
 
             //dirt
-            int maxFillerLayers = 2;
+            //int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -95,15 +102,22 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
 
-                _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
             }
 
             //wall
-            for (int i = 1; i < 11; i++)
+            for (int i = 1; i < wallHeight; i++)
             {
                 tile1 = new Vector3Int(currentCell.x, currentCell.y + (maxFillerLayers + i), currentCell.z);
+                _wallMap.SetTile(tile1, _brickTile1);
+            }
+
+            //ceiling
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + wallHeight, currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
             }
 
@@ -156,7 +170,7 @@ public class PlatformerProgram {
             Vector3Int tile1, tile2, tile3;
 
             //dirt
-            int maxFillerLayers = 2;
+            //int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -178,9 +192,16 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
 
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
+            }
+
+            //ceiling
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + wallHeight, currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
             }
 
             return null;
@@ -238,7 +259,7 @@ public class PlatformerProgram {
             Vector3Int tile1, tile2, tile3;
 
             //Dirt:
-            int maxFillerLayers = 2;
+            //int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -260,9 +281,9 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
 
-                _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
             }
 
             //Platform
@@ -272,9 +293,16 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 3, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 3, currentCell.z);
 
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
+            }
+
+            //ceiling
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + wallHeight, currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
             }
 
             return null;
@@ -335,7 +363,7 @@ public class PlatformerProgram {
             Vector3Int tile1, tile2, tile3;
 
             //Dirt:
-            int maxFillerLayers = 2;
+            //int maxFillerLayers = 2;
             for (int i = 0; i < maxFillerLayers; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -357,9 +385,9 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
 
-                _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
             }
 
             //Platform
@@ -369,9 +397,16 @@ public class PlatformerProgram {
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 6, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + 6, currentCell.z);
 
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
+            }
+
+            //ceiling
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + wallHeight, currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
             }
 
             return null;
@@ -429,6 +464,13 @@ public class PlatformerProgram {
                 _deathMap.SetTile(tile3, _spikeTile);
             }
 
+            //ceiling
+            for (int i = 0; i < 3; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + wallHeight + 2, currentCell.z);
+                _wallMap.SetTile(tile1, _brickTile1);
+            }
+
             return null;
         }
     }
@@ -449,6 +491,8 @@ public class PlatformerProgram {
             //DDD (dirt)
             //DDD (dirt)
 
+            int segmentLength = 7;
+
             Vector3Int currentCell = _groundMap.WorldToCell(_mapConnectionPos.position);
             Vector3Int newFirstCell = currentCell;
             newFirstCell.x += 3;
@@ -457,10 +501,10 @@ public class PlatformerProgram {
             Vector3Int tile1, tile2, tile3;
 
             //dirt
-            int maxFillerLayers = 2;
+            
             for (int i = 0; i < maxFillerLayers; i++)
             {
-                for (int j = 0; j < 5; j++)
+                for (int j = 0; j < segmentLength; j++)
                 {
                     tile1 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
                     tile2 = new Vector3Int(currentCell.x + j, currentCell.y + i, currentCell.z);
@@ -473,22 +517,29 @@ public class PlatformerProgram {
             }
 
             //ground
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < segmentLength; i++)
             {
                 tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile2 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
                 tile3 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers, currentCell.z);
 
-                _wallMap.SetTile(tile1, _brickTile1);
-                _wallMap.SetTile(tile2, _brickTile2);
-                _wallMap.SetTile(tile3, _brickTile3);
+                _floorMap.SetTile(tile1, _brickTile1);
+                _floorMap.SetTile(tile2, _brickTile2);
+                _floorMap.SetTile(tile3, _brickTile3);
             }
 
             //wall
             //TODO: Make this a level end trigger, not just a wall...
-            for (int i = 1; i < 11; i++)
+            for (int i = 1; i < wallHeight; i++)
             {
-                tile1 = new Vector3Int(currentCell.x + 4, currentCell.y + (maxFillerLayers + i), currentCell.z);
+                tile1 = new Vector3Int(currentCell.x + (segmentLength -1), currentCell.y + (maxFillerLayers + i), currentCell.z);
+                _wallMap.SetTile(tile1, _brickTile1);
+            }
+
+            //ceiling
+            for (int i = 0; i < segmentLength; i++)
+            {
+                tile1 = new Vector3Int(currentCell.x + i, currentCell.y + maxFillerLayers + wallHeight, currentCell.z);
                 _wallMap.SetTile(tile1, _brickTile1);
             }
 
@@ -504,6 +555,10 @@ public class PlatformerProgram {
                 //change type from kinematic to dynamic
                 p.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             }*/
+
+            newFirstCell.y += (maxFillerLayers + 1);
+            _exitDoor.transform.position = _groundMap.CellToLocal(newFirstCell);
+            _exitDoor.GetComponent<SpriteRenderer>().enabled = true;
 
             Debug.Log("P program # player pos: " + _playerPositions.Count);
 

@@ -17,21 +17,22 @@ public class DungeonMapParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		INITROOM=1, ENTRY=2, EXIT=3, DIRECTION=4, ROOM=5, INT=6, NEWLINE=7, WS=8;
+		INITROOM=1, ENTRY=2, EXIT=3, DIRECTION=4, ROOM=5, FINALROOM=6, INT=7, 
+		NEWLINE=8, WS=9;
 	public static final int
 		RULE_prog = 0, RULE_elem = 1, RULE_createInitialRoom = 2, RULE_createFirstCorrSect = 3, 
-		RULE_createSecondCorrSect = 4, RULE_createRoom = 5;
+		RULE_createSecondCorrSect = 4, RULE_createRoom = 5, RULE_createFinalRoom = 6;
 	public static final String[] ruleNames = {
 		"prog", "elem", "createInitialRoom", "createFirstCorrSect", "createSecondCorrSect", 
-		"createRoom"
+		"createRoom", "createFinalRoom"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, null, "'r'"
+		null, null, null, null, null, "'r'", "'z'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "INITROOM", "ENTRY", "EXIT", "DIRECTION", "ROOM", "INT", "NEWLINE", 
-		"WS"
+		null, "INITROOM", "ENTRY", "EXIT", "DIRECTION", "ROOM", "FINALROOM", "INT", 
+		"NEWLINE", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -105,20 +106,20 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(13); 
+			setState(15); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(12);
+				setState(14);
 				elem();
 				}
 				}
-				setState(15); 
+				setState(17); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITROOM) | (1L << ENTRY) | (1L << EXIT) | (1L << DIRECTION))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << INITROOM) | (1L << ENTRY) | (1L << DIRECTION))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -146,6 +147,9 @@ public class DungeonMapParser extends Parser {
 		public CreateRoomContext createRoom() {
 			return getRuleContext(CreateRoomContext.class,0);
 		}
+		public CreateFinalRoomContext createFinalRoom() {
+			return getRuleContext(CreateFinalRoomContext.class,0);
+		}
 		public ElemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -158,37 +162,41 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
+			setState(24);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case INITROOM:
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
 				{
-				setState(17);
+				setState(19);
 				createInitialRoom();
 				}
 				break;
-			case ENTRY:
+			case 2:
 				{
-				setState(18);
+				setState(20);
 				createFirstCorrSect();
 				}
 				break;
-			case DIRECTION:
+			case 3:
 				{
-				setState(19);
+				setState(21);
 				createSecondCorrSect();
 				}
 				break;
-			case EXIT:
+			case 4:
 				{
-				setState(20);
+				setState(22);
 				createRoom();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 5:
+				{
+				setState(23);
+				createFinalRoom();
+				}
+				break;
 			}
-			setState(23);
+			setState(26);
 			match(NEWLINE);
 			}
 		}
@@ -219,9 +227,9 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(25);
+			setState(28);
 			match(INITROOM);
-			setState(26);
+			setState(29);
 			((CreateInitialRoomContext)_localctx).EXIT = match(EXIT);
 			 Compiler.CreateInitialRoom((((CreateInitialRoomContext)_localctx).EXIT!=null?((CreateInitialRoomContext)_localctx).EXIT.getText():null)); 
 			}
@@ -254,9 +262,9 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(32);
 			((CreateFirstCorrSectContext)_localctx).ENTRY = match(ENTRY);
-			setState(30);
+			setState(33);
 			((CreateFirstCorrSectContext)_localctx).DIRECTION = match(DIRECTION);
 			 Compiler.CreateFirstPiece((((CreateFirstCorrSectContext)_localctx).ENTRY!=null?((CreateFirstCorrSectContext)_localctx).ENTRY.getText():null), (((CreateFirstCorrSectContext)_localctx).DIRECTION!=null?((CreateFirstCorrSectContext)_localctx).DIRECTION.getText():null)); 
 			}
@@ -289,9 +297,9 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
+			setState(36);
 			((CreateSecondCorrSectContext)_localctx).DIRECTION = match(DIRECTION);
-			setState(34);
+			setState(37);
 			((CreateSecondCorrSectContext)_localctx).EXIT = match(EXIT);
 			 Compiler.CreateSecondPiece((((CreateSecondCorrSectContext)_localctx).DIRECTION!=null?((CreateSecondCorrSectContext)_localctx).DIRECTION.getText():null), (((CreateSecondCorrSectContext)_localctx).EXIT!=null?((CreateSecondCorrSectContext)_localctx).EXIT.getText():null)); 
 			}
@@ -308,11 +316,11 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static class CreateRoomContext extends ParserRuleContext {
-		public Token EXIT;
 		public Token ENTRY;
-		public TerminalNode EXIT() { return getToken(DungeonMapParser.EXIT, 0); }
-		public TerminalNode ROOM() { return getToken(DungeonMapParser.ROOM, 0); }
+		public Token EXIT;
 		public TerminalNode ENTRY() { return getToken(DungeonMapParser.ENTRY, 0); }
+		public TerminalNode ROOM() { return getToken(DungeonMapParser.ROOM, 0); }
+		public TerminalNode EXIT() { return getToken(DungeonMapParser.EXIT, 0); }
 		public CreateRoomContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -325,13 +333,47 @@ public class DungeonMapParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37);
-			((CreateRoomContext)_localctx).EXIT = match(EXIT);
-			setState(38);
-			match(ROOM);
-			setState(39);
+			setState(40);
 			((CreateRoomContext)_localctx).ENTRY = match(ENTRY);
-			 Compiler.CreateRoom((((CreateRoomContext)_localctx).EXIT!=null?((CreateRoomContext)_localctx).EXIT.getText():null), (((CreateRoomContext)_localctx).ENTRY!=null?((CreateRoomContext)_localctx).ENTRY.getText():null)); 
+			setState(41);
+			match(ROOM);
+			setState(42);
+			((CreateRoomContext)_localctx).EXIT = match(EXIT);
+			 Compiler.CreateRoom((((CreateRoomContext)_localctx).ENTRY!=null?((CreateRoomContext)_localctx).ENTRY.getText():null), (((CreateRoomContext)_localctx).EXIT!=null?((CreateRoomContext)_localctx).EXIT.getText():null)); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class CreateFinalRoomContext extends ParserRuleContext {
+		public Token ENTRY;
+		public TerminalNode ENTRY() { return getToken(DungeonMapParser.ENTRY, 0); }
+		public TerminalNode FINALROOM() { return getToken(DungeonMapParser.FINALROOM, 0); }
+		public CreateFinalRoomContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_createFinalRoom; }
+	}
+
+	public final CreateFinalRoomContext createFinalRoom() throws RecognitionException {
+		CreateFinalRoomContext _localctx = new CreateFinalRoomContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_createFinalRoom);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(45);
+			((CreateFinalRoomContext)_localctx).ENTRY = match(ENTRY);
+			setState(46);
+			match(FINALROOM);
+			 Compiler.CreateFinalRoom((((CreateFinalRoomContext)_localctx).ENTRY!=null?((CreateFinalRoomContext)_localctx).ENTRY.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -346,18 +388,19 @@ public class DungeonMapParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\n-\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\6\2\20\n\2\r\2\16\2\21\3\3\3\3"+
-		"\3\3\3\3\5\3\30\n\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3"+
-		"\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\2\2\b\2\4\6\b\n\f\2\2\2*\2\17\3\2\2\2\4"+
-		"\27\3\2\2\2\6\33\3\2\2\2\b\37\3\2\2\2\n#\3\2\2\2\f\'\3\2\2\2\16\20\5\4"+
-		"\3\2\17\16\3\2\2\2\20\21\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\3\3\2"+
-		"\2\2\23\30\5\6\4\2\24\30\5\b\5\2\25\30\5\n\6\2\26\30\5\f\7\2\27\23\3\2"+
-		"\2\2\27\24\3\2\2\2\27\25\3\2\2\2\27\26\3\2\2\2\30\31\3\2\2\2\31\32\7\t"+
-		"\2\2\32\5\3\2\2\2\33\34\7\3\2\2\34\35\7\5\2\2\35\36\b\4\1\2\36\7\3\2\2"+
-		"\2\37 \7\4\2\2 !\7\6\2\2!\"\b\5\1\2\"\t\3\2\2\2#$\7\6\2\2$%\7\5\2\2%&"+
-		"\b\6\1\2&\13\3\2\2\2\'(\7\5\2\2()\7\7\2\2)*\7\4\2\2*+\b\7\1\2+\r\3\2\2"+
-		"\2\4\21\27";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13\64\4\2\t\2\4\3"+
+		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\6\2\22\n\2\r\2\16\2\23"+
+		"\3\3\3\3\3\3\3\3\3\3\5\3\33\n\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3"+
+		"\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\2\2\t\2\4\6"+
+		"\b\n\f\16\2\2\2\61\2\21\3\2\2\2\4\32\3\2\2\2\6\36\3\2\2\2\b\"\3\2\2\2"+
+		"\n&\3\2\2\2\f*\3\2\2\2\16/\3\2\2\2\20\22\5\4\3\2\21\20\3\2\2\2\22\23\3"+
+		"\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\3\3\2\2\2\25\33\5\6\4\2\26\33\5"+
+		"\b\5\2\27\33\5\n\6\2\30\33\5\f\7\2\31\33\5\16\b\2\32\25\3\2\2\2\32\26"+
+		"\3\2\2\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31\3\2\2\2\33\34\3\2\2\2\34\35"+
+		"\7\n\2\2\35\5\3\2\2\2\36\37\7\3\2\2\37 \7\5\2\2 !\b\4\1\2!\7\3\2\2\2\""+
+		"#\7\4\2\2#$\7\6\2\2$%\b\5\1\2%\t\3\2\2\2&\'\7\6\2\2\'(\7\5\2\2()\b\6\1"+
+		"\2)\13\3\2\2\2*+\7\4\2\2+,\7\7\2\2,-\7\5\2\2-.\b\7\1\2.\r\3\2\2\2/\60"+
+		"\7\4\2\2\60\61\7\b\2\2\61\62\b\b\1\2\62\17\3\2\2\2\4\23\32";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

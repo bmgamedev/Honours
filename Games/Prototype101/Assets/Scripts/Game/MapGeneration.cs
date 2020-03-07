@@ -55,9 +55,9 @@ public class MapGeneration : MonoBehaviour {
     {
         //Randomly choose the number of rooms (from a range, based on size)
         int iterations = 0;
-        if (mapSize == GameProgram.MapSize.Small) { iterations = 20; }
-        else if (mapSize == GameProgram.MapSize.Medium) { iterations = 30; }
-        else if (mapSize == GameProgram.MapSize.Large) { iterations = 40; }
+        if (mapSize == GameProgram.MapSize.Small) { iterations = UnityEngine.Random.Range(30, 40); }
+        else if (mapSize == GameProgram.MapSize.Medium) { iterations = UnityEngine.Random.Range(41, 60); ; }
+        else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }
 
         string path = PlatformerPathString(iterations);
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
@@ -130,44 +130,44 @@ public class MapGeneration : MonoBehaviour {
         //TODO make the probabilities available for customisation with slider bars??
         var rewriteS = new[]
         {
-            ProportionValue.Create(0.1, "sffF"),
-            ProportionValue.Create(0.45, "sffP"),
-            ProportionValue.Create(0.45, "sffG"),
+            ProportionValue.Create(0.33, "sffF"), //1st suggestion: 0.1
+            ProportionValue.Create(0.33, "sffP"), //1st suggestion: 0.45
+            ProportionValue.Create(0.34, "sffG"), //1st suggestion: 0.45
         };
 
         var rewriteP = new[]
         {
-            ProportionValue.Create(0.1, "pP"),
-            ProportionValue.Create(0.3, "pH"),
-            ProportionValue.Create(0.3, "pG"),
-            ProportionValue.Create(0.3, "pF"),
+            ProportionValue.Create(0.25, "pP"), //1st suggestion: 0.1
+            ProportionValue.Create(0.25, "pH"), //1st suggestion: 0.3
+            ProportionValue.Create(0.25, "pG"), //1st suggestion: 0.3
+            ProportionValue.Create(0.25, "pF"), //1st suggestion: 0.3
         };
 
         var rewriteH = new[]
         {
-            ProportionValue.Create(0.1, "hH"),
-            ProportionValue.Create(0.1, "hP"),
-            ProportionValue.Create(0.1, "hF"),
-            ProportionValue.Create(0.1, "hG"),
+            ProportionValue.Create(0.1, "hH"), //1st suggestion: 0.1
+            ProportionValue.Create(0.1, "hP"), //1st suggestion: 0.1
+            ProportionValue.Create(0.1, "hF"), //1st suggestion: 0.1
+            ProportionValue.Create(0.1, "hG"), //1st suggestion: 0.1
 
-            ProportionValue.Create(0.15, "hghH"),
-            ProportionValue.Create(0.15, "hghP"),
-            ProportionValue.Create(0.15, "hghF"),
-            ProportionValue.Create(0.15, "hghG"),
+            ProportionValue.Create(0.15, "hghH"), //1st suggestion: 0.15
+            ProportionValue.Create(0.15, "hghP"), //1st suggestion: 0.15
+            ProportionValue.Create(0.15, "hghF"), //1st suggestion: 0.15
+            ProportionValue.Create(0.15, "hghG"), //1st suggestion: 0.15
         };
 
         var rewriteF = new[]
         {
-            ProportionValue.Create(0.2, "fF"),
-            ProportionValue.Create(0.4, "fP"),
-            ProportionValue.Create(0.4, "fG"),
+            ProportionValue.Create(0.33, "fF"), //1st suggestion: 0.2
+            ProportionValue.Create(0.33, "fP"), //1st suggestion: 0.4
+            ProportionValue.Create(0.34, "fG"), //1st suggestion: 0.4
         };
 
         var rewriteG = new[]
         {
-            ProportionValue.Create(0.2, "gfP"),
-            ProportionValue.Create(0.3, "gfG"),
-            ProportionValue.Create(0.5, "gfF"),
+            ProportionValue.Create(0.33, "gfP"), //1st suggestion: 0.2
+            ProportionValue.Create(0.33, "gfG"), //1st suggestion: 0.3
+            ProportionValue.Create(0.34, "gfF"), //1st suggestion: 0.5
         };
 
         //string path = "S";

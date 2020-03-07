@@ -5,18 +5,20 @@ using UnityEngine;
 public class FireLasers : MonoBehaviour {
 
     public float FireRate = 0;
-    //public float Damage = 10;
     public LayerMask Destroyables;
-    //public Transform LaserTrailPrefab;
     public float effectSpawnRate = 10;
 
     private float timeToSpawnEffect = 0;
-    private float nextShot = 0; //TODO rename
+    private float nextShot = 0;
     private Transform firingPoint;
     private Transform endPoint;
+    private Animator animator;
 
-    // Use this for initialization
-    void Awake () {
+    //private string inputFire;
+    private KeyCode inputFire;
+
+    void Awake ()
+    {
         firingPoint = transform.Find("FiringPoint");
         if (firingPoint == null)
         {
@@ -28,6 +30,24 @@ public class FireLasers : MonoBehaviour {
         {
             Debug.LogError("cannot find the EndPoint component");
         }
+
+        animator = GetComponentInParent<Animator>();// GetComponent<Animator>();
+        if (animator == null) { Debug.Log("cannot find animator"); }
+    }
+
+    private void Start()
+    {
+        //define inputs for each player
+        if (gameObject.name == "Player2")
+        {
+            inputFire = KeyCode.Keypad0;
+            //inputFire = "Shoot2";
+        }
+        else
+        {
+            inputFire = KeyCode.E;
+            //inputFire = "Shoot1";
+        }
     }
 
     void FixedUpdate()
@@ -35,17 +55,21 @@ public class FireLasers : MonoBehaviour {
         //Shoot(); //just for debugging
         if (FireRate == 0) //single burst
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(inputFire))
+            //if (Input.GetButton(inputFire))
             {
                 Shoot();
             }
         }
         else //not single burst (i.e. automatic)
         {
-            if ((Input.GetKeyDown(KeyCode.E)) && Time.time > nextShot)
+            if ((Input.GetKeyDown(inputFire)) && Time.time > nextShot)
+            //if (Input.GetButton(inputFire) && Time.time > nextShot)
             {
+                animator.SetBool("isShooting", true);
                 nextShot = Time.time + 1 / FireRate;
                 Shoot();
+                animator.SetBool("isShooting", false);
             }
         }
 	}
@@ -56,27 +80,17 @@ public class FireLasers : MonoBehaviour {
         Vector2 firePointPosition = new Vector2(firingPoint.position.x, firingPoint.position.y);
 
         RaycastHit2D hit = Physics2D.Raycast(firePointPosition, endPosition - firePointPosition, 100, Destroyables);
-        if (Time.time >= timeToSpawnEffect) //TODO replace with object pooling at some point
+        if (Time.time >= timeToSpawnEffect) 
         {
             Effect();
             timeToSpawnEffect = Time.time + 1 / effectSpawnRate;
         }
-
-        //FOR DEBUGGING
-        //Debug.DrawLine(firePointPosition, (endPosition - firePointPosition) * 10, Color.cyan);
-        //if (hit.collider != null)
-        //{
-        //    Debug.DrawLine(firePointPosition, hit.point, Color.red);
-        //    Debug.Log("Hit: " + hit.collider.name + ", Damage: " + Damage);
-        //}
     }
 
     void Effect()
     {
-        //Instantiate(LaserTrailPrefab, firingPoint.position, firingPoint.rotation);
         GameObject laser = (GameObject)Instantiate(Resources.Load("Laser"), firingPoint.position, firingPoint.rotation) as GameObject;
         laser.GetComponent<LaserMovement>().SetPlayer(gameObject);
-
     }
 }
 

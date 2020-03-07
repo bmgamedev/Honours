@@ -11,10 +11,12 @@ public class RuntimeScriptable : MonoBehaviour
 	private GameProgram _program;
 
     static RuntimeScriptable instance = null;
-
     static string generatorText;
 
-    public Text debugText;
+    [SerializeField]
+    private Text debugText;
+    [SerializeField]
+    private Text grammarDisplay;
 
     void Awake()
     {
@@ -25,76 +27,45 @@ public class RuntimeScriptable : MonoBehaviour
         else
         {
             instance = this;
-            GameObject.DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
         }
+
+        
     }
 
     public void CompileAndRun()
 	{
-        generatorText = GrammarGenerator._FullGameScript;
-        //generatorText = generatorText.Replace("\n", " ");
-        Debug.Log(generatorText);
-        Debug.Log(GrammarGenerator._FullGameScript);
-        StopAllCoroutines();
-        _program = GameCompiler.Compile(GrammarGenerator._FullGameScript); //move this to the game scene and load asyncronously
-        StartCoroutine(_program.Run());
+        grammarDisplay = GameObject.Find("ScriptDisplay").GetComponent<Text>();
+
+        if (GrammarGenerator._FullGameScript == null || GrammarGenerator._FullGameScript.Equals(""))
+        {
+            grammarDisplay.text = "Remember to press 'Generate Script' before creating the game!";
+        }
+        else
+        {
+            generatorText = GrammarGenerator._FullGameScript;
+            StopAllCoroutines();
+            _program = GameCompiler.Compile(GrammarGenerator._FullGameScript);
+            StartCoroutine(_program.Run());
+        }
+    }
+
+    public void CompileNextLevel()
+    {
+        if (GrammarGenerator._FullGameScript != null)
+        {
+            generatorText = GrammarGenerator._FullGameScript;
+            StopAllCoroutines();
+            _program = GameCompiler.Compile(GrammarGenerator._FullGameScript);
+            StartCoroutine(_program.Run());
+        }
     }
 
     public void DebugRun(GameObject debugtext)
     {
-        //string generatorText2 = debugtext.GetComponent<InputField>().text;
         string generatorText2 = "initialise dungeon easy difficulty small players 1 finalise";
-        //Debug.Log("..." + generatorText2);
         StopAllCoroutines();
         _program = GameCompiler.Compile(generatorText2); 
         StartCoroutine(_program.Run());
-
-        //GrammarGenerator._FullGameScript = text.text;
-        //SceneManager.LoadScene("Loading");
     }
 }
-/*
-public class ProportionValue<T>
-{
-    public double Proportion
-    {
-        get;
-        set;
-    }
-
-    public T Value
-    {
-        get;
-        set;
-    }
-}
-
-public static class ProportionValue
-{
-    public static ProportionValue<T> Create<T>(double proportion, T value)
-    {
-        return new ProportionValue<T>
-        {
-            Proportion = proportion,
-            Value = value
-        };
-    }
-
-    static System.Random random = new System.Random();
-    public static T ChooseByRandom<T>(this IEnumerable<ProportionValue<T>> collection)
-    {
-
-        double rnd = random.NextDouble();
-        foreach (var item in collection)
-        {
-            if (rnd < item.Proportion)
-            {
-                return item.Value;
-            }
-            rnd -= item.Proportion;
-        }
-
-        throw new InvalidOperationException("The proportions in the collection do not add up to 1.");
-    }
-}
-*/

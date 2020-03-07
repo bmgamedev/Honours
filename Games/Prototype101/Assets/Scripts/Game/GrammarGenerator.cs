@@ -16,6 +16,7 @@ public static class GrammarGenerator {
         _GameScriptElements[_GameScriptElements.FindIndex(ind => ind.Equals(i))] = value;
     }
 
+    public static void ClearString() { _FullGameScript = ""; }
     public static void SetString(string fullScript) { _FullGameScript = fullScript; }
     public static string GetString() { return _FullGameScript; }
 }

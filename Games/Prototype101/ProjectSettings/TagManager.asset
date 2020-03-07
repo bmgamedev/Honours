@@ -9,6 +9,7 @@ TagManager:
   - MeleeEnemy
   - ProjectileEnemy
   - Enemy
+  - Exit
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - Ground
   - Enemy
   - Projectile
-  - 
+  - Exit
   - 
   - 
   - 

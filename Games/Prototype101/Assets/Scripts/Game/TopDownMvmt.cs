@@ -18,6 +18,9 @@ public class TopDownMvmt : MonoBehaviour {
     //private Quaternion targetRotation;
     //private Rigidbody2D rb;
 
+    private string inputJump, inputHor, inputVert;
+    private KeyCode inputFire, inputRun;
+
     // Use this for initialization
     void Start() 
     {
@@ -37,10 +40,40 @@ public class TopDownMvmt : MonoBehaviour {
     {
         // get input
         //input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        //input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        //define inputs for each player
+        if (gameObject.name == "Player1")
+        {
+            //input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            //inputJump = "Jump";
+            inputHor = "Horizontal";
+            inputVert = "Vertical";
+            inputFire = KeyCode.E;
+            inputRun = KeyCode.LeftShift;
+        }
+        else
+        {
+            //inputJump = "Jump2";
+            inputHor = "Horizontal2";
+            inputVert = "Vertical2";
+            inputFire = KeyCode.Alpha0;
+            inputRun = KeyCode.RightShift;
+        }
+        input = new Vector2(Input.GetAxisRaw(inputHor), Input.GetAxisRaw(inputVert));
+
+        /*if (gameObject.name == "Player1")
+        {
+            input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }
+        else
+        {
+            input = new Vector2(Input.GetAxisRaw("Horizontal2"), Input.GetAxisRaw("Vertical2"));
+        }*/
 
         // toggle running
-        if (Input.GetKeyDown(KeyCode.RightShift))
+        //if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(inputRun))
         {
             running = !running;
             //Debug.Log("Running Toggled");

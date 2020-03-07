@@ -5,35 +5,35 @@ using UnityEngine;
 public class PlayerMgmt : MonoBehaviour {
 
     //TODO
-    //store start pos for reset function
     //store score.. or time.. or something I guess...
-    //store count for pickups picked up
+
+    private GameObject runtimeScriptable;
 
     private int pickupCount = 0;
+    private int score = 0;
+    int pickupScore = 100;
 
     private Vector3 startPos;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private void Awake()
+    {
+        runtimeScriptable = GameObject.Find("RuntimeScript");
+        score = 0;
+        pickupCount = 0;
+    }
+
+    private void Update()
+    {
+        //UI text = score
+
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.tag == "MeleeEnemy")
+        if (collision.collider.gameObject.layer == 10) //10 = layer 'Enemy'
         {
-            //if player is above the enemy then kill it and don't reset the player
-            if (gameObject.transform.position.y > collision.collider.transform.position.y) { }
-            if (gameObject.GetComponent<Collider2D>().bounds.min.y > (collision.collider.bounds.max.y - 0.1f))
-            {
-                Debug.Log("jumped on enemy's head");
-            }
-            //else, reset the player (or take health off if going that route)
+            score -= 25;
+            Reset();
         }
     }
 
@@ -41,12 +41,22 @@ public class PlayerMgmt : MonoBehaviour {
     {
         if (collision.tag == "Death")
         {
+            score -= 25;
             Reset();
         }
 
         if (collision.tag == "Pickup")
         {
             pickupCount++;
+            score += pickupScore;
+        }
+
+        if (collision.tag == "Exit")
+        {
+            if (runtimeScriptable != null)
+            {
+                runtimeScriptable.GetComponent<RuntimeScriptable>().CompileNextLevel();
+            }
         }
     }
 
@@ -58,5 +68,10 @@ public class PlayerMgmt : MonoBehaviour {
     private void Reset()
     {
         transform.position = startPos;
+    }
+
+    public void AddPoints(int points)
+    {
+        score += points;
     }
 }

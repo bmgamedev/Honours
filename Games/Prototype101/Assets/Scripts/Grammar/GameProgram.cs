@@ -14,10 +14,6 @@ public class GameProgram
     static private GameType _gameType;
     static private SkillLevel _gameDifficulty;
 
-    //static private Transform _mapConnectionPos;
-    //static private Tilemap _wallMap, _groundMap, _deathMap;
-    //static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
-    
     static private List<GameObject> _players = new List<GameObject>();
     static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static private List<Vector3> _pickupPositions = new List<Vector3>();
@@ -37,19 +33,6 @@ public class GameProgram
         public IEnumerator Execute()
         {
             //Find resources etc
-            /*_groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
-            _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
-            _deathMap = GameObject.Find("DeathMap").GetComponent<Tilemap>(); //collisions
-
-            _mapConnectionPos = GameObject.Find("StartPos").GetComponent<Transform>();
-            //TODO just deal with startPos internally. set it to the required position initially based on gametype
-
-            _groundTile = Resources.Load("Ground") as Tile;
-            _brickTile1 = Resources.Load("Wall") as Tile;
-            _brickTile2 = Resources.Load("Wall2") as Tile;
-            _brickTile3 = Resources.Load("Wall3") as Tile;
-            _spikeTile = Resources.Load("Spikes") as Tile;*/
-
             mapGenerator = GameObject.Find("MapGeneration").GetComponent<MapGeneration>();
 
             loadingMessage = GameObject.Find("LoadingText").GetComponent<Text>();
@@ -101,6 +84,7 @@ public class GameProgram
 
             //pick random number between x and y to represent number of pickups to be placed
             //let's just say 20 initially
+
             System.Random random = new System.Random();
             int rnd;
 
@@ -158,7 +142,7 @@ public class GameProgram
                 else if (_gameType == GameType.Platformer)
                 {
                     Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
-                    Player = GameObject.Instantiate(Resources.Load("PlatformerPC"), startPos, Quaternion.identity) as GameObject;
+                    Player = GameObject.Instantiate(Resources.Load("PlatformerPC 1"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
                     _players.Add(Player);
                 }
@@ -307,9 +291,7 @@ public class GameProgram
 
         public IEnumerator Execute()
         {
-            //TODO stuff. cant remember what
-
-            GameObject.Find("LoadingCam").SetActive(false);
+            GameObject.Find("LoadingCam").GetComponent<Camera>().enabled = false;
 
             return null;
         }
@@ -328,7 +310,14 @@ public class GameProgram
 
     public IEnumerator Run()
 	{
-        SceneManager.LoadScene("Game");
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            SceneManager.LoadScene("GameNext");
+        }
+        else
+        {
+            SceneManager.LoadScene("Game");
+        }
 
 		while(_pc < _elements.Count)
 		{
@@ -338,43 +327,6 @@ public class GameProgram
             yield return nextElement.Execute();
 		}
     }
-
-    /*public IEnumerator Run()
-    {
-        yield return null;
-
-        Scene curScene = SceneManager.GetActiveScene();
-
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
-        //asyncOperation.allowSceneActivation = false; //don't immediately activate scene (wait until objects have been created)
-        //Heck, might as well just make the game scene active and watch it load until I can find a way to generate a scene without it being active...
-        asyncOperation.allowSceneActivation = true;
-        SceneManager.UnloadSceneAsync(curScene);
-
-        //When the load is still in progress, output the Text and progress bar
-        while (!asyncOperation.isDone)
-        {
-            if (asyncOperation.progress >= 0.9f)
-            {
-
-                while (_pc < _elements.Count)
-                {
-                    yield return new WaitForSeconds(EXECUTION_DELAY);
-
-                    IElement nextElement = _elements[_pc++];
-
-                    //Debug.Log("next element: " + nextElement.ToString());
-                    nextElement.Execute();
-                }
-
-                //asyncOperation.allowSceneActivation = true;
-                //SceneManager.UnloadScene(curScene);
-
-            }
-
-            yield return null;
-        }
-    }*/
 
     public void Reset()
 	{

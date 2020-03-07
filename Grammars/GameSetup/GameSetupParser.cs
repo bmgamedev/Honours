@@ -82,7 +82,7 @@ public partial class GameSetupParser : Parser {
 	}
 
 
-		public GameCompiler Compiler = new GameCompiler(); //this will be the compiler file in the Unity project
+		public GameCompiler Compiler = new GameCompiler(); //the specific compiler file in the Unity project
 
 		public GameSetupParser(ITokenStream input) : this(input, Console.Out, Console.Error) { }
 

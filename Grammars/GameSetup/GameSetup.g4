@@ -40,7 +40,7 @@ PLATFORMER : 'platformer' ;
 MAP : 'map' ;
 SIZE : 'small' | 'medium' | 'large' ;
 ENEMY : 'enemy' | 'enemies';
-ATTACKSTYLE : 'projectile' | 'melee' | 'varied' | 'combo';
+ATTACKSTYLE : 'moving' | 'static' | 'varied' | 'combo';
 
 /// some basic definitions
 INT : '-'? ('0'..'9')+ ;
