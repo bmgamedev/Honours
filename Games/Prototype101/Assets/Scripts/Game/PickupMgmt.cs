@@ -8,7 +8,7 @@ public class PickupMgmt : MonoBehaviour {
     {
         if(collision.tag == "Player")
         {
-            Debug.Log("collision with player");
+            //Debug.Log("collision with player");
             Destroy(gameObject);
         }
     }

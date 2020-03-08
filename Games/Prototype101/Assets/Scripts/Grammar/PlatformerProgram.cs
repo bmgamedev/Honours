@@ -68,8 +68,10 @@ public class PlatformerProgram {
 
             //get start pos for player(s)
             Vector3Int playerPosCell = currentCell;
-            playerPosCell.x += 2;
             playerPosCell.y += 4;
+            playerPosCell.x += 2;
+            _playerPositions.Add(_groundMap.CellToLocal(playerPosCell));
+            playerPosCell.x += 1;
             _playerPositions.Add(_groundMap.CellToLocal(playerPosCell));
 
             //calculate enemy pace distance before any are actually created
@@ -121,10 +123,7 @@ public class PlatformerProgram {
                 _wallMap.SetTile(tile1, _brickTile1);
             }
 
-            //TODO create player pos from this segment and add to _playerPositions
             Vector3Int startPos = new Vector3Int(currentCell.x + 2, currentCell.y + 4, currentCell.z);
-            _playerPositions.Add(_groundMap.CellToLocal(startPos));
-
 
             return null;
         }
@@ -528,8 +527,6 @@ public class PlatformerProgram {
                 _floorMap.SetTile(tile3, _brickTile3);
             }
 
-            //wall
-            //TODO: Make this a level end trigger, not just a wall...
             for (int i = 1; i < wallHeight; i++)
             {
                 tile1 = new Vector3Int(currentCell.x + (segmentLength -1), currentCell.y + (maxFillerLayers + i), currentCell.z);

@@ -8,9 +8,10 @@ public class PlayerMgmt : MonoBehaviour {
     //store score.. or time.. or something I guess...
 
     private GameObject runtimeScriptable;
+    private GameMgmt gameMgmt;
 
     private int pickupCount = 0;
-    private int score = 0;
+    //private int score = 0;
     int pickupScore = 100;
 
     private Vector3 startPos;
@@ -18,21 +19,25 @@ public class PlayerMgmt : MonoBehaviour {
     private void Awake()
     {
         runtimeScriptable = GameObject.Find("RuntimeScript");
-        score = 0;
+        gameMgmt = GameObject.Find("GameMgmt").GetComponent<GameMgmt>();
+        //score = 0;
         pickupCount = 0;
+        gameMgmt.AddPlayer();
     }
 
     private void Update()
     {
         //UI text = score
-
+        gameMgmt.ShowScores(gameObject.name);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.gameObject.layer == 10) //10 = layer 'Enemy'
         {
-            score -= 25;
+            //score -= 25;
+            ScoreMgmt.DecreaseScore(gameObject.name, 25);
+            gameMgmt.ShowScores(gameObject.name);
             Reset();
         }
     }
@@ -41,22 +46,18 @@ public class PlayerMgmt : MonoBehaviour {
     {
         if (collision.tag == "Death")
         {
-            score -= 25;
+            //score -= 25;
+            ScoreMgmt.DecreaseScore(gameObject.name, 25);
+            gameMgmt.ShowScores(gameObject.name);
             Reset();
         }
 
         if (collision.tag == "Pickup")
         {
             pickupCount++;
-            score += pickupScore;
-        }
-
-        if (collision.tag == "Exit")
-        {
-            if (runtimeScriptable != null)
-            {
-                runtimeScriptable.GetComponent<RuntimeScriptable>().CompileNextLevel();
-            }
+            //score += pickupScore;
+            ScoreMgmt.IncreaseScore(gameObject.name, pickupScore);
+            gameMgmt.ShowScores(gameObject.name);
         }
     }
 
@@ -72,6 +73,8 @@ public class PlayerMgmt : MonoBehaviour {
 
     public void AddPoints(int points)
     {
-        score += points;
+        //score += points;
+        ScoreMgmt.IncreaseScore(gameObject.name, points);
+        gameMgmt.ShowScores(gameObject.name);
     }
 }

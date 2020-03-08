@@ -54,10 +54,10 @@ public class MapGeneration : MonoBehaviour {
     public IEnumerator GeneratePlatformerMap(GameProgram.MapSize mapSize)
     {
         //Randomly choose the number of rooms (from a range, based on size)
-        int iterations = 0;
-        if (mapSize == GameProgram.MapSize.Small) { iterations = UnityEngine.Random.Range(30, 40); }
+        int iterations = 10;
+        /*if (mapSize == GameProgram.MapSize.Small) { iterations = UnityEngine.Random.Range(30, 40); }
         else if (mapSize == GameProgram.MapSize.Medium) { iterations = UnityEngine.Random.Range(41, 60); ; }
-        else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }
+        else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }*/
 
         string path = PlatformerPathString(iterations);
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine

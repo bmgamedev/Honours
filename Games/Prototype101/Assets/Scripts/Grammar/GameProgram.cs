@@ -125,7 +125,20 @@ public class GameProgram
 
             _players.Clear();
 
-            CreationManager.CameraSetup(_num);
+            //CreationManager.CameraSetup(_num);
+            switch (_num)
+            {
+                //case 1:
+
+                //break;
+                case 2:
+                    GameObject.Find("TwoPlayerA").GetComponent<Camera>().enabled = true;
+                    GameObject.Find("TwoPlayerB").GetComponent<Camera>().enabled = true;
+                    break;
+                default:
+                    GameObject.Find("SinglePlayer").GetComponent<Camera>().enabled = true;
+                    break;
+            }
             GameObject Player = null;
 
             //create players
@@ -159,18 +172,32 @@ public class GameProgram
             //3/4 player pos:
             //a = (-5.0f, 3.7f, 0.0f) b = (5.0f, 3.7f, 0.0f) c = (-5.0f, -3.7f, 0.0f) d = (5.0f, -3.7f, 0.0f)
 
-            
+            CamFollow MainCameraTarget;
             switch (_num) {
                 case 2:
                     Player = GameObject.Find("Player" + 1);
-                    Player.transform.Translate(new Vector3(-5.0f, 0.0f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "TwoPlayerA");
+                    //Player.transform.Translate(new Vector3(-5.0f, 0.0f, 0.0f));
+                    Player.transform.position = _playerPositions[0];
+                    Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[0]);
+                    //CreationManager.UpdateCamera(Player, "TwoPlayerA");
+                    MainCameraTarget = GameObject.Find("TwoPlayerA").GetComponent<CamFollow>();
+                    if (MainCameraTarget != null)
+                    {
+                        MainCameraTarget.target = Player.transform;
+                    }
 
                     Player = GameObject.Find("Player" + 2);
-                    Player.transform.Translate(new Vector3(5.0f, 0.0f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "TwoPlayerB");
+                    //Player.transform.Translate(new Vector3(5.0f, 0.0f, 0.0f));
+                    Player.transform.position = _playerPositions[1];
+                    Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[1]);
+                    //CreationManager.UpdateCamera(Player, "TwoPlayerB");
+                    MainCameraTarget = GameObject.Find("TwoPlayerB").GetComponent<CamFollow>();
+                    if (MainCameraTarget != null)
+                    {
+                        MainCameraTarget.target = Player.transform;
+                    }
                     break;
-                case 3:
+                /*case 3:
                     Player = GameObject.Find("Player" + 1);
                     Player.transform.Translate(new Vector3(-5.0f, 3.7f, 0.0f));
                     CreationManager.UpdateCamera(Player, "FourPlayerA");
@@ -199,12 +226,17 @@ public class GameProgram
                     Player = GameObject.Find("Player" + 4);
                     Player.transform.Translate(new Vector3(5.0f, -3.7f, 0.0f));
                     CreationManager.UpdateCamera(Player, "FourPlayerD");
-                    break;
+                    break;*/
                 default:
                     Player = GameObject.Find("Player" + 1);
                     Player.transform.position = _playerPositions[0];
                     Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[0]);
-                    CreationManager.UpdateCamera(Player, "SinglePlayer");
+                    //CreationManager.UpdateCamera(Player, "SinglePlayer");
+                    MainCameraTarget = GameObject.Find("SinglePlayer").GetComponent<CamFollow>();
+                    if (MainCameraTarget != null)
+                    {
+                        MainCameraTarget.target = Player.transform;
+                    }
                     break;
             }
             
