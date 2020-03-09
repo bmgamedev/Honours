@@ -13,8 +13,8 @@ public class RuntimeScriptable : MonoBehaviour
     static RuntimeScriptable instance = null;
     static string generatorText;
 
-    [SerializeField]
-    private Text debugText;
+    //[SerializeField]
+    //private Text debugText;
     [SerializeField]
     private Text grammarDisplay;
 
@@ -33,7 +33,10 @@ public class RuntimeScriptable : MonoBehaviour
 
     public void CompileAndRun()
 	{
-        grammarDisplay = GameObject.Find("ScriptDisplay").GetComponent<Text>();
+        if (GameObject.Find("ScriptDisplay") != null)
+        {
+            grammarDisplay = GameObject.Find("ScriptDisplay").GetComponent<Text>();
+        }
 
         if (GrammarGenerator._FullGameScript == null || GrammarGenerator._FullGameScript.Equals(""))
         {

@@ -10,11 +10,10 @@ public class MapGeneration : MonoBehaviour {
     private PlatformerProgram _pProgram;
     private DungeonProgram _dProgram;
 
-    static public List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
+    static public List<Vector3> _playerPositions = new List<Vector3>(); 
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
     static public List<string> _enemyAxes = new List<string>();
-    //static public float enemyPaceDist;
 
     private enum DominantDirection { NORTH, SOUTH, EAST, WEST }
     private DominantDirection domDir;
@@ -22,14 +21,10 @@ public class MapGeneration : MonoBehaviour {
     public List<Vector3> GetPlayerPositions() { return _playerPositions; }
     public List<Vector3> GetPickupPositions() { return _pickupPositions; }
     public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
-    //public List<string> GetEnemyPaceAxes() { return _enemyAxes; }
-    //public float GetEnemyPaceDist() { return enemyPaceDist; }
 
     public void SetPlayerPositions(List<Vector3> playerPos) { _playerPositions = playerPos; }
     public void SetPickupPositions(List<Vector3> pickupPos) { _pickupPositions = pickupPos; }
     public void SetEnemyPositions(List<Vector3> enemyPos) { _enemyPositions = enemyPos; }
-    //public void SetEnemyPaceAxes(List<string> enemyPaceAxes) { _enemyAxes = enemyPaceAxes; }
-    //public void SetEnemyPaceDist(float paceDist) { enemyPaceDist = paceDist; }
 
     public string GetDominantDirection()
     {
@@ -52,7 +47,6 @@ public class MapGeneration : MonoBehaviour {
         }
     }
 
-    //public void GeneratePlatformerMap(int iterations)
     public IEnumerator GeneratePlatformerMap(GameProgram.MapSize mapSize)
     {
         //Randomly choose the number of rooms (from a range, based on size)
@@ -62,8 +56,6 @@ public class MapGeneration : MonoBehaviour {
         else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }
 
         string path = PlatformerPathString(iterations);
-        //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
-
         Debug.Log("path: " + path);
 
         _pProgram = PlatformerCompiler.Compile(path);
@@ -72,18 +64,15 @@ public class MapGeneration : MonoBehaviour {
 
     public IEnumerator GenerateDungeonMap(GameProgram.MapSize mapSize)
     {
-
         //Randomly choose dominant direction
         domDir = (DominantDirection)(UnityEngine.Random.Range(0, Enum.GetNames(typeof(DominantDirection)).Length));
 
         //Randomly choose the number of rooms (from a range, based on size)
         int maxRooms = 1;
-        /*if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 6); }
+        if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 6); }
         else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = UnityEngine.Random.Range(7, 10); ; }
-        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(11, 15); }*/
+        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(11, 15); }
 
-        //Randomly choose the number of iterations required to build the corridor
-        //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)
         int completedCorrSegments = 5;
         int maxIterations = (completedCorrSegments * 4) - 1;
 
@@ -98,7 +87,6 @@ public class MapGeneration : MonoBehaviour {
             else { firstChar = "R"; }
 
             path += DungeonPathString(maxIterations, firstChar);
-            //path += "r";
         }
 
         path += DungeonPathString(maxIterations, "Z");
@@ -108,18 +96,15 @@ public class MapGeneration : MonoBehaviour {
         Debug.Log(path);
 
         //TESTING:
-        //path = "aj.fnnj.fnnl.hnnm.innl.hnnj.fnnm.innj"; //Testing all DD:North connections
-        //path = "bk.gssk.gssl.hssm.issl.hssk.jssm.issj"; //Testing all DD:South connections
-        //path = "cl.heel.heek.geej.feek.geel.heej.feel"; //Testing all DD:East connections
-        //path = "dm.iwwm.iwwk.gwwj.fwwk.gwwm.iwwj.fwwm"; //Testing all DD:West connections
+        //path = "aj.fnnj.fnnl.hnnm.innl.hnnj.fnnm.innj";                                                                       //Testing all DD:North connections
+        //path = "bk.gssk.gssl.hssm.issl.hssk.jssm.issj";                                                                       //Testing all DD:South connections
+        //path = "cl.heel.heek.geej.feek.geel.heej.feel";                                                                       //Testing all DD:East connections
+        //path = "dm.iwwm.iwwk.gwwj.fwwk.gwwm.iwwj.fwwm";                                                                       //Testing all DD:West connections
+        //path = "aj.fnnj.feej.fnnj.frm.iwwj.feel.hnnm.innj.frm.iwwm.innj.frm.innl.heej.frl.heej.fnnj.frm.iwwm.innj.fz";        //testing rooms going north
+        //path = "bk.gssk.gssl.hssm.iwwk.grl.heel.hssk.grm.issl.heek.gwwm.iwwk.grl.hssm.issk.grl.heel.hssk.grm.issl.hssk.gz";   //testing rooms going south
+        //path = "cl.heel.heel.hrj.fnnl.heel.hrk.gssl.hssl.hrj.feej.feel.hrj.feej.feek.geel.hz";                                //testing rooms going east
+        //path = "dm.iwwm.iwwm.issm.irk.gssm.issm.iwwm.iwwm.irk.gssm.innj.fwwm.irj.fwwk.gwwk.gwwm.irj.fnnm.iwwm.iz";            //testing rooms going west
 
-        //path = "aj.fnnj.feej.fnnj.frm.iwwj.feel.hnnm.innj.frm.iwwm.innj.frm.innl.heej.frl.heej.fnnj.frm.iwwm.innj.fz"; //testing rooms going north
-        //path = "bk.gssk.gssl.hssm.iwwk.grl.heel.hssk.grm.issl.heek.gwwm.iwwk.grl.hssm.issk.grl.heel.hssk.grm.issl.hssk.gz"; //testing rooms going south
-        //path = "cl.heel.heel.hrj.fnnl.heel.hrk.gssl.hssl.hrj.feej.feel.hrj.feej.feek.geel.hz"; //testing rooms going east
-        //path = "dm.iwwm.iwwm.issm.irk.gssm.issm.iwwm.iwwm.irk.gssm.innj.fwwm.irj.fwwk.gwwk.gwwm.irj.fnnm.iwwm.iz"; //testing rooms going west
-
-
-        //StopAllCoroutines(); //feel like keeping this will cause problems because gamesetup is a coroutine
         _dProgram = DungeonCompiler.Compile(path);
         yield return _dProgram.Run();
     }
@@ -127,63 +112,53 @@ public class MapGeneration : MonoBehaviour {
 
     private string PlatformerPathString (int maxIterations)
     {
-        //if wanting to customise the way the path is generated such as the number of iterations or the probabilities, then what?
-
-        //TODO make the probabilities available for customisation with slider bars??
         var rewriteS = new[]
         {
-            ProportionValue.Create(0.33, "sffF"), //1st suggestion: 0.1
-            ProportionValue.Create(0.33, "sffP"), //1st suggestion: 0.45
-            ProportionValue.Create(0.34, "sffG"), //1st suggestion: 0.45
+            ProportionValue.Create(0.33, "sffF"), 
+            ProportionValue.Create(0.33, "sffP"), 
+            ProportionValue.Create(0.34, "sffG"), 
         };
 
         var rewriteP = new[]
         {
-            ProportionValue.Create(0.25, "pP"), //1st suggestion: 0.1
-            ProportionValue.Create(0.25, "pH"), //1st suggestion: 0.3
-            ProportionValue.Create(0.25, "pG"), //1st suggestion: 0.3
-            ProportionValue.Create(0.25, "pF"), //1st suggestion: 0.3
+            ProportionValue.Create(0.25, "pP"), 
+            ProportionValue.Create(0.25, "pH"),
+            ProportionValue.Create(0.25, "pG"), 
+            ProportionValue.Create(0.25, "pF"), 
         };
 
         var rewriteH = new[]
         {
-            ProportionValue.Create(0.1, "hH"), //1st suggestion: 0.1
-            ProportionValue.Create(0.1, "hP"), //1st suggestion: 0.1
-            ProportionValue.Create(0.1, "hF"), //1st suggestion: 0.1
-            ProportionValue.Create(0.1, "hG"), //1st suggestion: 0.1
+            ProportionValue.Create(0.1, "hH"), 
+            ProportionValue.Create(0.1, "hP"), 
+            ProportionValue.Create(0.1, "hF"), 
+            ProportionValue.Create(0.1, "hG"), 
 
-            ProportionValue.Create(0.15, "hghH"), //1st suggestion: 0.15
-            ProportionValue.Create(0.15, "hghP"), //1st suggestion: 0.15
-            ProportionValue.Create(0.15, "hghF"), //1st suggestion: 0.15
-            ProportionValue.Create(0.15, "hghG"), //1st suggestion: 0.15
+            ProportionValue.Create(0.15, "hghH"), 
+            ProportionValue.Create(0.15, "hghP"),
+            ProportionValue.Create(0.15, "hghF"), 
+            ProportionValue.Create(0.15, "hghG"),
         };
 
         var rewriteF = new[]
         {
-            ProportionValue.Create(0.33, "fF"), //1st suggestion: 0.2
-            ProportionValue.Create(0.33, "fP"), //1st suggestion: 0.4
-            ProportionValue.Create(0.34, "fG"), //1st suggestion: 0.4
+            ProportionValue.Create(0.33, "fF"), 
+            ProportionValue.Create(0.33, "fP"), 
+            ProportionValue.Create(0.34, "fG"), 
         };
 
         var rewriteG = new[]
         {
-            ProportionValue.Create(0.33, "gfP"), //1st suggestion: 0.2
-            ProportionValue.Create(0.33, "gfG"), //1st suggestion: 0.3
-            ProportionValue.Create(0.34, "gfF"), //1st suggestion: 0.5
+            ProportionValue.Create(0.33, "gfP"), 
+            ProportionValue.Create(0.33, "gfG"), 
+            ProportionValue.Create(0.34, "gfF"), 
         };
-
-        //string path = "S";
-
-        //path += ""; //that appends - how to replace...??? Will I need two strings at once? The current finished iteration and the currently being edited one??
 
         string lastString = "S";
         string curString = "";
 
         for (int i = 0; i < maxIterations; i++)
         {
-
-            //curString = lastString;
-
             foreach (char c in lastString)
             {
                 //for each char in string:
@@ -217,7 +192,6 @@ public class MapGeneration : MonoBehaviour {
             curString = "";
         }
 
-        //Debug.Log(lastString += "e"); //still need to append a finish line segment
         return lastString += "e";
     }
 
@@ -305,28 +279,24 @@ public class MapGeneration : MonoBehaviour {
         {
             ProportionValue.Create(0.5, "fnN"),
             ProportionValue.Create(0.5, "feE"),
-            //ProportionValue.Create(0.34, "fsS"),
         };
         //Fw - fnN, fsS, fwW
         var rewriteFw = new[]
         {
             ProportionValue.Create(0.5, "fnN"),
             ProportionValue.Create(0.5, "fwW"),
-            //ProportionValue.Create(0.34, "fsS"),
         };
         //Hn - hnN, heE, hwW
         var rewriteHn = new[]
         {
             ProportionValue.Create(0.5, "hnN"),
             ProportionValue.Create(0.5, "heE"),
-            //ProportionValue.Create(0.34, "hwW"),
         };
         //Hs - hsS, heE, hwW
         var rewriteHs = new[]
         {
             ProportionValue.Create(0.5, "hsS"),
             ProportionValue.Create(0.5, "heE"),
-            //ProportionValue.Create(0.34, "hwW"),
         };
         //He - hnN, heE, hsS
         var rewriteHe = new[]
@@ -345,14 +315,12 @@ public class MapGeneration : MonoBehaviour {
         //Ge - gnN, geE, gsS
         var rewriteGe = new[]
         {
-            //ProportionValue.Create(0.33, "gnN"),
             ProportionValue.Create(0.5, "geE"),
             ProportionValue.Create(0.5, "gsS"),
         };
         //Gw - gnN, gsS, gwW
         var rewriteGw = new[]
         {
-            //ProportionValue.Create(0.33, "gnN"),
             ProportionValue.Create(0.5, "gsS"),
             ProportionValue.Create(0.5, "gwW"),
         };
@@ -360,14 +328,12 @@ public class MapGeneration : MonoBehaviour {
         var rewriteIn = new[]
         {
             ProportionValue.Create(0.5, "inN"),
-            //ProportionValue.Create(0.33, "ieE"),
             ProportionValue.Create(0.5, "iwW"),
         };
         //Is - isS, ieE, iwW
         var rewriteIs = new[]
         {
             ProportionValue.Create(0.5, "isS"),
-            //ProportionValue.Create(0.33, "ieE"),
             ProportionValue.Create(0.5, "iwW"),
         };
         //Iw - inN, isS, iwW
@@ -391,28 +357,24 @@ public class MapGeneration : MonoBehaviour {
         {
             ProportionValue.Create(0.5, "nj.F"),
             ProportionValue.Create(0.5, "nl.H"),
-            //ProportionValue.Create(0.34, "nk.G"),
         };
         //Nw - nj.F, nm.I, nk.G
         var rewriteNw = new[]
         {
             ProportionValue.Create(0.5, "nj.F"),
             ProportionValue.Create(0.5, "nm.I"),
-            //ProportionValue.Create(0.34, "nk.G"),
         };
         //En - ej.F, el.H, em.I
         var rewriteEn = new[]
         {
             ProportionValue.Create(0.5, "ej.F"),
             ProportionValue.Create(0.5, "el.H"),
-            //ProportionValue.Create(0.34, "em.I"),
         };
         //Es - em.I, ek.G, el.H
         var rewriteEs = new[]
         {
             ProportionValue.Create(0.5, "ek.G"),
             ProportionValue.Create(0.5, "el.H"),
-            //ProportionValue.Create(0.34, "em.I"),
         };
         //Ee - ej.F, el.H, ek.G
         var rewriteEe = new[]
@@ -432,14 +394,12 @@ public class MapGeneration : MonoBehaviour {
         var rewriteSw = new[]
         {
             ProportionValue.Create(0.5, "sk.G"),
-            //ProportionValue.Create(0.33, "sj.F"),
             ProportionValue.Create(0.5, "sm.I"),
         };
         //Se - sj.F, sl.H, sk.G
         var rewriteSe = new[]
         {
             ProportionValue.Create(0.5, "sk.G"),
-            //ProportionValue.Create(0.33, "sj.F"),
             ProportionValue.Create(0.5, "sl.H"),
         };
         //Ww - wj.F, wm.I, wk.G
@@ -452,14 +412,12 @@ public class MapGeneration : MonoBehaviour {
         //Wn - wj.F, wl.H, wm.I
         var rewriteWn = new[]
         {
-            //ProportionValue.Create(0.33, "wl.H"),
             ProportionValue.Create(0.5, "wj.F"),
             ProportionValue.Create(0.5, "wm.I"),
         };
         //Ws - wm.I, wk.G, wl.H
         var rewriteWs = new[]
         {
-            //ProportionValue.Create(0.33, "wl.H"),
             ProportionValue.Create(0.5, "wk.G"),
             ProportionValue.Create(0.5, "wm.I"),
         };
@@ -471,9 +429,6 @@ public class MapGeneration : MonoBehaviour {
 
         for (int i = 0; i < maxIterations; i++)
         {
-
-            //curString = lastString;
-
             foreach (char c in lastString)
             {
                 if (domDir == DominantDirection.NORTH)

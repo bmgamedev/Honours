@@ -83,7 +83,6 @@
     <Compile Include="Assets\Scripts\Game\GeneratorDisplay.cs" />
     <Compile Include="Assets\Scripts\Game\GrammarGenerator.cs" />
     <Compile Include="Assets\Scripts\Game\LaserMovement.cs" />
-    <Compile Include="Assets\Scripts\Game\MapGeneration.cs" />
     <Compile Include="Assets\Scripts\Game\PhysicsObject.cs" />
     <Compile Include="Assets\Scripts\Game\PickupMgmt.cs" />
     <Compile Include="Assets\Scripts\Game\PlayerMgmt.cs" />
@@ -97,6 +96,7 @@
     <Compile Include="Assets\Scripts\Grammar\DungeonProgram.cs" />
     <Compile Include="Assets\Scripts\Grammar\GameCompiler.cs" />
     <Compile Include="Assets\Scripts\Grammar\GameProgram.cs" />
+    <Compile Include="Assets\Scripts\Grammar\MapGeneration.cs" />
     <Compile Include="Assets\Scripts\Grammar\PlatformerCompiler.cs" />
     <Compile Include="Assets\Scripts\Grammar\PlatformerProgram.cs" />
     <Compile Include="Assets\Scripts\Grammar\RuntimeScriptable.cs" />

@@ -11,7 +11,7 @@ public class GameMgmt : MonoBehaviour {
     public int finishedPlayers;
 
     private Text p1Score, p2Score, p1Deaths, p2Deaths, levelCount;
-    private int levelNum = 1;
+    //private int levelNum = 1;
     private int totalPlayers;
     private GameObject runtimeScriptable;
 
@@ -57,6 +57,7 @@ public class GameMgmt : MonoBehaviour {
                 GameObject.Find("LoadingCam").GetComponent<Camera>().enabled = true;
                 ScoreMgmt.ClearScores();
                 ScoreMgmt.ClearDeaths();
+                ScoreMgmt.ClearLevel();
                 SceneManager.LoadScene("Setup");
             }
         }
@@ -105,12 +106,12 @@ public class GameMgmt : MonoBehaviour {
 
     public void ShowLevel()
     {
-        levelCount.text = "Level " + levelNum;
+        levelCount.text = "Level " + ScoreMgmt.GetLevel();
     }
 
     void NextLevel()
     {
-        levelNum++;
+        ScoreMgmt.IncreaseLevel();
 
         if (runtimeScriptable != null)
         {

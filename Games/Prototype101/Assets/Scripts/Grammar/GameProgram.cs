@@ -16,12 +16,10 @@ public class GameProgram
     static private MapSize _mapSize;
 
     static private List<GameObject> _players = new List<GameObject>();
-    static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
+    static private List<Vector3> _playerPositions = new List<Vector3>();
     static private List<Vector3> _pickupPositions = new List<Vector3>();
     static private List<Vector3> _enemyPositions = new List<Vector3>();
-    //static private List<string> _enemyAxes = new List<string>();
     static private List<string> _enemyPaceAxis = new List<string>() { "Horizontal", "vertical" };
-    //static private float enemyPaceDist;
 
     static private Text loadingMessage = null;
 
@@ -65,7 +63,6 @@ public class GameProgram
             //Create the map using seperate grammars
             if (_gameType == GameType.Dungeon)
             {
-                //Debug.Log("dungeon");
                 yield return mapGenerator.GenerateDungeonMap(_mapSize);
             }
             else if (_gameType == GameType.Platformer)
@@ -77,12 +74,8 @@ public class GameProgram
             _pickupPositions = mapGenerator.GetPickupPositions();
             _playerPositions = mapGenerator.GetPlayerPositions();
             _enemyPositions = mapGenerator.GetEnemyPositions();
-            //_enemyAxes = mapGenerator.GetEnemyPaceAxes();
-            //enemyPaceDist = mapGenerator.GetEnemyPaceDist();
 
             //pick random number between x and y to represent number of pickups to be placed
-            //let's just say 20 initially
-
             System.Random random = new System.Random();
             int rnd;
 
@@ -93,23 +86,17 @@ public class GameProgram
                 {
                     rnd = random.Next(_pickupPositions.Count);
                     Vector3 pickupPos = _pickupPositions[rnd];
-                    //#pragma warning disable 1234
                     GameObject pickup = Object.Instantiate(Resources.Load("Pickup"), pickupPos, Quaternion.identity) as GameObject;
-                    //#pragma warning restore 1234
                 }
             }
             
-
-            //Debug.Log("game type: " + _gameType.ToString() + ", difficulty: " + _gameDifficulty.ToString());
-
             yield return null;
-            //return null;
         }
     }
 
     public class PlayerElement : IElement
     {
-        private readonly int _num; //change to just private if having problems later
+        private readonly int _num; 
 
         public PlayerElement(int num)
         {
@@ -122,12 +109,8 @@ public class GameProgram
 
             _players.Clear();
 
-            //CreationManager.CameraSetup(_num);
             switch (_num)
             {
-                //case 1:
-
-                //break;
                 case 2:
                     GameObject.Find("TwoPlayerA").GetComponent<Camera>().enabled = true;
                     GameObject.Find("TwoPlayerB").GetComponent<Camera>().enabled = true;
@@ -138,21 +121,19 @@ public class GameProgram
             }
             GameObject Player = null;
 
-            //create players
             for (int i = 0; i < _num; i++)
             {
                 //create player - the details differ between game types
                 if (_gameType == GameType.Dungeon)
                 {
-                    Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
-                    //Player = GameObject.Instantiate(Resources.Load("DungeonPC"), startPos, Quaternion.identity) as GameObject;
+                    Vector3 startPos = new Vector3(0, 0, 0);
                     Player = GameObject.Instantiate(Resources.Load("TopDown"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
                     _players.Add(Player);
                 }
                 else if (_gameType == GameType.Platformer)
                 {
-                    Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
+                    Vector3 startPos = new Vector3(0, 0, 0);
                     Player = GameObject.Instantiate(Resources.Load("PlatformerPC 1"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
                     _players.Add(Player);
@@ -161,23 +142,12 @@ public class GameProgram
 
             }
 
-            //1 player pos:
-            //(0.0f, 0.0f, 0.0f)
-
-            //2 player pos:
-            //a = (-5.0f, 0.0f, 0.0f) b = (5.0f, 0.0f, 0.0f)
-
-            //3/4 player pos:
-            //a = (-5.0f, 3.7f, 0.0f) b = (5.0f, 3.7f, 0.0f) c = (-5.0f, -3.7f, 0.0f) d = (5.0f, -3.7f, 0.0f)
-
             CamFollow MainCameraTarget;
             switch (_num) {
                 case 2:
                     Player = GameObject.Find("Player" + 1);
-                    //Player.transform.Translate(new Vector3(-5.0f, 0.0f, 0.0f));
                     Player.transform.position = _playerPositions[0];
                     Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[0]);
-                    //CreationManager.UpdateCamera(Player, "TwoPlayerA");
                     MainCameraTarget = GameObject.Find("TwoPlayerA").GetComponent<CamFollow>();
                     if (MainCameraTarget != null)
                     {
@@ -185,51 +155,18 @@ public class GameProgram
                     }
 
                     Player = GameObject.Find("Player" + 2);
-                    //Player.transform.Translate(new Vector3(5.0f, 0.0f, 0.0f));
                     Player.transform.position = _playerPositions[1];
                     Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[1]);
-                    //CreationManager.UpdateCamera(Player, "TwoPlayerB");
                     MainCameraTarget = GameObject.Find("TwoPlayerB").GetComponent<CamFollow>();
                     if (MainCameraTarget != null)
                     {
                         MainCameraTarget.target = Player.transform;
                     }
                     break;
-                /*case 3:
-                    Player = GameObject.Find("Player" + 1);
-                    Player.transform.Translate(new Vector3(-5.0f, 3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerA");
-
-                    Player = GameObject.Find("Player" + 2);
-                    Player.transform.Translate(new Vector3(5.0f, 3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerB");
-
-                    Player = GameObject.Find("Player" + 3);
-                    Player.transform.Translate(new Vector3(-5.0f, -3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerC");
-                    break;
-                case 4:
-                    Player = GameObject.Find("Player" + 1);
-                    Player.transform.Translate(new Vector3(-5.0f, 3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerA");
-
-                    Player = GameObject.Find("Player" + 2);
-                    Player.transform.Translate(new Vector3(5.0f, 3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerB");
-
-                    Player = GameObject.Find("Player" + 3);
-                    Player.transform.Translate(new Vector3(-5.0f, -3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerC");
-
-                    Player = GameObject.Find("Player" + 4);
-                    Player.transform.Translate(new Vector3(5.0f, -3.7f, 0.0f));
-                    CreationManager.UpdateCamera(Player, "FourPlayerD");
-                    break;*/
                 default:
                     Player = GameObject.Find("Player" + 1);
                     Player.transform.position = _playerPositions[0];
                     Player.GetComponent<PlayerMgmt>().SetStartPos(_playerPositions[0]);
-                    //CreationManager.UpdateCamera(Player, "SinglePlayer");
                     MainCameraTarget = GameObject.Find("SinglePlayer").GetComponent<CamFollow>();
                     if (MainCameraTarget != null)
                     {
@@ -238,10 +175,6 @@ public class GameProgram
                     break;
             }
             
-
-            //Debug.Log("Player x" + _num);
-            //Debug.Log("# players: " + _players.Count);
-
             return null;
         }
     }
@@ -264,8 +197,6 @@ public class GameProgram
         {
             if (_enemyPositions != null)
             {
-                //Debug.Log("Enemy: " + _type.ToString());
-
                 if (loadingMessage != null) { loadingMessage.text = "Adding enemies..."; }
 
                 System.Random random = new System.Random();
@@ -341,8 +272,6 @@ public class GameProgram
             return null;
         }
     }
-
-    
 
     public class FinishSetup : IElement
     {

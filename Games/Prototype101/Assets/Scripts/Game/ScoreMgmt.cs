@@ -2,6 +2,7 @@
 
     public static int _P1Score, _P2Score;
     public static int _P1Deaths, _P2Deaths;
+    public static int _CurLevel = 1;
 
     public static int GetScore(string player)
     {
@@ -86,4 +87,8 @@
         _P1Deaths = 0;
         _P2Deaths = 0;
     }
+
+    public static int GetLevel() { return _CurLevel; }
+    public static void IncreaseLevel() { _CurLevel++; }
+    public static void ClearLevel() { _CurLevel = 1; }
 }

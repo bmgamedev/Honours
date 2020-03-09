@@ -1162,22 +1162,26 @@ public class DungeonProgram
             //_enemyPositions - COMPLETE
             //_pickupPositions - COMPLETE
             //_lavaPositions - COMPLETE
-            foreach (Vector3Int pos in _lavaPositions)
+            /*foreach (Vector3Int pos in _lavaPositions)
             {
                 if (!_floorMap.HasTile(pos)) { _deathMap.SetTile(pos, _lavaTile); }
-            }
+            }*/
 
             //Add all the lava tiles:
-            foreach (Vector3Int pos in _lavaPositions) //get rid of any lava positions that can't be used because of walls
+            foreach (Vector3Int pos in _lavaPositions.ToArray()) 
             {
-                if (!_floorMap.HasTile(pos)) { _lavaPositions.Remove(pos); }
+                //if there's a wall tile in that spot, bin that lava pos from array
+                if (_floorMap.HasTile(pos)) { _lavaPositions.Remove(pos); }
             }
 
-            int maxLavaTiles = _lavaPositions.Count / 10; //just randomly deciding to implement a tenth of them...
+            int maxLavaTiles = (int) Mathf.Floor(_lavaPositions.Count / 25); //just randomly deciding to implement a twenty-fifth of them...
             System.Random random = new System.Random();
+            
+            int rnd;
             for (int i = 0; i < maxLavaTiles; i++)
             {
-                int rnd = random.Next(_lavaPositions.Count);
+                rnd = Random.Range(0, _lavaPositions.Count - 1);
+                //rnd = random.Next(_lavaPositions.Count);
                 Vector3Int pos = _lavaPositions[rnd];
                 _deathMap.SetTile(pos, _lavaTile);
 
@@ -1192,13 +1196,16 @@ public class DungeonProgram
             {
                 if (!_deathMap.HasTile(pos)) //only add the pickup position to the array if it's not going to be sitting on lava
                 {
-                    _pickupPositions.Add(_groundMap.CellToLocal(pos));
+                    //_pickupPositions.Add(_groundMap.CellToLocal(pos));
+                    _pickupPositions.Add(_groundMap.GetCellCenterLocal(pos));
                 } 
             }
 
             mapGenerator.SetPickupPositions(_pickupPositions);
             mapGenerator.SetPlayerPositions(_playerPositions);
             mapGenerator.SetEnemyPositions(_enemyPositions);
+
+            _lavaPositions.Clear();
 
             return null;
         }

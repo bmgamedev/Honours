@@ -3386,7 +3386,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 906e660526237384c9a31fdc79cdd965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugText: {fileID: 2024902951}
   grammarDisplay: {fileID: 869620235}
 --- !u!4 &838150936
 Transform:
