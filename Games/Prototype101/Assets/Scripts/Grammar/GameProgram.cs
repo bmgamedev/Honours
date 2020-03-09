@@ -13,12 +13,14 @@ public class GameProgram
 
     static private GameType _gameType;
     static private SkillLevel _gameDifficulty;
+    static private MapSize _mapSize;
 
     static private List<GameObject> _players = new List<GameObject>();
     static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static private List<Vector3> _pickupPositions = new List<Vector3>();
     static private List<Vector3> _enemyPositions = new List<Vector3>();
-    static private float enemyPaceDist;
+    static private List<string> _enemyAxes = new List<string>();
+    //static private float enemyPaceDist;
 
     static private Text loadingMessage = null;
 
@@ -44,8 +46,6 @@ public class GameProgram
 
     public class GameTypeSetup : IElement
     {
-        private MapSize _mapSize;
-
         public GameTypeSetup(GameType gametype, SkillLevel gameDifficulty, MapSize size)
         {
             _gameType = gametype;
@@ -55,10 +55,6 @@ public class GameProgram
 
         public IEnumerator Execute()
         {
-            //TODO
-            //define player prefab to be used
-            //define camera set up to use - but how? there's an overlap with player element...
-            
             //send message to loading text to say "Creating level"
             if (loadingMessage != null)
             {
@@ -80,16 +76,14 @@ public class GameProgram
             _pickupPositions = mapGenerator.GetPickupPositions();
             _playerPositions = mapGenerator.GetPlayerPositions();
             _enemyPositions = mapGenerator.GetEnemyPositions();
-            enemyPaceDist = mapGenerator.GetEnemyPaceDist();
+            _enemyAxes = mapGenerator.GetEnemyPaceAxes();
+            //enemyPaceDist = mapGenerator.GetEnemyPaceDist();
 
             //pick random number between x and y to represent number of pickups to be placed
             //let's just say 20 initially
 
             System.Random random = new System.Random();
             int rnd;
-
-            GameObject pickup = null;
-
 
             if (_pickupPositions != null)
             {
@@ -98,7 +92,7 @@ public class GameProgram
                 {
                     rnd = random.Next(_pickupPositions.Count);
                     Vector3 pickupPos = _pickupPositions[rnd];
-                    pickup = Object.Instantiate(Resources.Load("Pickup"), pickupPos, Quaternion.identity) as GameObject;
+                    GameObject pickup = Object.Instantiate(Resources.Load("Pickup"), pickupPos, Quaternion.identity) as GameObject;
                 }
             }
             
@@ -148,7 +142,8 @@ public class GameProgram
                 if (_gameType == GameType.Dungeon)
                 {
                     Vector3 startPos = new Vector3(0, 0, 0); ; // new Vector3(0 + (i * 4), 0, 0);
-                    Player = GameObject.Instantiate(Resources.Load("DungeonPC"), startPos, Quaternion.identity) as GameObject;
+                    //Player = GameObject.Instantiate(Resources.Load("DungeonPC"), startPos, Quaternion.identity) as GameObject;
+                    Player = GameObject.Instantiate(Resources.Load("TopDown"), startPos, Quaternion.identity) as GameObject;
                     Player.name = "Player" + (i + 1);
                     _players.Add(Player);
                 }
@@ -252,7 +247,7 @@ public class GameProgram
     {
         public enum Type
         {
-            MELEE, PROJECTILE, VARIED
+            MOVING, STATIC, VARIED
         }
 
         private readonly Type _type;
@@ -273,39 +268,64 @@ public class GameProgram
                 System.Random random = new System.Random();
                 int rnd;
                 GameObject enemy = null;
-            
-                //TODO determine number of enemies based on difficulty and map size, not just an arbitrary number. Also pick from a range for each combo.
-                int numEnemies = Mathf.Min(7, _enemyPositions.Count);
+
+                int numEnemies = 0;
+                if (_gameType == GameType.Platformer)
+                {
+                    if (_mapSize == MapSize.Small) { numEnemies = Mathf.Min(10, _enemyPositions.Count); }
+                    else if (_mapSize == MapSize.Small) { numEnemies = Mathf.Min(20, _enemyPositions.Count); }
+                    else { numEnemies = Mathf.Min(30, _enemyPositions.Count); }
+                }
+                else
+                {
+                    if (_mapSize == MapSize.Small) { numEnemies = Mathf.Min(15, _enemyPositions.Count); }
+                    else if (_mapSize == MapSize.Small) { numEnemies = Mathf.Min(25, _enemyPositions.Count); }
+                    else { numEnemies = Mathf.Min(40, _enemyPositions.Count); }
+                }
+
+                if (_gameDifficulty == SkillLevel.Regular) { numEnemies += (int)Mathf.Floor(numEnemies * 0.25f); }
+                else if (_gameDifficulty == SkillLevel.Hard) { numEnemies += (int)Mathf.Floor(numEnemies * 0.5f); }
+
                 for (int i = 0; i < numEnemies; i++)
                 {
                     rnd = random.Next(_enemyPositions.Count);
                     Vector3 enemyPos = _enemyPositions[rnd];
+                    string enemyPaceAxis = _enemyAxes[rnd];
 
-                    if (_type.Equals(Type.MELEE))
+                    string enemyPacing, enemyStatic;
+
+                    if (_gameType == GameType.Platformer)
                     {
-                        enemy = Object.Instantiate(Resources.Load("EnemyA"), enemyPos, Quaternion.identity) as GameObject;
-                        enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                        enemyPacing = "EnemyA";
+                        enemyStatic = "EnemyB";
                     }
-                    else if (_type.Equals(Type.PROJECTILE))
+                    else
                     {
-                        enemy = Object.Instantiate(Resources.Load("EnemyB"), enemyPos, Quaternion.identity) as GameObject;
+                        enemyPacing = "EnemyD";
+                        enemyStatic = "EnemyC";
+                    }
+
+                    if (_type.Equals(Type.MOVING))
+                    {
+                        enemy = Object.Instantiate(Resources.Load(enemyPacing), enemyPos, Quaternion.identity) as GameObject;
+                        enemy.GetComponent<EnemyPacing>().SetPaceAxis(enemyPaceAxis);
+                    }
+                    else if (_type.Equals(Type.STATIC))
+                    {
+                        enemy = Object.Instantiate(Resources.Load(enemyStatic), enemyPos, Quaternion.identity) as GameObject;
                     }
                     else if (_type.Equals(Type.VARIED))
                     {
                         rnd = random.Next(2);
                         if (rnd == 0)
                         {
-                            enemy = Object.Instantiate(Resources.Load("EnemyA"), enemyPos, Quaternion.identity) as GameObject;
-                            enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                            enemy = Object.Instantiate(Resources.Load(enemyPacing), enemyPos, Quaternion.identity) as GameObject;
+                            enemy.GetComponent<EnemyPacing>().SetPaceAxis(enemyPaceAxis);
+                            
                         }
                         else if (rnd == 1)
                         {
-                            enemy = Object.Instantiate(Resources.Load("EnemyB"), enemyPos, Quaternion.identity) as GameObject;
-                        }
-                        else
-                        {
-                            enemy = Object.Instantiate(Resources.Load("WarSkele"), enemyPos, Quaternion.identity) as GameObject;
-                            enemy.GetComponent<EnemyPacing>().SetPaceDistance(enemyPaceDist);
+                            enemy = Object.Instantiate(Resources.Load(enemyStatic), enemyPos, Quaternion.identity) as GameObject;
                         }
                     }
                 }

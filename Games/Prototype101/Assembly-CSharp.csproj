@@ -61,7 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ExitCheck.cs" />
     <Compile Include="Assets\Grammar\DungeonMapBaseListener.cs" />
     <Compile Include="Assets\Grammar\DungeonMapLexer.cs" />
     <Compile Include="Assets\Grammar\DungeonMapListener.cs" />
@@ -75,24 +74,22 @@
     <Compile Include="Assets\Grammar\PlatformerMapListener.cs" />
     <Compile Include="Assets\Grammar\PlatformerMapParser.cs" />
     <Compile Include="Assets\Scripts\Game\CamFollow.cs" />
-    <Compile Include="Assets\Scripts\Game\CreationManager.cs" />
     <Compile Include="Assets\Scripts\Game\Enemy.cs" />
-    <Compile Include="Assets\Scripts\Game\EnemyChase.cs" />
     <Compile Include="Assets\Scripts\Game\EnemyPacing.cs" />
+    <Compile Include="Assets\Scripts\Game\EnemyPacing2.cs" />
+    <Compile Include="Assets\Scripts\Game\ExitCheck.cs" />
     <Compile Include="Assets\Scripts\Game\FireLasers.cs" />
     <Compile Include="Assets\Scripts\Game\GameMgmt.cs" />
     <Compile Include="Assets\Scripts\Game\GeneratorDisplay.cs" />
     <Compile Include="Assets\Scripts\Game\GrammarGenerator.cs" />
     <Compile Include="Assets\Scripts\Game\LaserMovement.cs" />
-    <Compile Include="Assets\Scripts\Game\LoadGame.cs" />
-    <Compile Include="Assets\Scripts\Game\LoadingText.cs" />
     <Compile Include="Assets\Scripts\Game\MapGeneration.cs" />
     <Compile Include="Assets\Scripts\Game\PhysicsObject.cs" />
     <Compile Include="Assets\Scripts\Game\PickupMgmt.cs" />
     <Compile Include="Assets\Scripts\Game\PlayerMgmt.cs" />
     <Compile Include="Assets\Scripts\Game\ScoreMgmt.cs" />
-    <Compile Include="Assets\Scripts\Game\SideScrollerMvmt.cs" />
     <Compile Include="Assets\Scripts\Game\SideScrollerMvmt1.cs" />
+    <Compile Include="Assets\Scripts\Game\TD_mvmt.cs" />
     <Compile Include="Assets\Scripts\Game\ToggleMenu.cs" />
     <Compile Include="Assets\Scripts\Game\TopDownMvmt.cs" />
     <Compile Include="Assets\Scripts\Grammar\AccessCompile.cs" />

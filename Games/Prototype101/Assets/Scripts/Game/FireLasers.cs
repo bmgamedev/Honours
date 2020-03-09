@@ -76,10 +76,10 @@ public class FireLasers : MonoBehaviour {
 
     void Shoot()
     {
-        Vector2 endPosition = new Vector2(endPoint.position.x, endPoint.position.y);
-        Vector2 firePointPosition = new Vector2(firingPoint.position.x, firingPoint.position.y);
+        //Vector2 endPosition = new Vector2(endPoint.position.x, endPoint.position.y);
+        //Vector2 firePointPosition = new Vector2(firingPoint.position.x, firingPoint.position.y);
+        //RaycastHit2D hit = Physics2D.Raycast(firePointPosition, endPosition - firePointPosition, 100, Destroyables);
 
-        RaycastHit2D hit = Physics2D.Raycast(firePointPosition, endPosition - firePointPosition, 100, Destroyables);
         if (Time.time >= timeToSpawnEffect) 
         {
             Effect();

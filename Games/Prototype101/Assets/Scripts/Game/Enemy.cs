@@ -14,12 +14,12 @@ public class Enemy : MonoBehaviour {
     private void Awake()
     {
         
-        if (GameObject.Find("Player1").GetComponent<PlayerMgmt>() != null)
+        if (GameObject.Find("Player1") != null)
         {
             playerMgmt = GameObject.Find("Player1").GetComponent<PlayerMgmt>();
         }
 
-        if (GameObject.Find("Player2").GetComponent<PlayerMgmt>() != null)
+        if (GameObject.Find("Player2") != null)
         {
             playerMgmt2 = GameObject.Find("Player2").GetComponent<PlayerMgmt>();
         }

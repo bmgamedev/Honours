@@ -9,29 +9,27 @@ public class DungeonProgram
 {
     static private MapGeneration mapGenerator;
 
-    static private Vector3Int _innerConnection, _outerConnection; //TODO change to transform if cell positions aren't working
+    static private Vector3Int _innerConnection, _outerConnection;
     static private Transform _startPos;
 
     static private int corridorWidth = 6;
 
+    static private GameObject _exitDoor;
     static private Tilemap _wallMap, _groundMap, _deathMap, _floorMap;
     static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
-    //static private List<GameObject> _players = new List<GameObject>();
-    static public List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
+    static public List<Vector3> _playerPositions = new List<Vector3>();
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
-    static public float enemyPaceDist;
+    static private List<string> _enemyAxes = new List<string>();
+    //static public float enemyPaceDist;
 
     public enum Direction { North, South, East, West };
     static private Direction dominantDir;
-    //static private Direction _corrDirection;
-    //static private Direction _entryDirection;
-    //static private Direction _exitDirection;
 
-    public List<Vector3> GetPlayerPositions() { return _playerPositions; }
-    public List<Vector3> GetPickupPositions() { return _pickupPositions; }
-    public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
-    public float GetEnemyPaceDist() { return enemyPaceDist; }
+    //public List<Vector3> GetPlayerPositions() { return _playerPositions; }
+    //public List<Vector3> GetPickupPositions() { return _pickupPositions; }
+    //public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
+    //public float GetEnemyPaceDist() { return enemyPaceDist; }
 
     public interface IElement { IEnumerator Execute(); }
 
@@ -47,13 +45,12 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
-            
-
             //get the tiles - TODO move to a type of "initialisation" function
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
             _floorMap = GameObject.Find("FloorMap").GetComponent<Tilemap>(); //collisions
             _deathMap = GameObject.Find("DeathMap").GetComponent<Tilemap>(); //collisions
+            _exitDoor = GameObject.Find("EndPosDungeon");
 
             _startPos = GameObject.Find("StartPos").GetComponent<Transform>();
             _startPos.position = new Vector3(-0.53f, -5.47f, .0f);
@@ -75,8 +72,8 @@ public class DungeonProgram
             else if(exitDirection.Equals(Direction.East)) { dominantDir = Direction.East; }
             else if (exitDirection.Equals(Direction.West)) { dominantDir = Direction.West; }
 
-            Debug.Log(exitDirection);
-            Debug.Log(dominantDir);
+            //Debug.Log(exitDirection);
+            //Debug.Log(dominantDir);
 
             //Make the actual room:
             Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
@@ -249,6 +246,12 @@ public class DungeonProgram
 
             mapGenerator.SetPlayerPositions(_playerPositions);
 
+            /*//calculate enemy pace distance before any are actually created
+            Vector3Int pointA = currentCell;
+            Vector3Int pointB = currentCell;
+            pointB.x += 1;
+            enemyPaceDist = Mathf.Abs(_groundMap.CellToLocal(pointA).x - _groundMap.CellToLocal(pointB).x);*/
+
             return null;
         }
     }
@@ -270,8 +273,8 @@ public class DungeonProgram
             int roomWidth = 15;
             int roomHeight = 15;
 
-            System.Random random = new System.Random();
-            int offset = random.Next(10);
+            //System.Random random = new System.Random();
+            //int offset = random.Next(10);
 
             Vector3Int mapfillStart = _outerConnection;
 
@@ -495,7 +498,7 @@ public class DungeonProgram
             int roomHeight = 18;
 
             System.Random random = new System.Random();
-            int offset = random.Next(10);
+            //int offset = random.Next(10);
 
             Vector3Int mapfillStart = _outerConnection;
 
@@ -598,13 +601,20 @@ public class DungeonProgram
                 }
             }
 
-            
+            Vector3Int exitPos = mapfillStart;
+            exitPos.y += roomHeight / 2;
+            exitPos.x += roomWidth / 2;
+            _exitDoor.transform.position = _groundMap.CellToLocal(exitPos);
+            _exitDoor.GetComponent<SpriteRenderer>().enabled = true;
 
+            mapGenerator.SetPickupPositions(_pickupPositions);
+            mapGenerator.SetPlayerPositions(_playerPositions);
+            mapGenerator.SetEnemyPositions(_enemyPositions);
+            mapGenerator.SetEnemyPaceAxes(_enemyAxes);
 
             return null;
         }
     }
-
 
     //FirstCorrSegment
     public class FirstCorrSegment : IElement
@@ -808,6 +818,65 @@ public class DungeonProgram
                 _innerConnection.y -= 1;
             }
 
+            //enemy positions
+            Vector3Int startPos = _outerConnection;
+
+            if (entryDirection == Direction.South)
+            {
+                startPos.x -= corridorWidth;
+                startPos.y -= corridorWidth;
+            }
+            else if (entryDirection == Direction.East)
+            {
+                startPos.y -= corridorWidth;
+            }
+            else if (entryDirection == Direction.West)
+            {
+                startPos.x -= corridorWidth;
+            }
+
+            Vector3Int tempPos = startPos;
+            for (int i = 0; i < corridorWidth - 2; i++)
+            {
+                tempPos.y += (i + 2);
+                for (int j = 0; j < corridorWidth - 2; j++)
+                {
+                    tempPos.x += (j + 2);
+                    _enemyPositions.Add(_groundMap.CellToLocal(tempPos));
+                    if (corrDirection == Direction.North || corrDirection == Direction.South)
+                    { _enemyAxes.Add("Horizontal"); }
+                    else { _enemyAxes.Add("Vertical"); }
+                }
+                tempPos = startPos;
+            }
+
+            //pickup positions
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth - 2; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth - 2; j++)
+                {
+                    tempPos.x += (j + 2);
+                    _pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+                }
+                tempPos.x = startPos.x;
+            }
+            //_pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+
+            //lava positions
+            /*tempPos = startPos;
+            for (int i = 0; i < corridorWidth - 1; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth - 1; j++)
+                {
+                    tempPos.x += (j + 1);
+                    lavaPositions.Add(_groundMap.CellToLocal(tempPos));
+                }
+                tempPos.x = startPos.x;
+            }*/
+
             return null;
         }
     }
@@ -825,8 +894,6 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
-            //Debug.Log("C2 D: " + corrDirection + ", E: " + exitDirection);
-
             //Draw the ground tiles
             Vector3Int curCell = _innerConnection;
             for (int i = 0; i < corridorWidth; i++)
@@ -856,7 +923,6 @@ public class DungeonProgram
                         curCell.y += i;
                     }
 
-                    //_groundMap.SetTile(curCell, _brickTile1);
                     _groundMap.SetTile(curCell, _groundTile);
                 }
             }
@@ -965,7 +1031,7 @@ public class DungeonProgram
             {
                 _outerConnection.y += corridorWidth;
                 _outerConnection.x -= corridorWidth;
-                _outerConnection.x += 1; //TODO might break later parts
+                _outerConnection.x += 1;
             }
             else if (exitDirection == Direction.South && corrDirection == Direction.South)
             {
@@ -980,7 +1046,7 @@ public class DungeonProgram
             else if (exitDirection == Direction.East && corrDirection == Direction.North)
             {
                 _outerConnection.y += corridorWidth;
-                _outerConnection.y -= 1; //TODO might break later parts
+                _outerConnection.y -= 1;
                 _outerConnection.x += corridorWidth;
             }
             else if (exitDirection == Direction.East && corrDirection == Direction.East)
@@ -991,7 +1057,7 @@ public class DungeonProgram
             {
                 _outerConnection.y -= corridorWidth;
                 _outerConnection.x -= corridorWidth;
-                _outerConnection.y += 1; //TODO might break later parts
+                _outerConnection.y += 1;
             }
             else if (exitDirection == Direction.West && corrDirection == Direction.West)
             {
@@ -1013,6 +1079,66 @@ public class DungeonProgram
             {
                 _outerConnection.x -= 1;
             }
+
+            //enemy positions
+            Vector3Int startPos = _innerConnection;
+
+            if (corrDirection == Direction.South)
+            {
+                startPos.x -= corridorWidth;
+                startPos.y -= corridorWidth;
+            }
+            else if(corrDirection == Direction.East)
+            {
+                startPos.y -= corridorWidth;
+            }
+            else if (corrDirection == Direction.West)
+            {
+                startPos.x -= corridorWidth;
+            }
+            
+            Vector3Int tempPos = startPos;
+
+            for (int i = 0; i < corridorWidth - 2; i++)
+            {
+                tempPos.y += (i + 2);
+                for (int j = 0; j < corridorWidth - 2; j++)
+                {
+                    tempPos.x += (j + 2);
+                    _enemyPositions.Add(_groundMap.CellToLocal(tempPos));
+                    if (corrDirection == Direction.North || corrDirection == Direction.South)
+                    { _enemyAxes.Add("Horizontal"); }
+                    else { _enemyAxes.Add("Vertical"); }
+                }
+                tempPos = startPos;
+            }
+
+            //pickup positions
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth - 1; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth - 1; j++)
+                {
+                    tempPos.x += (j + 1);
+                    _pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+                }
+                tempPos.x = startPos.x;
+            }
+            //_pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+
+            //lava positions
+            /*tempPos = startPos;
+            for (int i = 0; i < corridorWidth - 1; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth - 1; j++)
+                {
+                    tempPos.x += (j + 1);
+                    lavaPositions.Add(_groundMap.CellToLocal(tempPos));
+                }
+                tempPos.x = startPos.x;
+            }*/
 
             return null;
         }

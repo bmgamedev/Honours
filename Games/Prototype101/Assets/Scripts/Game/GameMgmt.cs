@@ -22,13 +22,11 @@ public class GameMgmt : MonoBehaviour {
         if (GameObject.Find("P1Score").GetComponent<Text>() != null)
         {
             p1Score = GameObject.Find("P1Score").GetComponent<Text>();
-            //p1Score.text = "P1 Score: " + ScoreMgmt.GetScore("Player1").ToString();
         }
 
         if (GameObject.Find("P2Score").GetComponent<Text>() != null)
         {
             p2Score = GameObject.Find("P2Score").GetComponent<Text>();
-            //p2Score.text = "P2 Score: " + ScoreMgmt.GetScore("Player2").ToString();
         }
     }
 
@@ -39,20 +37,11 @@ public class GameMgmt : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 GrammarGenerator.ClearString();
+                GameObject.Find("LoadingText").GetComponent<Text>().text = "Quitting";
                 GameObject.Find("LoadingCam").GetComponent<Camera>().enabled = true;
                 ScoreMgmt.ClearScores();
                 SceneManager.LoadScene("Setup");
             }
-
-            /*if (p1Score != null)
-            {
-                p1Score.text = "P1 Score: " + ScoreMgmt.GetScore("Player1").ToString();
-            }
-
-            if (p2Score != null)
-            {
-                p2Score.text = "P2 Score: " + ScoreMgmt.GetScore("Player2").ToString();
-            }*/
         }
 
         if (finishedPlayers == totalPlayers && totalPlayers !=0)

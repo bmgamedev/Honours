@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 212684961814307608}
   - component: {fileID: 95775514920847934}
   - component: {fileID: 61333251118252746}
-  - component: {fileID: 114424268301702700}
   - component: {fileID: 50327060047251290}
+  - component: {fileID: 114424268301702700}
   - component: {fileID: 114737673282396030}
   m_Layer: 0
   m_Name: DungeonPC
@@ -119,6 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c95927f8a88a4c41bc814ef8692b9da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnSpeed: 10
+  strafeSpeed: 5
 --- !u!114 &114737673282396030
 MonoBehaviour:
   m_ObjectHideFlags: 1

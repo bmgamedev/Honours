@@ -17,7 +17,8 @@ public class PlatformerProgram {
     static public List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
-    static public float enemyPaceDist;
+    static private List<string> _enemyAxes = new List<string>();
+    //static public float enemyPaceDist;
 
     static private int maxFillerLayers = 2;
     static private int wallHeight = 11;
@@ -74,12 +75,12 @@ public class PlatformerProgram {
             playerPosCell.x += 1;
             _playerPositions.Add(_groundMap.CellToLocal(playerPosCell));
 
-            //calculate enemy pace distance before any are actually created
+            /*//calculate enemy pace distance before any are actually created
             Vector3Int pointA = currentCell;
             Vector3Int pointB = currentCell;
             pointB.x += 1;
             enemyPaceDist = Mathf.Abs(_groundMap.CellToLocal(pointA).x - _groundMap.CellToLocal(pointB).x);
-            //just care about x axis because it's only the horizontal move dist
+            */
 
             //dirt
             //int maxFillerLayers = 2;
@@ -160,6 +161,7 @@ public class PlatformerProgram {
             tempCellPos.y += 3;
             tempCellPos.x += 1;
             _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            _enemyAxes.Add("Horizontal");
 
             //move the connection pos along by 3 units
             Vector3Int newFirstCell = currentCell;
@@ -247,8 +249,10 @@ public class PlatformerProgram {
             tempCellPos.y += 3;
             tempCellPos.x += 1;
             _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            _enemyAxes.Add("Horizontal");
             tempCellPos.y += 3;
             _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            _enemyAxes.Add("Horizontal");
 
             //move connection pos
             Vector3Int newFirstCell = currentCell;
@@ -351,8 +355,10 @@ public class PlatformerProgram {
             tempCellPos.y += 3;
             tempCellPos.x += 1;
             _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            _enemyAxes.Add("Horizontal");
             tempCellPos.y += 6;
             _enemyPositions.Add(_groundMap.CellToLocal(tempCellPos));
+            _enemyAxes.Add("Horizontal");
 
             //move connection pos
             Vector3Int newFirstCell = currentCell;
@@ -557,12 +563,13 @@ public class PlatformerProgram {
             _exitDoor.transform.position = _groundMap.CellToLocal(newFirstCell);
             _exitDoor.GetComponent<SpriteRenderer>().enabled = true;
 
-            Debug.Log("P program # player pos: " + _playerPositions.Count);
+            //Debug.Log("P program # player pos: " + _playerPositions.Count);
 
             mapGenerator.SetPickupPositions(_pickupPositions);
             mapGenerator.SetPlayerPositions(_playerPositions);
             mapGenerator.SetEnemyPositions(_enemyPositions);
-            mapGenerator.SetEnemyPaceDist(enemyPaceDist);
+            mapGenerator.SetEnemyPaceAxes(_enemyAxes);
+            //mapGenerator.SetEnemyPaceDist(enemyPaceDist);
 
             return null;
         }

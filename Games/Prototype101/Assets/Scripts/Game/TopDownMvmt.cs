@@ -7,28 +7,26 @@ public class TopDownMvmt : MonoBehaviour {
     private float inputDeadzone = 0.1f;
     private float walkSpeed = 2;
     private float runSpeed = 4;
-    //public float turnSpeed = 10;
-    //public float strafeSpeed = 5;
+    public float turnSpeed = 10;
+    public float strafeSpeed = 5;
     private bool running = false;
 
     //public LayerMask groundLayerMask;
 
     private Vector2 input;
-    //private Vector3 movement;
-    //private Quaternion targetRotation;
-    //private Rigidbody2D rb;
+    private Vector3 movement;
+    private Quaternion targetRotation;
+    private Rigidbody2D rb;
 
     private string inputJump, inputHor, inputVert;
     private KeyCode inputFire, inputRun;
 
-    // Use this for initialization
     void Start() 
     {
-        //rb = GetComponent<Rigidbody2D>();
-        //targetRotation = transform.rotation;
+        rb = GetComponent<Rigidbody2D>();
+        targetRotation = transform.rotation;
     }
 
-    // Update is called once per frame
     void Update()
     {
         GetInput();

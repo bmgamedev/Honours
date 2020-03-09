@@ -13,21 +13,23 @@ public class MapGeneration : MonoBehaviour {
     static public List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
-    static public float enemyPaceDist;
+    static public List<string> _enemyAxes = new List<string>();
+    //static public float enemyPaceDist;
 
     private enum DominantDirection { NORTH, SOUTH, EAST, WEST }
     private DominantDirection domDir;
-    //private GameProgram.SkillLevel difficulty;
 
     public List<Vector3> GetPlayerPositions() { return _playerPositions; }
     public List<Vector3> GetPickupPositions() { return _pickupPositions; }
     public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
-    public float GetEnemyPaceDist() { return enemyPaceDist; }
+    public List<string> GetEnemyPaceAxes() { return _enemyAxes; }
+    //public float GetEnemyPaceDist() { return enemyPaceDist; }
 
-    public void SetPlayerPositions(List<Vector3> playerPos) { _playerPositions = playerPos; Debug.Log("mapG # player pos: " + _playerPositions.Count); }
+    public void SetPlayerPositions(List<Vector3> playerPos) { _playerPositions = playerPos; }
     public void SetPickupPositions(List<Vector3> pickupPos) { _pickupPositions = pickupPos; }
     public void SetEnemyPositions(List<Vector3> enemyPos) { _enemyPositions = enemyPos; }
-    public void SetEnemyPaceDist(float paceDist) { enemyPaceDist = paceDist; }
+    public void SetEnemyPaceAxes(List<string> enemyPaceAxes) { _enemyAxes = enemyPaceAxes; }
+    //public void SetEnemyPaceDist(float paceDist) { enemyPaceDist = paceDist; }
 
     public string GetDominantDirection()
     {
@@ -55,9 +57,9 @@ public class MapGeneration : MonoBehaviour {
     {
         //Randomly choose the number of rooms (from a range, based on size)
         int iterations = 10;
-        /*if (mapSize == GameProgram.MapSize.Small) { iterations = UnityEngine.Random.Range(30, 40); }
+        if (mapSize == GameProgram.MapSize.Small) { iterations = UnityEngine.Random.Range(30, 40); }
         else if (mapSize == GameProgram.MapSize.Medium) { iterations = UnityEngine.Random.Range(41, 60); ; }
-        else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }*/
+        else if (mapSize == GameProgram.MapSize.Large) { iterations = UnityEngine.Random.Range(61, 80); }
 
         string path = PlatformerPathString(iterations);
         //StopAllCoroutines(); //feel like keeping this will cause problems cause this particular script iw a coroutine
@@ -76,9 +78,9 @@ public class MapGeneration : MonoBehaviour {
 
         //Randomly choose the number of rooms (from a range, based on size)
         int maxRooms = 10;
-        if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 7); }
-        else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = UnityEngine.Random.Range(8, 12); ; }
-        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(13, 20); }
+        if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 6); }
+        else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = UnityEngine.Random.Range(7, 10); ; }
+        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(11, 15); }
 
         //Randomly choose the number of iterations required to build the corridor
         //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)
@@ -471,7 +473,6 @@ public class MapGeneration : MonoBehaviour {
         {
 
             //curString = lastString;
-            Debug.Log(lastString);
 
             foreach (char c in lastString)
             {

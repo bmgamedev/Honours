@@ -49,7 +49,7 @@ public class SideScrollerMvmt1 : MonoBehaviour {
                 rb.AddForce(new Vector2(0f, m_JumpForce));
             }
         }
-
+           
        animator.SetBool("isGrounded", isGrounded);
 
         //float hSpeed = Input.GetAxis("Horizontal");
