@@ -20,10 +20,10 @@ public class ExitCheck : MonoBehaviour {
         {
             gameMgmt.finishedPlayers++;
 
-            if (collision.name == "EndPosDungeon")
+            /*if (collision.name == "EndPosDungeon")
             {
                 collision.GetComponent<SpriteRenderer>().sprite = activeButton;
-            }
+            }*/
         }
     }
 
@@ -33,10 +33,10 @@ public class ExitCheck : MonoBehaviour {
         {
             gameMgmt.finishedPlayers--;
 
-            if (collision.name == "EndPosDungeon")
+            /*if (collision.name == "EndPosDungeon")
             {
                 collision.GetComponent<SpriteRenderer>().sprite = inactiveButton;
-            }
+            }*/
         }
     }
 }

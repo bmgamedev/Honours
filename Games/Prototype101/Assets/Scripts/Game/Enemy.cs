@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour {
     public int DamagePoints = 0;
     //public bool IsEnemy = true; //for enemies that also shoot - none as of yet
 
+    private int damageReward = 25;
+    private int killReward = 100;
     private int interactingPlayer = 1; //2 == player2, 1 == player1
 
     private void Awake()
@@ -31,14 +33,14 @@ public class Enemy : MonoBehaviour {
 
         if (HealthPoints <= 0)
         {
-            if(interactingPlayer == 1 && playerMgmt != null) { playerMgmt.AddPoints(200); }
-            else if (interactingPlayer == 2 && playerMgmt2 != null) { playerMgmt2.AddPoints(200); }
+            if(interactingPlayer == 1 && playerMgmt != null) { playerMgmt.AddPoints(killReward); }
+            else if (interactingPlayer == 2 && playerMgmt2 != null) { playerMgmt2.AddPoints(killReward); }
             
             Destroy(this.gameObject);
         }
 
-        if (interactingPlayer == 1 && playerMgmt != null) { playerMgmt.AddPoints(50); }
-        else if (interactingPlayer == 2 && playerMgmt2 != null) { playerMgmt2.AddPoints(50); }
+        if (interactingPlayer == 1 && playerMgmt != null) { playerMgmt.AddPoints(damageReward); }
+        else if (interactingPlayer == 2 && playerMgmt2 != null) { playerMgmt2.AddPoints(damageReward); }
     }
 
     //TODO add some sort of jumping - seperate script? (also make it so that it can be turned off for enemies that shouldn't jump)

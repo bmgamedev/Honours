@@ -16,20 +16,15 @@ public class DungeonProgram
 
     static private GameObject _exitDoor;
     static private Tilemap _wallMap, _groundMap, _deathMap, _floorMap;
-    static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile;
+    static private Tile _groundTile, _brickTile1, _brickTile2, _brickTile3, _spikeTile, _lavaTile;
     static public List<Vector3> _playerPositions = new List<Vector3>();
     static public List<Vector3> _pickupPositions = new List<Vector3>();
     static public List<Vector3> _enemyPositions = new List<Vector3>();
-    static private List<string> _enemyAxes = new List<string>();
-    //static public float enemyPaceDist;
+    static public List<Vector3Int> _lavaPositions = new List<Vector3Int>();
+    static public List<Vector3Int> _tempPickupPositions = new List<Vector3Int>();
 
     public enum Direction { North, South, East, West };
     static private Direction dominantDir;
-
-    //public List<Vector3> GetPlayerPositions() { return _playerPositions; }
-    //public List<Vector3> GetPickupPositions() { return _pickupPositions; }
-    //public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
-    //public float GetEnemyPaceDist() { return enemyPaceDist; }
 
     public interface IElement { IEnumerator Execute(); }
 
@@ -45,7 +40,6 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
-            //get the tiles - TODO move to a type of "initialisation" function
             _groundMap = GameObject.Find("GroundMap").GetComponent<Tilemap>(); //no collisions
             _wallMap = GameObject.Find("WallMap").GetComponent<Tilemap>(); //collisions
             _floorMap = GameObject.Find("FloorMap").GetComponent<Tilemap>(); //collisions
@@ -54,30 +48,25 @@ public class DungeonProgram
 
             _startPos = GameObject.Find("StartPos").GetComponent<Transform>();
             _startPos.position = new Vector3(-0.53f, -5.47f, .0f);
-            //TODO just deal with positions internally. set it to the required position initially based on gametype
 
             _groundTile = Resources.Load("Ground") as Tile;
             _brickTile1 = Resources.Load("Wall") as Tile;
             _brickTile2 = Resources.Load("Wall2") as Tile;
             _brickTile3 = Resources.Load("Wall3") as Tile;
             _spikeTile = Resources.Load("Spikes") as Tile;
+            _lavaTile = Resources.Load("Lava") as Tile;
 
             mapGenerator = GameObject.Find("MapGeneration").GetComponent<MapGeneration>();
 
-            int maxRoomSize = 12; //TODO some sort of logic here?
+            int maxRoomSize = 12;
 
-            //string direction = mapGenerator.GetDominantDirection();
             if (exitDirection.Equals(Direction.North)) { dominantDir = Direction.North; }
             else if (exitDirection.Equals(Direction.South)) { dominantDir = Direction.South; }
             else if(exitDirection.Equals(Direction.East)) { dominantDir = Direction.East; }
             else if (exitDirection.Equals(Direction.West)) { dominantDir = Direction.West; }
 
-            //Debug.Log(exitDirection);
-            //Debug.Log(dominantDir);
-
             //Make the actual room:
             Vector3Int currentCell = _groundMap.WorldToCell(_startPos.position);
-            Debug.Log(_startPos);
             for (int i = 0; i < maxRoomSize; i++)
             {
                 Vector3Int centreTile = new Vector3Int(currentCell.x, currentCell.y, currentCell.z);
@@ -179,7 +168,6 @@ public class DungeonProgram
 
             //remove certain wall tiles based on direction of exit
             int midpoint;
-            //corridorWidth = 4;
 
             if (exitDirection == Direction.North)
             {
@@ -246,12 +234,6 @@ public class DungeonProgram
 
             mapGenerator.SetPlayerPositions(_playerPositions);
 
-            /*//calculate enemy pace distance before any are actually created
-            Vector3Int pointA = currentCell;
-            Vector3Int pointB = currentCell;
-            pointB.x += 1;
-            enemyPaceDist = Mathf.Abs(_groundMap.CellToLocal(pointA).x - _groundMap.CellToLocal(pointB).x);*/
-
             return null;
         }
     }
@@ -269,12 +251,8 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
-            //TODO
             int roomWidth = 15;
             int roomHeight = 15;
-
-            //System.Random random = new System.Random();
-            //int offset = random.Next(10);
 
             Vector3Int mapfillStart = _outerConnection;
 
@@ -378,7 +356,7 @@ public class DungeonProgram
             _outerConnection = mapfillStart;
             if (exitDirection == Direction.North)
             {
-                Debug.Log(dominantDir);
+                //Debug.Log(dominantDir);
 
                 _outerConnection.y += roomHeight;
 
@@ -386,7 +364,6 @@ public class DungeonProgram
                 {
                     //keep outconnection to the top right
                     _outerConnection.x += (roomWidth - corridorWidth);
-                    Debug.Log("should be top right");
                 }
                 // else keep connection to top left i.e. do nothing more
             }
@@ -482,140 +459,6 @@ public class DungeonProgram
         }
     }
 
-    //final room
-    public class FinalRoomSegment : IElement
-    {
-        private Direction entryDirection;
-
-        public FinalRoomSegment(Direction entryDir)
-        {
-            entryDirection = entryDir;
-        }
-
-        public IEnumerator Execute()
-        {
-            int roomWidth = 18;
-            int roomHeight = 18;
-
-            System.Random random = new System.Random();
-            //int offset = random.Next(10);
-
-            Vector3Int mapfillStart = _outerConnection;
-
-            if (entryDirection == Direction.South)
-            {
-                mapfillStart.x -= roomWidth; mapfillStart.y -= roomHeight;
-            }
-            else if (entryDirection == Direction.East) { mapfillStart.y -= roomHeight; }
-            else if (entryDirection == Direction.West) { mapfillStart.x -= roomWidth; }
-
-            //build a walled room
-            Vector3Int tile = mapfillStart;
-            for (int i = 0; i < roomHeight; i++)
-            {
-
-                tile.x = mapfillStart.x - 1;
-
-                for (int j = 0; j < roomWidth; j++)
-                {
-
-                    tile.x++;
-                    _groundMap.SetTile(tile, _groundTile);
-
-                }
-                tile.y++;
-            }
-
-            //Left/Right
-            tile = mapfillStart;
-            for (int i = 0; i <= roomHeight; i++)
-            {
-                tile.x = mapfillStart.x;
-                _floorMap.SetTile(tile, _brickTile1);
-                tile.x = mapfillStart.x + roomWidth;
-                _floorMap.SetTile(tile, _brickTile1);
-                tile.y++;
-            }
-
-            //Top/Bottom
-            tile = mapfillStart;
-            for (int i = 0; i <= roomWidth; i++)
-            {
-                tile.y = mapfillStart.y;// - 1;
-                _floorMap.SetTile(tile, _brickTile1);
-                tile.y = mapfillStart.y + roomHeight;
-                _floorMap.SetTile(tile, _brickTile1);
-                tile.x++;
-            }
-
-            //remove entry
-            if (entryDirection == Direction.North)
-            {
-                tile = _outerConnection;
-                //tile.y--;
-                tile.x++;
-                for (int i = 0; i < (corridorWidth - 1); i++)
-                {
-                    _floorMap.SetTile(tile, null);
-                    _groundMap.SetTile(tile, _groundTile);
-                    tile.x++;
-                }
-
-            }
-            else if (entryDirection == Direction.South)
-            {
-                tile = _outerConnection;
-                //tile.y--;
-                tile.x -= corridorWidth;
-                for (int i = 0; i < corridorWidth; i++)
-                {
-                    _floorMap.SetTile(tile, null);
-                    _groundMap.SetTile(tile, _groundTile);
-                    tile.x++;
-                }
-
-            }
-            else if (entryDirection == Direction.East)
-            {
-                tile = _outerConnection;
-                tile.y -= 1;
-                //tile.x -= 1;
-                //tile.x--; //needed?
-                for (int i = 0; i < (corridorWidth - 1); i++)
-                {
-                    _floorMap.SetTile(tile, null);
-                    _groundMap.SetTile(tile, _groundTile);
-                    tile.y--;
-                }
-            }
-            else if (entryDirection == Direction.West)
-            {
-                tile = _outerConnection;
-                tile.y += corridorWidth - 1;
-                //tile.x--; //needed?
-                for (int i = 0; i < (corridorWidth - 1); i++)
-                {
-                    _floorMap.SetTile(tile, null);
-                    _groundMap.SetTile(tile, _groundTile);
-                    tile.y--;
-                }
-            }
-
-            Vector3Int exitPos = mapfillStart;
-            exitPos.y += roomHeight / 2;
-            exitPos.x += roomWidth / 2;
-            _exitDoor.transform.position = _groundMap.CellToLocal(exitPos);
-            _exitDoor.GetComponent<SpriteRenderer>().enabled = true;
-
-            mapGenerator.SetPickupPositions(_pickupPositions);
-            mapGenerator.SetPlayerPositions(_playerPositions);
-            mapGenerator.SetEnemyPositions(_enemyPositions);
-            mapGenerator.SetEnemyPaceAxes(_enemyAxes);
-
-            return null;
-        }
-    }
-
     //FirstCorrSegment
     public class FirstCorrSegment : IElement
     {
@@ -629,8 +472,7 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
-            //Debug.Log("C1 E: " + entryDirection + ", D: " + corrDirection);
-
+            #region draw ground tiles
             //Draw the ground tiles
             Vector3Int curCell = _outerConnection;
             for (int i = 0; i < corridorWidth; i++)
@@ -663,7 +505,9 @@ public class DungeonProgram
                     _groundMap.SetTile(curCell, _groundTile);
                 }
             }
+            #endregion
 
+            #region add wall tiles
             //add walls
             Vector3Int wallCell1, wallCell2;
             curCell = _outerConnection;
@@ -758,7 +602,9 @@ public class DungeonProgram
                     wallCell2.y++;
                 }
             }
+            #endregion
 
+            #region update inner connection pos
             //update inner connection point for section 2.
             _innerConnection = _outerConnection;
             if (entryDirection == Direction.North && corrDirection == Direction.North)
@@ -817,7 +663,9 @@ public class DungeonProgram
             {
                 _innerConnection.y -= 1;
             }
+            #endregion
 
+            #region enemy positions
             //enemy positions
             Vector3Int startPos = _outerConnection;
 
@@ -836,46 +684,62 @@ public class DungeonProgram
             }
 
             Vector3Int tempPos = startPos;
-            for (int i = 0; i < corridorWidth - 2; i++)
+            tempPos.y++;
+            for (int i = 0; i < corridorWidth - 3; i++)
             {
-                tempPos.y += (i + 2);
-                for (int j = 0; j < corridorWidth - 2; j++)
+                tempPos.y++;
+                tempPos.x = startPos.x + 1;
+                for (int j = 0; j < corridorWidth - 3; j++)
                 {
-                    tempPos.x += (j + 2);
+                    tempPos.x ++;
                     _enemyPositions.Add(_groundMap.CellToLocal(tempPos));
-                    if (corrDirection == Direction.North || corrDirection == Direction.South)
-                    { _enemyAxes.Add("Horizontal"); }
-                    else { _enemyAxes.Add("Vertical"); }
                 }
-                tempPos = startPos;
             }
+            #endregion
 
+            #region pickup positions
             //pickup positions
-            tempPos = startPos;
-            for (int i = 0; i < corridorWidth - 2; i++)
+            /*tempPos = startPos;
+            tempPos.y++;
+            for (int i = 0; i < corridorWidth - 3; i++)
             {
                 tempPos.y++;
-                for (int j = 0; j < corridorWidth - 2; j++)
+                tempPos.x = startPos.x + 1;
+                for (int j = 0; j < corridorWidth - 3; j++)
                 {
-                    tempPos.x += (j + 2);
+                    tempPos.x ++;
                     _pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+                } 
+            }*/
+
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth; j++)
+                {
+                    tempPos.x++;
+                    if (!_floorMap.HasTile(tempPos)) { _pickupPositions.Add(tempPos); }
                 }
                 tempPos.x = startPos.x;
             }
-            //_pickupPositions.Add(_groundMap.CellToLocal(tempPos));
 
+            #endregion
+
+            #region lava positions
             //lava positions
-            /*tempPos = startPos;
-            for (int i = 0; i < corridorWidth - 1; i++)
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth; i++)
             {
                 tempPos.y++;
-                for (int j = 0; j < corridorWidth - 1; j++)
+                for (int j = 0; j < corridorWidth; j++)
                 {
-                    tempPos.x += (j + 1);
-                    lavaPositions.Add(_groundMap.CellToLocal(tempPos));
+                    tempPos.x ++;
+                    if (!_floorMap.HasTile(tempPos)) { _lavaPositions.Add(tempPos); }
                 }
                 tempPos.x = startPos.x;
-            }*/
+            }
+            #endregion
 
             return null;
         }
@@ -894,6 +758,7 @@ public class DungeonProgram
 
         public IEnumerator Execute()
         {
+            #region draw ground tiles
             //Draw the ground tiles
             Vector3Int curCell = _innerConnection;
             for (int i = 0; i < corridorWidth; i++)
@@ -926,8 +791,9 @@ public class DungeonProgram
                     _groundMap.SetTile(curCell, _groundTile);
                 }
             }
+            #endregion
 
-            //add walls
+            #region add walls
             Vector3Int wallCell1, wallCell2;
             curCell = _innerConnection;
 
@@ -1020,7 +886,9 @@ public class DungeonProgram
                     wallCell2.y++;
                 }
             }
+            #endregion
 
+            #region update outer connection pos
             //update outer connection point for section 1.
             _outerConnection = _innerConnection;
             if (exitDirection == Direction.North && corrDirection == Direction.North)
@@ -1079,7 +947,9 @@ public class DungeonProgram
             {
                 _outerConnection.x -= 1;
             }
+            #endregion
 
+            #region enemy positions
             //enemy positions
             Vector3Int startPos = _innerConnection;
 
@@ -1098,47 +968,237 @@ public class DungeonProgram
             }
             
             Vector3Int tempPos = startPos;
-
-            for (int i = 0; i < corridorWidth - 2; i++)
-            {
-                tempPos.y += (i + 2);
-                for (int j = 0; j < corridorWidth - 2; j++)
-                {
-                    tempPos.x += (j + 2);
-                    _enemyPositions.Add(_groundMap.CellToLocal(tempPos));
-                    if (corrDirection == Direction.North || corrDirection == Direction.South)
-                    { _enemyAxes.Add("Horizontal"); }
-                    else { _enemyAxes.Add("Vertical"); }
-                }
-                tempPos = startPos;
-            }
-
-            //pickup positions
-            tempPos = startPos;
-            for (int i = 0; i < corridorWidth - 1; i++)
+            tempPos.y++;
+            for (int i = 0; i < corridorWidth - 3; i++)
             {
                 tempPos.y++;
-                for (int j = 0; j < corridorWidth - 1; j++)
+                tempPos.x = startPos.x + 1;
+                for (int j = 0; j < corridorWidth - 3; j++)
                 {
-                    tempPos.x += (j + 1);
+                    tempPos.x ++;
+                    _enemyPositions.Add(_groundMap.CellToLocal(tempPos));
+                }
+                
+            }
+            #endregion
+
+            #region pickup positions
+            //pickup positions
+            /*tempPos = startPos;
+            tempPos.y++;
+            for (int i = 0; i < corridorWidth - 3; i++)
+            {
+                tempPos.y++;
+                tempPos.x = startPos.x + 1;
+                for (int j = 0; j < corridorWidth - 3; j++)
+                {
+                    tempPos.x++;
                     _pickupPositions.Add(_groundMap.CellToLocal(tempPos));
                 }
-                tempPos.x = startPos.x;
-            }
-            //_pickupPositions.Add(_groundMap.CellToLocal(tempPos));
+                
+            }*/
 
-            //lava positions
-            /*tempPos = startPos;
-            for (int i = 0; i < corridorWidth - 1; i++)
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth; i++)
             {
                 tempPos.y++;
-                for (int j = 0; j < corridorWidth - 1; j++)
+                for (int j = 0; j < corridorWidth; j++)
                 {
-                    tempPos.x += (j + 1);
-                    lavaPositions.Add(_groundMap.CellToLocal(tempPos));
+                    tempPos.x++;
+                    if (!_floorMap.HasTile(tempPos)) { _pickupPositions.Add(tempPos); }
                 }
                 tempPos.x = startPos.x;
-            }*/
+            }
+            #endregion
+
+            #region lava positions
+            //lava positions
+            tempPos = startPos;
+            for (int i = 0; i < corridorWidth; i++)
+            {
+                tempPos.y++;
+                for (int j = 0; j < corridorWidth; j++)
+                {
+                    tempPos.x++;
+                    if (!_floorMap.HasTile(tempPos)) { _lavaPositions.Add(tempPos); }
+                }
+                tempPos.x = startPos.x;
+            }
+            #endregion
+
+            return null;
+        }
+    }
+
+    //final room
+    public class FinalRoomSegment : IElement
+    {
+        private Direction entryDirection;
+
+        public FinalRoomSegment(Direction entryDir)
+        {
+            entryDirection = entryDir;
+        }
+
+        public IEnumerator Execute()
+        {
+            #region set room variables
+            int roomWidth = 18;
+            int roomHeight = 18;
+
+            Vector3Int mapfillStart = _outerConnection;
+
+            if (entryDirection == Direction.South)
+            {
+                mapfillStart.x -= roomWidth; mapfillStart.y -= roomHeight;
+            }
+            else if (entryDirection == Direction.East) { mapfillStart.y -= roomHeight; }
+            else if (entryDirection == Direction.West) { mapfillStart.x -= roomWidth; }
+            #endregion
+
+            #region build the room
+            //build a walled room
+            Vector3Int tile = mapfillStart;
+            for (int i = 0; i < roomHeight; i++)
+            {
+
+                tile.x = mapfillStart.x - 1;
+
+                for (int j = 0; j < roomWidth; j++)
+                {
+
+                    tile.x++;
+                    _groundMap.SetTile(tile, _groundTile);
+
+                }
+                tile.y++;
+            }
+
+            //Left/Right
+            tile = mapfillStart;
+            for (int i = 0; i <= roomHeight; i++)
+            {
+                tile.x = mapfillStart.x;
+                _floorMap.SetTile(tile, _brickTile1);
+                tile.x = mapfillStart.x + roomWidth;
+                _floorMap.SetTile(tile, _brickTile1);
+                tile.y++;
+            }
+
+            //Top/Bottom
+            tile = mapfillStart;
+            for (int i = 0; i <= roomWidth; i++)
+            {
+                tile.y = mapfillStart.y;// - 1;
+                _floorMap.SetTile(tile, _brickTile1);
+                tile.y = mapfillStart.y + roomHeight;
+                _floorMap.SetTile(tile, _brickTile1);
+                tile.x++;
+            }
+
+            //remove entry
+            if (entryDirection == Direction.North)
+            {
+                tile = _outerConnection;
+                //tile.y--;
+                tile.x++;
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _floorMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if (entryDirection == Direction.South)
+            {
+                tile = _outerConnection;
+                //tile.y--;
+                tile.x -= corridorWidth;
+                for (int i = 0; i < corridorWidth; i++)
+                {
+                    _floorMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.x++;
+                }
+
+            }
+            else if (entryDirection == Direction.East)
+            {
+                tile = _outerConnection;
+                tile.y -= 1;
+                //tile.x -= 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _floorMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y--;
+                }
+            }
+            else if (entryDirection == Direction.West)
+            {
+                tile = _outerConnection;
+                tile.y += corridorWidth - 1;
+                //tile.x--; //needed?
+                for (int i = 0; i < (corridorWidth - 1); i++)
+                {
+                    _floorMap.SetTile(tile, null);
+                    _groundMap.SetTile(tile, _groundTile);
+                    tile.y--;
+                }
+            }
+            #endregion
+
+            #region add exit button
+            Vector3Int exitPos = mapfillStart;
+            exitPos.y += roomHeight / 2;
+            exitPos.x += roomWidth / 2;
+            _exitDoor.transform.position = _groundMap.CellToLocal(exitPos);
+            _exitDoor.GetComponent<SpriteRenderer>().enabled = true;
+            #endregion
+
+            //FOR DEBUGGING::
+            //_enemyPositions - COMPLETE
+            //_pickupPositions - COMPLETE
+            //_lavaPositions - COMPLETE
+            foreach (Vector3Int pos in _lavaPositions)
+            {
+                if (!_floorMap.HasTile(pos)) { _deathMap.SetTile(pos, _lavaTile); }
+            }
+
+            //Add all the lava tiles:
+            foreach (Vector3Int pos in _lavaPositions) //get rid of any lava positions that can't be used because of walls
+            {
+                if (!_floorMap.HasTile(pos)) { _lavaPositions.Remove(pos); }
+            }
+
+            int maxLavaTiles = _lavaPositions.Count / 10; //just randomly deciding to implement a tenth of them...
+            System.Random random = new System.Random();
+            for (int i = 0; i < maxLavaTiles; i++)
+            {
+                int rnd = random.Next(_lavaPositions.Count);
+                Vector3Int pos = _lavaPositions[rnd];
+                _deathMap.SetTile(pos, _lavaTile);
+
+                /*foreach (Vector3 pos in _lavaPositions)
+                {
+                    //choose a random amount and then pick pos randomly from array
+                    if (!_floorMap.HasTile(pos)) { _deathMap.SetTile(pos, _lavaTile); }
+                }*/
+            }
+
+            foreach (Vector3Int pos in _tempPickupPositions)
+            {
+                if (!_deathMap.HasTile(pos)) //only add the pickup position to the array if it's not going to be sitting on lava
+                {
+                    _pickupPositions.Add(_groundMap.CellToLocal(pos));
+                } 
+            }
+
+            mapGenerator.SetPickupPositions(_pickupPositions);
+            mapGenerator.SetPlayerPositions(_playerPositions);
+            mapGenerator.SetEnemyPositions(_enemyPositions);
 
             return null;
         }

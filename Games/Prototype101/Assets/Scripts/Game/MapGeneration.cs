@@ -22,13 +22,13 @@ public class MapGeneration : MonoBehaviour {
     public List<Vector3> GetPlayerPositions() { return _playerPositions; }
     public List<Vector3> GetPickupPositions() { return _pickupPositions; }
     public List<Vector3> GetEnemyPositions() { return _enemyPositions; }
-    public List<string> GetEnemyPaceAxes() { return _enemyAxes; }
+    //public List<string> GetEnemyPaceAxes() { return _enemyAxes; }
     //public float GetEnemyPaceDist() { return enemyPaceDist; }
 
     public void SetPlayerPositions(List<Vector3> playerPos) { _playerPositions = playerPos; }
     public void SetPickupPositions(List<Vector3> pickupPos) { _pickupPositions = pickupPos; }
     public void SetEnemyPositions(List<Vector3> enemyPos) { _enemyPositions = enemyPos; }
-    public void SetEnemyPaceAxes(List<string> enemyPaceAxes) { _enemyAxes = enemyPaceAxes; }
+    //public void SetEnemyPaceAxes(List<string> enemyPaceAxes) { _enemyAxes = enemyPaceAxes; }
     //public void SetEnemyPaceDist(float paceDist) { enemyPaceDist = paceDist; }
 
     public string GetDominantDirection()
@@ -77,10 +77,10 @@ public class MapGeneration : MonoBehaviour {
         domDir = (DominantDirection)(UnityEngine.Random.Range(0, Enum.GetNames(typeof(DominantDirection)).Length));
 
         //Randomly choose the number of rooms (from a range, based on size)
-        int maxRooms = 10;
-        if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 6); }
+        int maxRooms = 1;
+        /*if (mapSize == GameProgram.MapSize.Small) { maxRooms = UnityEngine.Random.Range(4, 6); }
         else if (mapSize == GameProgram.MapSize.Medium) { maxRooms = UnityEngine.Random.Range(7, 10); ; }
-        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(11, 15); }
+        else if (mapSize == GameProgram.MapSize.Large) { maxRooms = UnityEngine.Random.Range(11, 15); }*/
 
         //Randomly choose the number of iterations required to build the corridor
         //(is it possibly to do something like always using a multiple of four or something = a complete corridor? Because can't end a corridor in the middle of a tuple)

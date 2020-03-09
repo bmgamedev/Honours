@@ -19,7 +19,8 @@ public class GameProgram
     static private List<Vector3> _playerPositions = new List<Vector3>(); //Can't decided if I'm going to need to store multiple or not yet
     static private List<Vector3> _pickupPositions = new List<Vector3>();
     static private List<Vector3> _enemyPositions = new List<Vector3>();
-    static private List<string> _enemyAxes = new List<string>();
+    //static private List<string> _enemyAxes = new List<string>();
+    static private List<string> _enemyPaceAxis = new List<string>() { "Horizontal", "vertical" };
     //static private float enemyPaceDist;
 
     static private Text loadingMessage = null;
@@ -64,7 +65,7 @@ public class GameProgram
             //Create the map using seperate grammars
             if (_gameType == GameType.Dungeon)
             {
-                Debug.Log("dungeon");
+                //Debug.Log("dungeon");
                 yield return mapGenerator.GenerateDungeonMap(_mapSize);
             }
             else if (_gameType == GameType.Platformer)
@@ -76,7 +77,7 @@ public class GameProgram
             _pickupPositions = mapGenerator.GetPickupPositions();
             _playerPositions = mapGenerator.GetPlayerPositions();
             _enemyPositions = mapGenerator.GetEnemyPositions();
-            _enemyAxes = mapGenerator.GetEnemyPaceAxes();
+            //_enemyAxes = mapGenerator.GetEnemyPaceAxes();
             //enemyPaceDist = mapGenerator.GetEnemyPaceDist();
 
             //pick random number between x and y to represent number of pickups to be placed
@@ -92,12 +93,14 @@ public class GameProgram
                 {
                     rnd = random.Next(_pickupPositions.Count);
                     Vector3 pickupPos = _pickupPositions[rnd];
+                    //#pragma warning disable 1234
                     GameObject pickup = Object.Instantiate(Resources.Load("Pickup"), pickupPos, Quaternion.identity) as GameObject;
+                    //#pragma warning restore 1234
                 }
             }
             
 
-            Debug.Log("game type: " + _gameType.ToString() + ", difficulty: " + _gameDifficulty.ToString());
+            //Debug.Log("game type: " + _gameType.ToString() + ", difficulty: " + _gameDifficulty.ToString());
 
             yield return null;
             //return null;
@@ -236,8 +239,8 @@ public class GameProgram
             }
             
 
-            Debug.Log("Player x" + _num);
-            Debug.Log("# players: " + _players.Count);
+            //Debug.Log("Player x" + _num);
+            //Debug.Log("# players: " + _players.Count);
 
             return null;
         }
@@ -261,7 +264,7 @@ public class GameProgram
         {
             if (_enemyPositions != null)
             {
-                Debug.Log("Enemy: " + _type.ToString());
+                //Debug.Log("Enemy: " + _type.ToString());
 
                 if (loadingMessage != null) { loadingMessage.text = "Adding enemies..."; }
 
@@ -290,7 +293,9 @@ public class GameProgram
                 {
                     rnd = random.Next(_enemyPositions.Count);
                     Vector3 enemyPos = _enemyPositions[rnd];
-                    string enemyPaceAxis = _enemyAxes[rnd];
+
+                    rnd = random.Next(2);
+                    string enemyPaceAxis = _enemyPaceAxis[rnd];
 
                     string enemyPacing, enemyStatic;
 
@@ -308,7 +313,8 @@ public class GameProgram
                     if (_type.Equals(Type.MOVING))
                     {
                         enemy = Object.Instantiate(Resources.Load(enemyPacing), enemyPos, Quaternion.identity) as GameObject;
-                        enemy.GetComponent<EnemyPacing>().SetPaceAxis(enemyPaceAxis);
+                        if (_gameType.Equals(GameType.Dungeon)) { enemy.GetComponent<EnemyPacing2>().SetPaceAxis(enemyPaceAxis); }
+                        else { enemy.GetComponent<EnemyPacing>().SetPaceAxis("Horizontal"); } 
                     }
                     else if (_type.Equals(Type.STATIC))
                     {
@@ -320,8 +326,9 @@ public class GameProgram
                         if (rnd == 0)
                         {
                             enemy = Object.Instantiate(Resources.Load(enemyPacing), enemyPos, Quaternion.identity) as GameObject;
-                            enemy.GetComponent<EnemyPacing>().SetPaceAxis(enemyPaceAxis);
-                            
+                            if (_gameType.Equals(GameType.Dungeon)) { enemy.GetComponent<EnemyPacing2>().SetPaceAxis(enemyPaceAxis); }
+                            else { enemy.GetComponent<EnemyPacing>().SetPaceAxis("Horizontal"); }
+
                         }
                         else if (rnd == 1)
                         {

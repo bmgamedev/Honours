@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 50351153862665768}
   - component: {fileID: 114632963437060200}
   - component: {fileID: 114181089818184964}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: EnemyA
   m_TagString: MeleeEnemy
   m_Icon: {fileID: 0}
@@ -140,6 +140,7 @@ MonoBehaviour:
   gravityModifier: 1
   minGroundNormalY: 0.65
   moveDistance: {x: 3, y: 0}
+  paceDistance: 1
 --- !u!212 &212776518993141290
 SpriteRenderer:
   m_ObjectHideFlags: 1

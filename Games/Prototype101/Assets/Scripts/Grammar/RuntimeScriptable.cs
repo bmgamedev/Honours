@@ -29,8 +29,6 @@ public class RuntimeScriptable : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
-        
     }
 
     public void CompileAndRun()
@@ -61,11 +59,11 @@ public class RuntimeScriptable : MonoBehaviour
         }
     }
 
-    public void DebugRun(GameObject debugtext)
+    /*public void DebugRun(GameObject debugtext)
     {
         string generatorText2 = "initialise dungeon easy difficulty small players 1 finalise";
         StopAllCoroutines();
         _program = GameCompiler.Compile(generatorText2); 
         StartCoroutine(_program.Run());
-    }
+    }*/
 }

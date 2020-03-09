@@ -1,6 +1,7 @@
 ﻿public static class ScoreMgmt {
 
     public static int _P1Score, _P2Score;
+    public static int _P1Deaths, _P2Deaths;
 
     public static int GetScore(string player)
     {
@@ -54,5 +55,35 @@
     {
         _P1Score = 0;
         _P2Score = 0;
+    }
+
+    public static int GetDeaths(string player)
+    {
+        if (player.Equals("Player2"))
+        {
+            return _P2Deaths;
+        }
+        else
+        {
+            return _P1Deaths;
+        }
+    }
+
+    public static void IncreaseDeaths(string player)
+    {
+        if (player.Equals("Player2"))
+        {
+            _P2Deaths++;
+        }
+        else
+        {
+            _P1Deaths++;
+        }
+    }
+
+    public static void ClearDeaths()
+    {
+        _P1Deaths = 0;
+        _P2Deaths = 0;
     }
 }
